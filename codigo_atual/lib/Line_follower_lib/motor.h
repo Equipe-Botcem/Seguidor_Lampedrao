@@ -42,10 +42,11 @@ unsigned long second = 1000;
 
 double valLeitura_min[6] = {1023, 1023, 1023, 1023, 1023, 1023};
 double valLeitura_max[6] = {0, 0, 0, 0, 0, 0};
-double val_leitura_max_lateral =0;
+double val_leitura_max_lateral = 0;
 
 double valor_med_max = 0;
 double valor_med_min = 1023;
+double valor_pencentual_sensores = 0.05;
 
 unsigned long cagaco = 0;
 
@@ -78,7 +79,8 @@ void pin_config()
 	digitalWrite(pin_direcional_motor_esq_2, LOW);	// direcional
 }
 
-bool timer_cagaco(){
+bool timer_cagaco()
+{
 	// if(millis() - cagaco >= 83*second) return true;
 	return false;
 }
@@ -92,15 +94,15 @@ bool ignorar_leitura()
 
 void sensor_stop_condition(int value)
 {
-	
+
 	if (value >= STOP_VALUE_LATERAL)
 	{
-		//Serial.println(value);
+		// Serial.println(value);
 		if (!ignorar_leitura())
 		{
 			qnt_linhas--;
-			//Serial.println("qnt_linha: ");
-			//Serial.println(qnt_linhas);
+			// Serial.println("qnt_linha: ");
+			// Serial.println(qnt_linhas);
 			start_time = millis();
 			if (qnt_linhas == 0)
 				stop_condition = true;
@@ -112,7 +114,7 @@ void sensor_encruzilhada_condition(double soma)
 {
 	if (soma >= (STOP_VALUE_FRONTAL) * (NUM_SENSORS))
 	{
-		//Serial.println("encruzilhada");
+		// Serial.println("encruzilhada");
 		start_time = millis();
 	}
 }
@@ -120,11 +122,12 @@ void sensor_encruzilhada_condition(double soma)
 double calibracao_frontal(double valor_descalibrado, double valLeitura_max, double valLeitura_min)
 {
 	double c = 0;
-
 	c = (valor_descalibrado - valLeitura_min) * (1023 / (valLeitura_max - valLeitura_min));
 
-	if(c>1023) c=1023;
-	if(c<0)	c=0;
+	if (c > 1023)
+		c = 1023;
+	if (c < 0)
+		c = 0;
 	/*Serial.println("-------------------------------------");
 	Serial.print("valor descalibrado = ");
 	Serial.println(valor_descalibrado);
@@ -166,13 +169,13 @@ double calc_erro()
 	{
 		valor_calibrado = calibracao_frontal(valoresLidos[i], valLeitura_max[i], valLeitura_min[i]);
 		erro_calc += valor_calibrado * pesos[i];
-		//Serial.print(i);
-		//Serial.print("->");
-		//Serial.print(valor_calibrado);
-		//Serial.println();
+		// Serial.print(i);
+		// Serial.print("->");
+		// Serial.print(valor_calibrado);
+		// Serial.println();
 	}
-	//Serial.println();
-	//delay(1000);
+	// Serial.println();
+	// delay(1000);
 
 	return erro_calc;
 }
@@ -242,22 +245,24 @@ void motor_controler(double erro)
 }
 
 /**
- * @brief Resposavel por controlar o robô durante a calibração 
- * 
+ * @brief Resposavel por controlar o robô durante a calibração
+ *
  */
-void motor_calibration(int dir){
+void motor_calibration(int dir)
+{
 
-	// Se dir for 1 joga pra tras 
-	if (dir){
+	// Se dir for 1 joga pra tras
+	if (dir)
+	{
 
-		// Configura o motor pra tras 
-		// Sentido do motor direito 
-		digitalWrite(pin_direcional_motor_dir_1, LOW); // direcional
-		digitalWrite(pin_direcional_motor_dir_2, HIGH);	// direcional
+		// Configura o motor pra tras
+		// Sentido do motor direito
+		digitalWrite(pin_direcional_motor_dir_1, LOW);	// direcional
+		digitalWrite(pin_direcional_motor_dir_2, HIGH); // direcional
 
-		// Sentido do motor esquerdo 
-		digitalWrite(pin_direcional_motor_esq_1, LOW); // direcional
-		digitalWrite(pin_direcional_motor_esq_2, HIGH);	// direcional
+		// Sentido do motor esquerdo
+		digitalWrite(pin_direcional_motor_esq_1, LOW);	// direcional
+		digitalWrite(pin_direcional_motor_esq_2, HIGH); // direcional
 
 		analogWrite(pin_PWM_motor_dir, 120);
 		analogWrite(pin_PWM_motor_esq, 120);
@@ -267,16 +272,17 @@ void motor_calibration(int dir){
 		analogWrite(pin_PWM_motor_dir, 0);
 		analogWrite(pin_PWM_motor_esq, 0);
 
-		// Reconfigura pra frente 
-		// Sentido do motor direito 
+		// Reconfigura pra frente
+		// Sentido do motor direito
 		digitalWrite(pin_direcional_motor_dir_1, HIGH); // direcional
 		digitalWrite(pin_direcional_motor_dir_2, LOW);	// direcional
 
-		// Sentido do motor esquerdo 
+		// Sentido do motor esquerdo
 		digitalWrite(pin_direcional_motor_esq_1, HIGH); // direcional
 		digitalWrite(pin_direcional_motor_esq_2, LOW);	// direcional
-	
-	}else{
+	}
+	else
+	{
 
 		analogWrite(pin_PWM_motor_dir, 120);
 		analogWrite(pin_PWM_motor_esq, 120);
@@ -285,7 +291,5 @@ void motor_calibration(int dir){
 
 		analogWrite(pin_PWM_motor_dir, 0);
 		analogWrite(pin_PWM_motor_esq, 0);
-			
 	}
-
 }
