@@ -24,7 +24,7 @@ Motor_drive::Motor_drive(unsigned char PWM_1, unsigned char PWM_2, unsigned char
 	motor_direction = 1;
 }
 
-void Motor_drive::init()
+void Motor_drive::Init()
 {
 	pinMode(pin_PWM_1, OUTPUT);
 	pinMode(pin_PWM_2, OUTPUT);
@@ -33,36 +33,36 @@ void Motor_drive::init()
 	pinMode(pin_OCM, INPUT);
 }
 
-void Motor_drive::enable_drive()
+void Motor_drive::Enable_drive()
 {
 	digitalWrite(pin_EN, HIGH);
 }
 
-void Motor_drive::disable_drive()
+void Motor_drive::Disable_drive()
 {
 	digitalWrite(pin_EN, LOW);
 }
 
-unsigned char Motor_drive::get_fault()
+unsigned char Motor_drive::Get_fault()
 {
 	return !digitalRead(pin_DIAG);
 }
 
-void Motor_drive::set_motor_forward()
+void Motor_drive::Set_motor_forward()
 {
 	if (motor_direction)
 		return;
 	motor_direction = 1;
 }
 
-void Motor_drive::set_motor_reverse()
+void Motor_drive::Set_motor_reverse()
 {
 	if (!motor_direction)
 		return;
 	motor_direction = 0;
 }
 
-void Motor_drive::set_speed(int speed)
+void Motor_drive::Set_speed(int speed)
 {
 	if (motor_direction)
 	{
@@ -76,6 +76,6 @@ void Motor_drive::set_speed(int speed)
 	}
 }
 
-double Motor_drive::get_current_milliamps(){
+double Motor_drive::Get_current_milliamps(){
 	return analogRead(pin_OCM) * 9.765625;
 }

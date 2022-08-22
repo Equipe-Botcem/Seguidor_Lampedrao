@@ -9,17 +9,17 @@ public:
 	Motor_drive();
 	Motor_drive(unsigned char PWM_1, unsigned char PWM_2, unsigned char EN, unsigned char DIAG, unsigned char OCM);
 
-	void init();
-	void enable_drive();
-	void disable_drive();
+	void Init();
+	void Enable_drive();
+	void Disable_drive();
 
-	unsigned char get_fault();
+	unsigned char Get_fault();
 
-	void set_motor_forward();
-	void set_motor_reverse();
-	void set_speed(int speed);
+	void Set_motor_forward();
+	void Set_motor_reverse();
+	void Set_speed(int speed);
 
-	double get_current_milliamps();
+	double Get_current_milliamps();
 
 private:
 
