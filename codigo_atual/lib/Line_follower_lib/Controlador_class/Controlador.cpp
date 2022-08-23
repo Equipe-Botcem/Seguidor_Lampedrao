@@ -94,6 +94,16 @@ void Controlador::Set_direction_reverse()
 	motor_dir.Set_motor_reverse();
 }
 
+void Controlador::Set_motor_esq_speed(int speed)
+{
+	motor_esq.Set_speed(speed);
+}
+
+void Controlador::Set_motor_dir_speed(int speed)
+{
+	motor_dir.Set_speed(speed);
+}
+
 void Controlador::Check_current_motors_drives()
 {
 

@@ -28,6 +28,9 @@ public:
 	void Set_direction_forward();
 	void Set_direction_reverse();
 
+	void Set_motor_esq_speed(int speed);
+	void Set_motor_dir_speed(int speed);
+
 	void Check_current_motors_drives();
 
 	double calc_erro();
