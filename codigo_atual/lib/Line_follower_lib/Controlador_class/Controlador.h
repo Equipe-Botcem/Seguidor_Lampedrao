@@ -1,4 +1,4 @@
-#include "Motor_drive_class/motor_drive.h"
+#include "motor_drive.h"
 #include "Sensors_classes/Sensor_linha_class/Sensor_linha.h"
 
 class Controlador

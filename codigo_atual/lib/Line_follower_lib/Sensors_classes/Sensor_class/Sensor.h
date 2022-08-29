@@ -1,4 +1,4 @@
-#include "Arduino.h"
+#include "include.h"
 
 class Sensor
 {
@@ -10,6 +10,7 @@ public:
 	void Init();
 
 	int Read_sensor();
+	
 	void Calibracao();
 	virtual void Rotina();
 

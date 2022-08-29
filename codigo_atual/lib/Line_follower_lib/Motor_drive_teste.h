@@ -1,10 +1,6 @@
-#include "Motor_drive_class/motor_drive.h"
+#include "motor_drive.h"
 
-unsigned char PWM_1 = 0;
-unsigned char PWM_2 = 1;
-unsigned char EN = 3;
-unsigned char DIAG = 4;
-unsigned char OCM = 5;
+
 
 void Motor_drive_teste_init();
 
@@ -18,7 +14,7 @@ void Motor_drive_teste_set_reverse();
 
 void Motor_drive_teste_set_speed(int speed);
 
-double Motor_drive_teste_get_current();
+double Motor_drive_teste_get_current(int speed);
 
 /**
  * @brief Liga o motor para frente por 5 segundos e então desliga (Disable)

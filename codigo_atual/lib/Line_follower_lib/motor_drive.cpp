@@ -50,29 +50,32 @@ unsigned char Motor_drive::Get_fault()
 
 void Motor_drive::Set_motor_forward()
 {
-	if (motor_direction)
-		return;
 	motor_direction = 1;
+	On();
 }
 
 void Motor_drive::Set_motor_reverse()
 {
-	if (!motor_direction)
-		return;
 	motor_direction = 0;
+	On();
 }
 
 void Motor_drive::Set_speed(int speed)
 {
+	motor_speed = speed;
+	On();
+}
+
+void Motor_drive::On(){
 	if (motor_direction)
 	{
-		analogWrite(pin_PWM_1, speed);
+		analogWrite(pin_PWM_1, motor_speed);
 		analogWrite(pin_PWM_2, LOW);
 	}
 	else
 	{
 		analogWrite(pin_PWM_1, LOW);
-		analogWrite(pin_PWM_2, speed);
+		analogWrite(pin_PWM_2, motor_speed);
 	}
 }
 

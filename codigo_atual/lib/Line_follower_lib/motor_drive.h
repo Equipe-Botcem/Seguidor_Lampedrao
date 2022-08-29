@@ -1,4 +1,4 @@
-#include "Arduino.h"
+#include "include.h"
 
 class Motor_drive
 {
@@ -18,6 +18,7 @@ public:
 	void Set_motor_forward();
 	void Set_motor_reverse();
 	void Set_speed(int speed);
+	
 
 	double Get_current_milliamps();
 
@@ -31,4 +32,8 @@ private:
 	
 	// 1 para forward ; 0 para reverse;
 	bool motor_direction;
+	int motor_speed=0;
+
+	void On();
+
 };
