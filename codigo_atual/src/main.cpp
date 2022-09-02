@@ -18,14 +18,14 @@ void loop()
 	{
 		//! arrumar as portas 
 		Motor_drive motor_teste(6,5,4,7,A2);
-		Encoder encoder(8);
+		Encoder encoder(9);
 
 		motor_teste.Init();
 		encoder.Init();
 
 		motor_teste.Enable_drive();
 		motor_teste.Set_motor_forward();
-		motor_teste.Set_speed(100);
+		motor_teste.Set_speed(50);
 
 		bool stop_cond = false;
 		unsigned long time = millis();

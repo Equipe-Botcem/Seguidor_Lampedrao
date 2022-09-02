@@ -1,7 +1,6 @@
 #include "Encoder.h"
 
-int Encoder::contador_a = 0;
-unsigned char Encoder::pin_a = 1;
+volatile int Encoder::contador_a = 0;
 
 Encoder::Encoder()
 {
@@ -27,6 +26,7 @@ void Encoder::Init()
 void Encoder::Rotina()
 {
 	contador_a++;
+	Serial.println("valor atualizado");
 }
 
 int Encoder::Get_contador()

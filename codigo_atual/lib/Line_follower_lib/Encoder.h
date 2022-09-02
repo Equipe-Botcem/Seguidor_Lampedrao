@@ -1,12 +1,10 @@
 #include "include.h"
 
-
-
 class Encoder
 {
 private:
-	static unsigned char pin_a;
-	static int contador_a;
+	unsigned char pin_a;
+	static volatile int contador_a;
 
 public:
 	Encoder();
