@@ -21,12 +21,13 @@ void Encoder::Init()
 {
 	pinMode(pin_a, INPUT);
 	attachInterrupt(digitalPinToInterrupt(pin_a), Rotina, RISING);
+	Reset();
 }
 
 void Encoder::Rotina()
 {
 	contador_a++;
-	Serial.println("valor atualizado");
+	//Serial.println("valor atualizado");
 }
 
 int Encoder::Get_contador()

@@ -16,31 +16,31 @@ void loop()
 {
 	if (!tested)
 	{
-		//! arrumar as portas 
-		Motor_drive motor_teste(6,5,4,7,A2);
-		Encoder encoder(9);
+		//! arrumar as portas
+		Motor_drive motor_teste(6, 5, 4, 7, A2);
+		Encoder encoder(2);
 
 		motor_teste.Init();
 		encoder.Init();
 
 		motor_teste.Enable_drive();
 		motor_teste.Set_motor_forward();
-		motor_teste.Set_speed(50);
+		motor_teste.Set_speed(25);
 
 		bool stop_cond = false;
 		unsigned long time = millis();
 		while (!stop_cond)
 		{
-			if (millis() - time > 5000)
+			if (400 <= encoder.Get_contador())
 			{
+				motor_teste.Disable_drive();
 				stop_cond = true;
+				encoder.Reset();
 			}
-			Serial.println(encoder.Get_contador());
+			//Serial.println(encoder.Get_contador());
 		}
-		motor_teste.Disable_drive();
-		Serial.println(encoder.Get_contador());
-		encoder.Reset();
-		Serial.println(encoder.Get_contador());
+		Serial.println(millis()-time);
 		tested = 1;
+		
 	}
 }
