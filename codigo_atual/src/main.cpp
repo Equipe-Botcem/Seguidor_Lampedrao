@@ -1,6 +1,19 @@
+//#define _TEST_MODE_
 
-#include <Motor_drive_teste.h>
-#include "Encoder.h"
+#ifdef _TEST_MODE_ 
+
+#include "Controlador/test/Controlador_test.h"
+
+#else
+
+#include <Encoder/Encoder.h>
+#include "Controlador/Controlador.h"
+
+#endif
+
+
+
+//#include <Controlador_class/Controlador.h>
 
 bool tested = 0;
 

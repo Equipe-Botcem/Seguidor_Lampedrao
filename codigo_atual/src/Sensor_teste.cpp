@@ -1,4 +1,4 @@
-#include "Sensor_teste.h"
+#include "Sensors/test/Sensor_teste.h"
 
 void Sensor_teste_init()
 {

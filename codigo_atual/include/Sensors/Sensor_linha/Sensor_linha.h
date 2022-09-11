@@ -1,4 +1,7 @@
-#include "Sensors_classes/Sensor_class/Sensor.h"
+#ifndef _SENSOR_LINHA_
+#define _SENSOR_LINHA_
+
+#include "Sensors/Sensor/Sensor.h"
 
 //!estudar como fazer
 class Sensor_linha{
@@ -17,3 +20,5 @@ private:
 	Sensor sensor_linha[num_sensores_linha];
 
 };
+
+#endif

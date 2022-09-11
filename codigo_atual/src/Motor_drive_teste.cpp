@@ -1,4 +1,4 @@
-#include "Motor_drive_teste.h"
+#include "Motor_drive/test/Motor_drive_teste.h"
 
 void Motor_drive_teste_init()
 {

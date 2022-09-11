@@ -1,5 +1,8 @@
-#include "motor_drive.h"
-#include "Sensors_classes/Sensor_linha_class/Sensor_linha.h"
+#ifndef _CONTROLADOR_
+#define _CONTROLADOR_
+
+#include "Motor_drive/motor_drive.h"
+#include "Sensors/Sensor_linha/Sensor_linha.h"
 
 class Controlador
 {
@@ -51,3 +54,5 @@ private:
 	Sensor_esq sensor_esq;
 	Sensor_dir sensor_dir;
 };
+
+#endif

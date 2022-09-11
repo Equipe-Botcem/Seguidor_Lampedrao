@@ -1,3 +1,6 @@
+#ifndef _MOTOR_DRIVE_
+#define _MOTOR_DRIVE_
+
 #include "include.h"
 
 class Motor_drive
@@ -37,3 +40,5 @@ private:
 	void On();
 
 };
+
+#endif

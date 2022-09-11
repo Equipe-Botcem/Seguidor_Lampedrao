@@ -1,3 +1,6 @@
+#ifndef _SENSOR_
+#define _SENSOR_
+
 #include "include.h"
 
 class Sensor
@@ -41,3 +44,5 @@ public:
 
 private:
 };
+
+#endif

@@ -1,3 +1,6 @@
+#ifndef _ENCODER_
+#define _ENCODER_
+
 #include "include.h"
 
 class Encoder
@@ -17,3 +20,5 @@ public:
 	int Get_contador();
 	void Reset();
 };
+
+#endif

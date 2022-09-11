@@ -1,4 +1,7 @@
-#include "Controlador_class/Controlador.h"
+#ifndef _CONTROLADOR_TEST_
+#define _CONTROLADOR_TEST_
+
+#include "Controlador/Controlador.h"
 
 unsigned char pins_motores[5] = {0, 1, 2, 3, 4};
 
@@ -21,3 +24,5 @@ void Controlador_teste_set_direction_reverse();
  *
  */
 void Controlador_teste_command_1();
+
+#endif

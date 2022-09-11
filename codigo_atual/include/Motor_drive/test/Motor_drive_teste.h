@@ -1,5 +1,7 @@
-#include "motor_drive.h"
+#ifndef _MOTOR_DRIVE_TEST_
+#define _MOTOR_DRIVE_TEST_
 
+#include "Motor_drive/motor_drive.h"
 
 
 void Motor_drive_teste_init();
@@ -36,3 +38,5 @@ void Motor_drive_teste_command_3();
  * @brief Liga o motor para frente com velocidade zero e a cada 20 ms acelera em 1 até 255, mostra a corrente atual no drive a cada variação e então desliga (Disable)
  */
 void Motor_drive_teste_command_4();
+
+#endif

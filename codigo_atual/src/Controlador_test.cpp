@@ -1,4 +1,4 @@
-#include "Controlador_test.h"
+#include "Controlador/test/Controlador_test.h"
 
 void Controlador_teste_config()
 {

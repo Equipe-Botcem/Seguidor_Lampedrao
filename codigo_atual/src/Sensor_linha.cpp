@@ -1,4 +1,4 @@
-#include "Sensor_linha.h"
+#include "Sensors/Sensor_linha/Sensor_linha.h"
 
 Sensor_linha::Sensor_linha()
 {
