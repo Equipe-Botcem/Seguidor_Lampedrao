@@ -23,6 +23,16 @@ void Controlador::Config_motor_dir(unsigned char *pins)
 	motor_dir = Motor_drive(pins[0], pins[1], pins[2], pins[3], pins[4]);
 }
 
+void Controlador::Config_encoder_esq(unsigned char pin_interrupt)
+{
+	encoder_esq = Encoder(pin_interrupt);
+}
+
+void Controlador::Config_encoder_dir(unsigned char pin_interrupt)
+{
+	encoder_dir = Encoder(pin_interrupt);
+}
+
 //! testar criaçao de objeto
 void Controlador::Config_sensor_linha(unsigned char *pins)
 {
@@ -45,6 +55,8 @@ void Controlador::Init()
 {
 	motor_dir.Init();
 	motor_esq.Init();
+	encoder_esq.Init();
+	encoder_dir.Init();
 	sensor_linha.Init();
 	sensor_esq.Init();
 	sensor_dir.Init();
@@ -120,6 +132,7 @@ void Controlador::Check_current_motors_drives()
 double Controlador::calc_erro()
 {
 	double erro = 0;
+	//? é possivel retirar o * para pegar uma cópia sem ferar a memoria?
 	double *Leituras = sensor_linha.Read_line();
 	for (unsigned int i = 0; i < 8; i++)
 	{

@@ -3,6 +3,7 @@
 
 #include "Motor_drive/motor_drive.h"
 #include "Sensors/Sensor_linha/Sensor_linha.h"
+#include "Encoder/Encoder.h"
 
 class Controlador
 {
@@ -13,6 +14,8 @@ public:
 
 	void Config_motor_esq(unsigned char *pins);
 	void Config_motor_dir(unsigned char *pins);
+	void Config_encoder_dir(unsigned char pin_interrupt);
+	void Config_encoder_esq(unsigned char pin_interrupt);
 	void Config_sensor_linha(unsigned char *pins);
 	void Config_sensor_esq(unsigned char pin);
 	void Config_sensor_dir(unsigned char pin);
@@ -48,6 +51,9 @@ private:
 
 	Motor_drive motor_esq;
 	Motor_drive motor_dir;
+
+	Encoder encoder_esq;
+	Encoder encoder_dir;
 
 	// testar para ver criação correta do objeto
 	Sensor_linha sensor_linha;
