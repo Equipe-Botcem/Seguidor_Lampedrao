@@ -15,7 +15,7 @@ public:
 
 
 private:
-	static const unsigned int num_sensores_linha = 8 ;
+	static const unsigned int num_sensores_linha = 2 ;
 	unsigned char pins_sensores[num_sensores_linha];
 	Sensor sensor_linha[num_sensores_linha];
 
