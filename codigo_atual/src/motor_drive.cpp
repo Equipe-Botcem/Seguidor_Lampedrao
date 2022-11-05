@@ -40,6 +40,7 @@ void Motor_drive::Enable_drive()
 
 void Motor_drive::Disable_drive()
 {
+	Set_speed(0);
 	digitalWrite(pin_EN, LOW);
 }
 
