@@ -14,18 +14,26 @@ public:
 
 	int Read_sensor();
 	
-	void Calibracao();
+	int Read_Calibrado();
 	virtual void Rotina();
+	int find_min();	
+	int find_max();	
+
+	void setValorMed(double val_med);
 
 private:
 	unsigned char pin_sensor;
-	double calib_val_max;
-	double calib_val_min;
+	//TODO inicializar valor médio caso não seja feita calibração 
+	double calib_val_med;
+	enum estado{
+		Preto = 0,
+		Branco
+	};
+	estado ant;
 };
 
 class Sensor_esq : public Sensor
 {
-
 public:
 	Sensor_esq();
 	Sensor_esq(unsigned char pin);
