@@ -21,16 +21,16 @@ private:
 
 	Controlador u_c;
 
-	unsigned char pins_motor_drive_esq[5] = {0,1,2,3,4};
-	unsigned char pins_motor_drive_dir[5] = {0,1,2,3,4};
-	unsigned char pin_encoder_esq = 0;
-	unsigned char pin_encoder_dir = 0;
-	unsigned char pins_sensor_linha[8] = {0,1,2,3,4,5,6,7};
-	unsigned char pin_sensor_esq = 0;
-	unsigned char pin_sensor_dir = 0;
+	//! Pino do DIAG errado
+	unsigned char pins_motor_drive_esq[5] = {2,15,18,40,21};
+	unsigned char pins_motor_drive_dir[5] = {5,22,4,40,21};
+	unsigned char pin_encoder_esq = 16;
+	unsigned char pin_encoder_dir = 17;
+	unsigned char pins_sensor_linha[8] = {36,13,14,35,32,33,25,28};
+	unsigned char pin_sensor_esq = 39;
+	unsigned char pin_sensor_dir = 27;
 
 	void Config_pins();
-
 
 };
 
