@@ -168,8 +168,8 @@ void Controlador::calibration()
 	double v_med_esq = (v_max_esq - v_min_esq) / 2;
 	double v_med_dir = (v_max_dir - v_min_dir) / 2;
 
-	Sensor_esq.setValorMed(v_med_esq);
-	Sensor_dir.setValorMed(v_med_dir);
+	sensor_esq.setValorMed(v_med_esq);
+	sensor_dir.setValorMed(v_med_dir);
 }
 
 void Controlador::controle()
