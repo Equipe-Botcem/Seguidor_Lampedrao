@@ -34,7 +34,8 @@ private:
 	unsigned char pin_sensor_dir = 27;
 
 	void Config_pins();
-
+	bool stop_condicion = false;
+	
 };
 
 #endif
