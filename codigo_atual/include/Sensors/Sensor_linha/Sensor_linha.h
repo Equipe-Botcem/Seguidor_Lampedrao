@@ -11,7 +11,7 @@ public:
 	Sensor_linha();
 	Sensor_linha(unsigned char *pins);
 	void Init();
-	double* Read_line(); 
+	int Read_line(int i); 
 
 
 private:

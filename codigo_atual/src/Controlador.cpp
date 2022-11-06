@@ -132,11 +132,14 @@ void Controlador::Check_current_motors_drives()
 double Controlador::calc_erro()
 {
 	double erro = 0;
-	//? é possivel retirar o * para pegar uma cópia sem ferar a memoria?
+	int Leituras[8];
 	// TODO testar coloeta de valor
-	double Leituras[8] = sensor_linha.Read_line();
-	for (unsigned int i = 0; i < 8; i++)
-	{
+	
+	for(unsigned i = 0; i < 8; i++){
+		Leituras[i] = sensor_linha.Read_line(i);
+	}
+
+	for (unsigned int i = 0; i < 8; i++){
 		erro += Leituras[i] * pesos[i];
 	}
 	return erro;
@@ -189,7 +192,7 @@ int Controlador::calc_rotacional(double erro)
 	double value = 0;
 	// I = I + erro;
 	//TODO unidade do last_control
-	D = (erro - erro_antigo)/last_control;
+	double D = (erro - erro_antigo)/last_control;
 	//  erro_antigo = erro;
 
 	value = (Kp * erro) + (Kd * D);
@@ -200,6 +203,7 @@ int Controlador::calc_rotacional(double erro)
 int Controlador::calc_translacional(double erro)
 {
 	//TODO testar com diferentes velocidades 
-	
-	return (255 - K*erro*erro);
+	double value = (255 - K*erro*erro);
+	if(value <0) value = 0;
+	return value;
 }

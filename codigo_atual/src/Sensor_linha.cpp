@@ -23,14 +23,8 @@ void Sensor_linha::Init()
 	}
 }
 
-double *Sensor_linha::Read_line()
+int Sensor_linha::Read_line(int i)
 {
-	double Leituras[num_sensores_linha];
+	return sensor_linha[i].Read_sensor(); 
 
-	for (unsigned int i = 0; i < num_sensores_linha; i++)
-	{
-		Leituras[i] = sensor_linha[i].Read_sensor();
-	}
-
-	return Leituras;
 }
