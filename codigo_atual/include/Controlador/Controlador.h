@@ -39,7 +39,9 @@ public:
 
 	void Check_current_motors_drives();
 
-	double calc_erro();&
+	double calc_erro();
+
+	void calibration();
 
 private:
 

@@ -12,13 +12,12 @@ Motor_drive::Motor_drive()
 	motor_direction = 1;
 }
 
-Motor_drive::Motor_drive(unsigned char PWM_1, unsigned char PWM_2, unsigned char EN, unsigned char DIAG, unsigned char OCM)
+Motor_drive::Motor_drive(unsigned char PWM_1, unsigned char PWM_2, unsigned char EN, unsigned char OCM)
 {
 
 	pin_PWM_1 = PWM_1;
 	pin_PWM_2 = PWM_2;
 	pin_EN = EN;
-	pin_DIAG = DIAG;
 	pin_OCM = OCM;
 
 	motor_direction = 1;
@@ -29,7 +28,6 @@ void Motor_drive::Init()
 	pinMode(pin_PWM_1, OUTPUT);
 	pinMode(pin_PWM_2, OUTPUT);
 	pinMode(pin_EN, OUTPUT);
-	pinMode(pin_DIAG, INPUT_PULLUP);
 	pinMode(pin_OCM, INPUT);
 }
 
@@ -44,10 +42,14 @@ void Motor_drive::Disable_drive()
 	digitalWrite(pin_EN, LOW);
 }
 
+//! Pino DIAG não está sendo usado
+/* 
 unsigned char Motor_drive::Get_fault()
 {
 	return !digitalRead(pin_DIAG);
 }
+*/
+
 
 void Motor_drive::Set_motor_forward()
 {

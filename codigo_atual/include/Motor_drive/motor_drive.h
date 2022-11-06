@@ -10,7 +10,7 @@ public:
 
 	//arrumar pinos iniciais;
 	Motor_drive();
-	Motor_drive(unsigned char PWM_1, unsigned char PWM_2, unsigned char EN, unsigned char DIAG, unsigned char OCM);
+	Motor_drive(unsigned char PWM_1, unsigned char PWM_2, unsigned char EN, unsigned char OCM);
 
 	void Init();
 	void Enable_drive();
@@ -30,7 +30,6 @@ private:
 	unsigned char pin_PWM_1;
 	unsigned char pin_PWM_2;
 	unsigned char pin_EN;
-	unsigned char pin_DIAG;
 	unsigned char pin_OCM;
 	
 	// 1 para forward ; 0 para reverse;

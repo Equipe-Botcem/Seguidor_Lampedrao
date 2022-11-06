@@ -14,13 +14,13 @@ Controlador::Controlador(double kp, double ki, double kd)
 //! testar criaçao de objeto
 void Controlador::Config_motor_esq(unsigned char *pins)
 {
-	motor_esq = Motor_drive(pins[0], pins[1], pins[2], pins[3], pins[4]);
+	motor_esq = Motor_drive(pins[0], pins[1], pins[2], pins[3]);
 }
 
 //! testar criaçao de objeto
 void Controlador::Config_motor_dir(unsigned char *pins)
 {
-	motor_dir = Motor_drive(pins[0], pins[1], pins[2], pins[3], pins[4]);
+	motor_dir = Motor_drive(pins[0], pins[1], pins[2], pins[3]);
 }
 
 void Controlador::Config_encoder_esq(unsigned char pin_interrupt)
@@ -60,6 +60,7 @@ void Controlador::Init()
 	sensor_linha.Init();
 	sensor_esq.Init();
 	sensor_dir.Init();
+
 }
 
 void Controlador::Set_kp(double kp)
@@ -139,4 +140,35 @@ double Controlador::calc_erro()
 		erro += Leituras[i] * pesos[i];
 	}
 	return erro;
+}
+
+void Controlador::calibration(){
+
+	// Seguidor no preto
+	int v_min_esq = sensor_esq.find_min();
+	int v_min_dir = sensor_dir.find_min();
+
+	Enable_motors_drives();
+	Set_direction_forward();
+	
+	// Joga para o branco em relação a ponta do seguidor
+	//TODO ajustar o tempo e velocidade
+	Set_motor_esq_speed(100);
+	Set_motor_dir_speed(100);
+	delay(300);
+	Disable_motors_drives();
+	
+
+	// Seguidor no branco
+	int v_max_esq = sensor_esq.find_max();
+	int v_max_dir = sensor_dir.find_max();
+
+	// Acha val médio
+
+	double v_med_esq = (v_max_esq - v_min_esq) / 2;
+	double v_med_dir = (v_max_dir - v_min_dir) / 2;
+
+
+	Sensor_esq.setValorMed(v_med_esq);	
+	Sensor_dir.setValorMed(v_med_dir);
 }
