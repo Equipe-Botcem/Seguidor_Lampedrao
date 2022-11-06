@@ -37,8 +37,29 @@ void Seguidor::Set_parametros(double kp, double ki, double kd)
 
 void Seguidor::Auto_calibrate()
 {
+	u_c.calibration();
 }
 
 void Seguidor::Run()
 {
+	while (!stop_condition)
+	{
+		u_c.controle();
+	}
+}
+
+void Seguidor::Behavior(int bh)
+{
+	switch (bh)
+	{
+	case RUN:
+		Run();
+		break;
+	case CALIBRACAO:
+		Auto_calibrate();
+		break;
+
+	default:
+		break;
+	}
 }

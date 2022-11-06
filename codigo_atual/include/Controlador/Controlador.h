@@ -21,7 +21,7 @@ public:
 	void Config_sensor_dir(unsigned char pin);
 
 	void Init();
-
+	//TODO arumar os nomes dos sets
 	void Set_kp(double kp);
 	void Set_ki(double ki);
 	void Set_kd(double kd);
@@ -43,11 +43,21 @@ public:
 
 	void calibration();
 
+	void controle();
+
+	int calc_rotacional(double erro);
+	int calc_translacional(double erro);
+
 private:
 
-	double _kp;
-	double _ki;
-	double _kd;
+	double K;
+	double Kp;
+	double Kd;
+
+	double erro_antigo=0;
+
+	unsigned long control_time = 5;
+	unsigned long last_control =0;
 
 	double pesos[8] = {-8, -4, -2, -1, 1, 2, 4, 8};
 

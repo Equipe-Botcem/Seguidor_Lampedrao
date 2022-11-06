@@ -4,11 +4,11 @@ Controlador::Controlador()
 {
 }
 
-Controlador::Controlador(double kp, double ki, double kd)
+Controlador::Controlador(double K, double kp, double kd)
 {
-	_kp = kp;
-	_ki = ki;
-	_kd = kd;
+	K = K;
+	Kp = kp;
+	Kd = kd;
 }
 
 //! testar criaçao de objeto
@@ -60,22 +60,21 @@ void Controlador::Init()
 	sensor_linha.Init();
 	sensor_esq.Init();
 	sensor_dir.Init();
-
 }
 
-void Controlador::Set_kp(double kp)
+void Controlador::Set_kp(double Kp)
 {
-	_kp = kp;
+	K = Kp;
 }
 
-void Controlador::Set_ki(double ki)
+void Controlador::Set_ki(double kp)
 {
-	_ki = ki;
+	Kp = kp;
 }
 
 void Controlador::Set_kd(double kd)
 {
-	_kd = kd;
+	Kd = kd;
 }
 
 void Controlador::Enable_motors_drives()
@@ -134,7 +133,8 @@ double Controlador::calc_erro()
 {
 	double erro = 0;
 	//? é possivel retirar o * para pegar uma cópia sem ferar a memoria?
-	double *Leituras = sensor_linha.Read_line();
+	// TODO testar coloeta de valor
+	double Leituras[8] = sensor_linha.Read_line();
 	for (unsigned int i = 0; i < 8; i++)
 	{
 		erro += Leituras[i] * pesos[i];
@@ -142,7 +142,8 @@ double Controlador::calc_erro()
 	return erro;
 }
 
-void Controlador::calibration(){
+void Controlador::calibration()
+{
 
 	// Seguidor no preto
 	int v_min_esq = sensor_esq.find_min();
@@ -150,14 +151,13 @@ void Controlador::calibration(){
 
 	Enable_motors_drives();
 	Set_direction_forward();
-	
+
 	// Joga para o branco em relação a ponta do seguidor
-	//TODO ajustar o tempo e velocidade
+	// TODO ajustar o tempo e velocidade
 	Set_motor_esq_speed(100);
 	Set_motor_dir_speed(100);
 	delay(300);
 	Disable_motors_drives();
-	
 
 	// Seguidor no branco
 	int v_max_esq = sensor_esq.find_max();
@@ -168,7 +168,38 @@ void Controlador::calibration(){
 	double v_med_esq = (v_max_esq - v_min_esq) / 2;
 	double v_med_dir = (v_max_dir - v_min_dir) / 2;
 
-
-	Sensor_esq.setValorMed(v_med_esq);	
+	Sensor_esq.setValorMed(v_med_esq);
 	Sensor_dir.setValorMed(v_med_dir);
+}
+
+void Controlador::controle()
+{
+	if (millis() - last_control >= control_time)
+	{
+		last_control = millis();
+		double erro = calc_erro();
+		Set_motor_esq_speed(calc_translacional(erro) + calc_rotacional(erro));
+		Set_motor_dir_speed(calc_translacional(erro) - calc_rotacional(erro));
+	}
+}
+
+int Controlador::calc_rotacional(double erro)
+{
+
+	double value = 0;
+	// I = I + erro;
+	//TODO unidade do last_control
+	D = (erro - erro_antigo)/last_control;
+	//  erro_antigo = erro;
+
+	value = (Kp * erro) + (Kd * D);
+	// double valor = Kp * P + Ki * I + Kd * D;
+	return value;
+}
+
+int Controlador::calc_translacional(double erro)
+{
+	//TODO testar com diferentes velocidades 
+	
+	return (255 - K*erro*erro);
 }
