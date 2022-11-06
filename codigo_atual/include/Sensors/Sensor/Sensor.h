@@ -32,25 +32,4 @@ private:
 	estado ant;
 };
 
-class Sensor_esq : public Sensor
-{
-public:
-	Sensor_esq();
-	Sensor_esq(unsigned char pin);
-	void Rotina();
-
-private:
-};
-
-class Sensor_dir : public Sensor
-{
-
-public:
-	Sensor_dir();
-	Sensor_dir(unsigned char pin);
-	void Rotina();
-
-private:
-};
-
 #endif

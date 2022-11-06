@@ -69,8 +69,8 @@ private:
 
 	// testar para ver criação correta do objeto
 	Sensor_linha sensor_linha;
-	Sensor_esq sensor_esq;
-	Sensor_dir sensor_dir;
+	Sensor sensor_esq;
+	Sensor sensor_dir;
 };
 
 #endif

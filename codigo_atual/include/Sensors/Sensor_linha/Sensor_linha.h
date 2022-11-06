@@ -3,7 +3,6 @@
 
 #include "Sensors/Sensor/Sensor.h"
 
-//!estudar como fazer
 class Sensor_linha{
 
 public:

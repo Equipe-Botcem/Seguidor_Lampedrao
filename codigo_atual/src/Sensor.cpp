@@ -78,18 +78,11 @@ int Sensor::find_max()
 		if (v_lido > v_max)
 			v_max = v_lido;
 	}
+
+	return v_max;
 }
 
 void Sensor::setValorMed(double val_med)
 {
 	calib_val_med = val_med;
-}
-
-//! implementar
-void Sensor_esq::Rotina()
-{
-}
-//! implementar
-void Sensor_dir::Rotina()
-{
 }

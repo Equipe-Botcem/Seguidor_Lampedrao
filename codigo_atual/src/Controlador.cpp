@@ -42,13 +42,13 @@ void Controlador::Config_sensor_linha(unsigned char *pins)
 //! testar criaçao de objeto
 void Controlador::Config_sensor_esq(unsigned char pin)
 {
-	sensor_esq = Sensor_esq(pin);
+	sensor_dir = Sensor(pin);
 }
 
 //! testar criaçao de objeto
 void Controlador::Config_sensor_dir(unsigned char pin)
 {
-	sensor_dir = Sensor_dir(pin);
+	sensor_esq = Sensor(pin);
 }
 
 void Controlador::Init()
@@ -204,6 +204,6 @@ int Controlador::calc_translacional(double erro)
 {
 	//TODO testar com diferentes velocidades 
 	double value = (255 - K*erro*erro);
-	if(value <0) value = 0;
+	if(value <20) value = 20;
 	return value;
 }
