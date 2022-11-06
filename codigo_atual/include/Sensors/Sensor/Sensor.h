@@ -8,7 +8,7 @@ class Sensor
 public:
 	Sensor();
 	Sensor(unsigned char pin);
-	Sensor(unsigned char pin, double val_max, double val_min);
+	Sensor(unsigned char pin, double val_med);
 
 	void Init();
 
