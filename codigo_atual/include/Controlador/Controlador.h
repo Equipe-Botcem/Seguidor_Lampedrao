@@ -22,8 +22,8 @@ public:
 
 	void Init();
 	//TODO arumar os nomes dos sets
-	void Set_kp(double kp);
-	void Set_ki(double ki);
+	void Set_K(double k);
+	void Set_Kp(double kp);
 	void Set_kd(double kd);
 
 	void Enable_motors_drives();
@@ -33,6 +33,8 @@ public:
 
 	void Set_direction_forward();
 	void Set_direction_reverse();
+
+	int check_speed(int speed);
 
 	void Set_motor_esq_speed(int speed);
 	void Set_motor_dir_speed(int speed);
