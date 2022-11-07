@@ -49,6 +49,7 @@ public:
 
 	int calc_rotacional(double erro);
 	int calc_translacional(double erro);
+	Sensor_linha sensor_linha;
 
 private:
 
@@ -70,7 +71,6 @@ private:
 	Encoder encoder_dir;
 
 	// testar para ver criação correta do objeto
-	Sensor_linha sensor_linha;
 	Sensor sensor_esq;
 	Sensor sensor_dir;
 };

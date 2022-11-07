@@ -10,7 +10,7 @@ public:
 	Sensor_linha();
 	Sensor_linha(unsigned char *pins);
 	void Init();
-	int Read_line(int i); 
+	uint16_t Read_line(int i); 
 
 
 private:

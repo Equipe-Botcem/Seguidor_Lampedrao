@@ -12,7 +12,7 @@ public:
 
 	void Init();
 
-	int Read_sensor();
+	uint16_t Read_sensor();
 	
 	int Read_Calibrado();
 	virtual void Rotina();

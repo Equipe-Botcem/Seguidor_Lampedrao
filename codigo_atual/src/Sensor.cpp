@@ -21,7 +21,7 @@ void Sensor::Init()
 	pinMode(pin_sensor, INPUT);
 }
 
-int Sensor::Read_sensor()
+uint16_t Sensor::Read_sensor()
 {
 	return analogRead(pin_sensor);
 }
