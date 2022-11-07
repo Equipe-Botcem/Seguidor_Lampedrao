@@ -26,12 +26,14 @@ void Seguidor::Init()
 
 	Config_pins();
 	u_c.Init();
+	Set_parametros(0.1,0.005,0);
 }
 
-void Seguidor::Set_parametros(double kp, double ki, double kd)
+
+void Seguidor::Set_parametros(double k, double kp, double kd)
 {
-	u_c.Set_kp(kp);
-	u_c.Set_ki(ki);
+	u_c.Set_K(k);
+	u_c.Set_Kp(kp);
 	u_c.Set_kd(kd);
 }
 
@@ -42,23 +44,32 @@ void Seguidor::Auto_calibrate()
 
 void Seguidor::Run()
 {
-	while (!stop_condition)
-	{
-		u_c.controle();
-	}
+	u_c.Enable_motors_drives();
+	//u_c.controle();
+	//u_c.Disable_motors_drives();
+	start_condition = true;
+}
+
+void Seguidor::Stop(){
+	u_c.Disable_motors_drives();
 }
 
 void Seguidor::Behavior(int bh)
 {
 	switch (bh)
 	{
+	case SET:
+		//Set_parametros();
+		break;
+	case STOP:
+		Stop();
+		break;
 	case RUN:
 		Run();
 		break;
 	case CALIBRACAO:
 		Auto_calibrate();
 		break;
-
 	default:
 		break;
 	}

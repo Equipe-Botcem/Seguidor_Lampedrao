@@ -1,10 +1,7 @@
 #include "Seguidor/Seguidor.h"
 #include "Utilities/Utilities.h"
 
-
 Seguidor seguidor = Seguidor();
-String command = "";
-
 void setup()
 {
 	Serial.begin(115200);
@@ -13,7 +10,15 @@ void setup()
 }
 
 void loop(){
+	//seguidor.Behavior(comunica_serial());
+	//int behavior = comunica_serial();
 	seguidor.Behavior(comunica_serial());
+	if(seguidor.start_condition && !seguidor.stop_condition){
+		seguidor.u_c.controle();
+	}
+	else if (seguidor.stop_condition){
+		seguidor.Stop();
+	}
 }
 
 

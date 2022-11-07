@@ -62,12 +62,12 @@ void Controlador::Init()
 	sensor_dir.Init();
 }
 
-void Controlador::Set_kp(double Kp)
+void Controlador::Set_K(double k)
 {
-	K = Kp;
+	K = k;
 }
 
-void Controlador::Set_ki(double kp)
+void Controlador::Set_Kp(double kp)
 {
 	Kp = kp;
 }
@@ -106,14 +106,20 @@ void Controlador::Set_direction_reverse()
 	motor_dir.Set_motor_reverse();
 }
 
+int Controlador::check_speed(int speed){
+	if (speed > 255)	speed = 255;
+	if (speed < 45)	speed = 45;
+	return speed;
+}
+
 void Controlador::Set_motor_esq_speed(int speed)
 {
-	motor_esq.Set_speed(speed);
+	motor_esq.Set_speed(check_speed(speed));
 }
 
 void Controlador::Set_motor_dir_speed(int speed)
 {
-	motor_dir.Set_speed(speed);
+	motor_dir.Set_speed(check_speed(speed));
 }
 
 void Controlador::Check_current_motors_drives()
@@ -203,7 +209,7 @@ int Controlador::calc_rotacional(double erro)
 int Controlador::calc_translacional(double erro)
 {
 	//TODO testar com diferentes velocidades 
-	double value = (255 - K*erro*erro);
+	double value = (90 - K*erro);
 	if(value <20) value = 20;
 	return value;
 }

@@ -1,3 +1,5 @@
+#ifndef _UTILITIES_
+#define _UTILITIES_
 #include "BluetoothSerial.h"
 
 #if !defined(CONFIG_BT_ENABLED) || !defined(CONFIG_BLUEDROID_ENABLED)
@@ -43,7 +45,51 @@ int msg_handler()
 
 int comunica_serial(){
 	command = SerialBT.readStringUntil(';');
+	SerialBT.println(command);
 	int behavior = msg_handler();
 	command = "";
 	return behavior;
 }
+
+#endif
+
+/*
+void set_handler()
+{
+	String VB = "", KP_str = "", KI_str = "", KD_str = "", K_str = "", vel_min_str = "";
+	int pos = command.indexOf(',', 2);
+	for (int i = 4; i < pos; i++)
+		KP_str += command[i];
+
+	int pos2 = command.indexOf(',', pos + 1);
+	for (int i = pos + 3; i < pos2; i++)
+		KI_str += command[i];
+
+	pos = command.indexOf(',', pos2 + 1);
+	for (int i = pos2 + 3; i < pos; i++)
+		KD_str += command[i];
+
+	pos2 = command.indexOf(',', pos + 1);
+	for (int i = pos + 3; i < pos2; i++)
+		VB += command[i];
+
+	pos = command.indexOf(',', pos2 + 1);
+	for (int i = pos2 + 3; i < pos; i++)
+		K_str += command[i];
+
+	pos2 = command.indexOf(',', pos + 1);
+	for (int i = pos + 3; i < pos2; i++)
+		vel_min_str += command[i];
+
+	Kp = KP_str.toDouble() / 1000;
+	Kd = KD_str.toDouble() / 1000;
+	Ki = KI_str.toDouble() / 1000;
+	vel_base = VB.toInt();
+	K = K_str.toDouble() / 1000;
+	vel_min = vel_min_str.toInt();
+	qnt_linhas = 2;
+	stop_condition = false;
+
+	// Serial.println(STOP_VALUE_LATERAL);
+}
+*/
