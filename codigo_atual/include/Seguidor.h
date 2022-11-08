@@ -4,6 +4,7 @@
 #include "motor_drive.h"
 #include "Sensor_linha.h"
 #include "Encoder.h"
+//#include "BluetoothSerial.h"
 
 
 class Seguidor{
@@ -61,6 +62,8 @@ public:
 	//-----------Atributos-----------//
 	
 	Sensor_linha sensor_linha;
+	Sensor sensor_esq;
+	Sensor sensor_dir;
 	bool stop_condition = false;
 	bool start_condition = false;
 
@@ -87,10 +90,6 @@ private:
 
 	Encoder encoder_esq;
 	Encoder encoder_dir;
-
-	// testar para ver criação correta do objeto
-	Sensor sensor_esq;
-	Sensor sensor_dir;
 
 	//-----------Pinos-----------//
 	unsigned char pins_motor_drive_esq[5] = {15,2,18,21};
