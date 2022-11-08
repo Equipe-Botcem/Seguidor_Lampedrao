@@ -1,7 +1,7 @@
 #ifndef _SENSOR_LINHA_
 #define _SENSOR_LINHA_
 
-#include "Sensors/Sensor/Sensor.h"
+#include "Sensor.h"
 
 class Sensor_linha{
 

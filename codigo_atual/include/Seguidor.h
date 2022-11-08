@@ -1,7 +1,7 @@
 #ifndef _SEGUIDOR_
 #define _SEGUIDOR_
 
-#include <Controlador/Controlador.h>
+#include <Controlador.h>
 
 class Seguidor{
 

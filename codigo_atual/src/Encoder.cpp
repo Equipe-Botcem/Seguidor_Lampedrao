@@ -1,4 +1,4 @@
-#include "Encoder/Encoder.h"
+#include "Encoder.h"
 
 volatile int Encoder::contador_a = 0;
 

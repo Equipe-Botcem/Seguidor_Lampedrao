@@ -1,9 +1,9 @@
 #ifndef _CONTROLADOR_
 #define _CONTROLADOR_
 
-#include "Motor_drive/motor_drive.h"
-#include "Sensors/Sensor_linha/Sensor_linha.h"
-#include "Encoder/Encoder.h"
+#include "motor_drive.h"
+#include "Sensor_linha.h"
+#include "Encoder.h"
 
 class Controlador
 {

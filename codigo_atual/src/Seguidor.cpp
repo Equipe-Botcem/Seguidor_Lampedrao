@@ -1,4 +1,4 @@
-#include "Seguidor/Seguidor.h"
+#include "Seguidor.h"
 
 Seguidor::Seguidor()
 {

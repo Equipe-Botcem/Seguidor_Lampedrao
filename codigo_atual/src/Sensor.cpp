@@ -1,4 +1,4 @@
-#include "Sensors/Sensor/Sensor.h"
+#include "Sensor.h"
 
 Sensor::Sensor()
 {
