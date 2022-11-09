@@ -2,7 +2,7 @@
 #define _SEGUIDOR_
 
 #include "motor_drive.h"
-#include "Sensor_linha.h"
+#include "Sensor.h"
 #include "Encoder.h"
 //#include "BluetoothSerial.h"
 
@@ -64,9 +64,13 @@ public:
 
 	//-----------Atributos-----------//
 	
-	Sensor_linha sensor_linha;
+	//Sensor_linha sensor_linha;
+
+	Sensor sensor_linha[8];
 	Sensor sensor_esq;
 	Sensor sensor_dir;
+
+
 	bool stop_condition = false;
 	bool start_condition = false;
 

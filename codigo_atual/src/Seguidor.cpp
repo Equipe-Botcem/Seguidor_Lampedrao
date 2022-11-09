@@ -31,10 +31,12 @@ void Seguidor::Config_encoder_dir(unsigned char pin_interrupt)
 	encoder_dir = Encoder(pin_interrupt);
 }
 
-
 void Seguidor::Config_sensor_linha(unsigned char *pins)
 {
-	sensor_linha = Sensor_linha(pins);
+	for(unsigned i = 0; i < 8; i++){
+		sensor_linha[i] = Sensor(pins[i]);
+	}
+
 }
 
 void Seguidor::Config_sensor_esq(unsigned char pin)
@@ -109,7 +111,7 @@ double Seguidor::calc_erro()
 	// TODO testar coloeta de valor
 	
 	for(unsigned i = 0; i < 8; i++){
-		Leituras[i] = sensor_linha.Read_line(i);
+		Leituras[i] = sensor_linha[i].Read_sensor();
 	}
 
 	for (unsigned int i = 0; i < 8; i++){
@@ -202,7 +204,11 @@ void Seguidor::Init()
 	motor_esq.Init();
 	encoder_esq.Init();
 	encoder_dir.Init();
-	sensor_linha.Init();
+
+	for(unsigned i = 0; i < 8; i++){
+		sensor_linha[i].Init();
+	}
+	
 	sensor_esq.Init();
 	sensor_dir.Init();
 
