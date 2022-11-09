@@ -253,3 +253,38 @@ void Seguidor::Behavior(int bh)
 		break;
 	}
 }
+
+void Seguidor::testeSensores(){
+	Serial.print("SLE:");
+	Serial.print(analogRead(39));
+	Serial.print("  ");
+	Serial.print("S0:");
+	Serial.print(analogRead(36));
+	Serial.print("  ");
+	Serial.print("S1:");
+	Serial.print(analogRead(13));
+	Serial.print("  ");
+	Serial.print("S2:");
+	Serial.print(analogRead(14));
+	Serial.print("  ");
+	Serial.print("S3:");
+	Serial.print(analogRead(35));
+	Serial.print("  ");
+	Serial.print("S4:");
+	Serial.print(analogRead(32));
+	Serial.print("  ");
+	Serial.print("S5:");
+	Serial.print(analogRead(33));
+	Serial.print("  ");
+	Serial.print("S6:");
+	Serial.print(analogRead(25));
+	Serial.print("  ");
+	Serial.print("S7:");
+	Serial.print(analogRead(26));
+	Serial.print("  ");
+	Serial.print("SLD:");
+	Serial.print(analogRead(27));
+	Serial.print("  ");
+	Serial.println("  ");
+	delay(300);
+}

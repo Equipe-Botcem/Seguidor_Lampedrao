@@ -59,6 +59,9 @@ public:
 	int calc_rotacional(double erro);
 	int calc_translacional(double erro);
 
+
+	void testeSensores();
+
 	//-----------Atributos-----------//
 	
 	Sensor_linha sensor_linha;
