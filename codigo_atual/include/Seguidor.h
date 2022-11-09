@@ -4,7 +4,7 @@
 #include "motor_drive.h"
 #include "Sensor.h"
 #include "Encoder.h"
-//#include "BluetoothSerial.h"
+#include "BluetoothSerial.h"
 
 
 class Seguidor{
@@ -62,13 +62,19 @@ public:
 
 	void testeSensores();
 
+	void initBluetooth();
+
+	int comunica_serial();
+
 	//-----------Atributos-----------//
 	
-	//Sensor_linha sensor_linha;
+	String command = "";
 
 	Sensor sensor_linha[8];
 	Sensor sensor_esq;
 	Sensor sensor_dir;
+
+	BluetoothSerial SerialBT;
 
 
 	bool stop_condition = false;

@@ -1,13 +1,18 @@
 #include "Seguidor.h"
-#include "Utilities.h"
+
+#if !defined(CONFIG_BT_ENABLED) || !defined(CONFIG_BLUEDROID_ENABLED)
+#error Bluetooth is not enabled! Please run `make menuconfig` to and enable it
+#endif
+
 
 Seguidor seguidor = Seguidor();
 
+
 void Rotina(){
-	seguidor.Behavior(comunica_serial());
-	int behavior = comunica_serial();
+	//seguidor.Behavior(comunica_serial());
+	//int behavior = comunica_serial();
 	
-	seguidor.Behavior(comunica_serial());
+	//seguidor.Behavior(comunica_serial());
 	if(seguidor.start_condition && !seguidor.stop_condition){
 		seguidor.controle();
 	}
@@ -16,25 +21,16 @@ void Rotina(){
 	}
 }
 
+
 void setup()
 {
 	Serial.begin(115200);
-	//seguidor.Init();
-	//initBluetooth();
-	pinMode(39, INPUT);
-	pinMode(36, INPUT);
-	pinMode(13, INPUT);
-	pinMode(14, INPUT);
-	pinMode(35, INPUT);
-	pinMode(32, INPUT);
-	pinMode(33, INPUT);
-	pinMode(25, INPUT);
-	pinMode(26, INPUT);
-	pinMode(27, INPUT);
+	seguidor.Init();
+	seguidor.initBluetooth();
 }
 
 void loop(){
-
+	seguidor.SerialBT.println(seguidor.sensor_linha[0].Read_sensor());
 	seguidor.testeSensores();
 
 	Rotina();

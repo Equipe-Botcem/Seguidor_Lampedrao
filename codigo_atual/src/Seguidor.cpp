@@ -261,6 +261,8 @@ void Seguidor::Behavior(int bh)
 }
 
 void Seguidor::testeSensores(){
+
+	// Serial 
 	Serial.print("SLE:");
 	Serial.print(analogRead(39));
 	Serial.print("  ");
@@ -292,5 +294,19 @@ void Seguidor::testeSensores(){
 	Serial.print(analogRead(27));
 	Serial.print("  ");
 	Serial.println("  ");
-	delay(300);
+	delay(1000);
+}
+
+
+void Seguidor::initBluetooth(){
+    SerialBT.begin("ESP32");
+  	Serial.println("O dispositivo já pode ser pareado ou conectado!");
+}
+
+int Seguidor::comunica_serial(){
+	command = SerialBT.readStringUntil(';');
+	SerialBT.println(command);
+	//int behavior = msg_handler();
+	command = "";
+	return 1;
 }
