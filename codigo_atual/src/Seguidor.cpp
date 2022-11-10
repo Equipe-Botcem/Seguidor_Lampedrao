@@ -393,4 +393,28 @@ void Seguidor::set_handler()
 	Serial.print(" ");
 
 	Serial.println();
+
+	// Bluetooth check
+
+	SerialBT.print("VB:");
+	SerialBT.print(VB);
+	SerialBT.print(" ");
+
+	SerialBT.print("K:");
+	SerialBT.print(VB);
+	SerialBT.print(" ");
+
+	SerialBT.print("KP:");
+	SerialBT.print(VB);
+	SerialBT.print(" ");
+
+	SerialBT.print("KD:");
+	SerialBT.print(VB);
+	SerialBT.print(" ");
+
+	SerialBT.print("O:");
+	SerialBT.print(VB);
+	SerialBT.print(" ");
+
+	SerialBT.println();
 }
