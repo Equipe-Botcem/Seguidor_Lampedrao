@@ -265,7 +265,7 @@ void Seguidor::Behavior()
 	switch (command[0])
 	{
 	case 'S':
-		//Set_parametros();
+		set_handler();
 		command = "";
 		break;
 	case 'P':
@@ -371,4 +371,26 @@ void Seguidor::set_handler()
 
 	stop_condition = false;
 
+	// Teste
+	Serial.print("VB:");
+	Serial.print(VB);
+	Serial.print(" ");
+
+	Serial.print("K:");
+	Serial.print(VB);
+	Serial.print(" ");
+
+	Serial.print("KP:");
+	Serial.print(VB);
+	Serial.print(" ");
+
+	Serial.print("KD:");
+	Serial.print(VB);
+	Serial.print(" ");
+
+	Serial.print("O:");
+	Serial.print(VB);
+	Serial.print(" ");
+
+	Serial.println();
 }
