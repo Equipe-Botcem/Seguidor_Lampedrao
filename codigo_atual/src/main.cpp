@@ -15,8 +15,9 @@ void setup()
 	analogReadResolution(8);
 }
 
+unsigned long time = 0;
 void loop(){
-	
+	time = millis();
 	seguidor.Behavior();
 	seguidor.Check_stop();
 	if(seguidor.start_condition && !seguidor.stop_condition){
@@ -25,5 +26,5 @@ void loop(){
 	else if (seguidor.stop_condition){
 		seguidor.Stop();
 	}
-
+	seguidor.SerialBT.println(millis()-time);
 }
