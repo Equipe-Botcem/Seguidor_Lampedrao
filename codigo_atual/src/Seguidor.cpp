@@ -164,15 +164,12 @@ void Seguidor::calibration()
 
 void Seguidor::controle()
 {
-	if (millis() - last_control >= control_time)
-	{
-		last_control = millis();
-		erro = calc_erro();
-		int trans = calc_translacional(erro);
-		int rot = calc_rotacional(erro);
-		Set_motor_esq_speed(trans + rot);
-		Set_motor_dir_speed(trans - rot);
-	}
+	//last_control = millis();
+	erro = calc_erro();
+	int trans = calc_translacional(erro);
+	int rot = calc_rotacional(erro);
+	Set_motor_esq_speed(trans + rot);
+	Set_motor_dir_speed(trans - rot);
 	
 }
 
