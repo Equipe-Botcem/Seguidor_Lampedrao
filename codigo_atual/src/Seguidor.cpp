@@ -41,12 +41,12 @@ void Seguidor::Config_sensor_linha(unsigned char *pins)
 
 void Seguidor::Config_sensor_esq(unsigned char pin)
 {
-	sensor_dir = Sensor(pin);
+	sensor_esq = Sensor(pin);
 }
 
 void Seguidor::Config_sensor_dir(unsigned char pin)
 {
-	sensor_esq = Sensor(pin);
+	sensor_dir = Sensor(pin);
 }
 
 void Seguidor::Set_K(double k)
@@ -90,7 +90,7 @@ void Seguidor::Set_direction_reverse()
 
 int Seguidor::check_speed(int speed){
 	if (speed > 255)	speed = 255;
-	if (speed < 45)	speed = 45;
+	if (speed < 45)	speed = 35;
 	return speed;
 }
 
@@ -108,7 +108,7 @@ double Seguidor::calc_erro()
 {
 	double erro = 0;
 	int Leituras[8];
-	// TODO testar coloeta de valor
+	// TODO testar coleta de valor
 	
 	for(unsigned i = 0; i < 8; i++){
 		Leituras[i] = sensor_linha[i].Read_sensor();
@@ -117,6 +117,10 @@ double Seguidor::calc_erro()
 	for (unsigned int i = 0; i < 8; i++){
 		erro += Leituras[i] * pesos[i];
 	}
+
+	//Serial.print("Erro: ");
+	//Serial.println(erro);
+	//delay(100);
 	return erro;
 }
 
@@ -155,10 +159,13 @@ void Seguidor::controle()
 	if (millis() - last_control >= control_time)
 	{
 		last_control = millis();
-		double erro = calc_erro();
-		Set_motor_esq_speed(calc_translacional(erro) + calc_rotacional(erro));
-		Set_motor_dir_speed(calc_translacional(erro) - calc_rotacional(erro));
+		erro = calc_erro();
+		int trans = calc_translacional(erro);
+		int rot = calc_rotacional(erro);
+		Set_motor_esq_speed(trans + rot);
+		Set_motor_dir_speed(trans - rot);
 	}
+	
 }
 
 int Seguidor::calc_rotacional(double erro)
@@ -172,14 +179,18 @@ int Seguidor::calc_rotacional(double erro)
 
 	value = (Kp * erro) + (Kd * D);
 	// double valor = Kp * P + Ki * I + Kd * D;
+	Serial.print("rot:");
+	Serial.println(value);
 	return value;
 }
 
 int Seguidor::calc_translacional(double erro)
 {
 	//TODO testar com diferentes velocidades 
-	double value = (90 - K*erro);
+	double value = (120- K*abs(erro));
 	if(value <20) value = 20;
+	Serial.print("trn:");
+	Serial.println(value);
 	return value;
 }
 
@@ -212,7 +223,7 @@ void Seguidor::Init()
 	sensor_esq.Init();
 	sensor_dir.Init();
 
-	Set_parametros(0.1,0.005,0);
+	Set_parametros(0.1,0.05,0);
 }
 
 void Seguidor::Set_parametros(double k, double kp, double kd)
@@ -239,23 +250,30 @@ void Seguidor::Stop(){
 	Disable_motors_drives();
 }
 
-void Seguidor::Behavior(int bh)
+void Seguidor::Behavior()
 {
-	switch (bh)
+	comunica_serial();
+
+	switch (command[0])
 	{
-	case SET:
+	case 'S':
 		//Set_parametros();
+		command = "";
 		break;
-	case STOP:
+	case 'P':
 		Stop();
+		command = "";
 		break;
-	case RUN:
+	case 'R':
 		Run();
+		command = "";
 		break;
-	case CALIBRACAO:
+	case 'C':
 		Auto_calibrate();
+		command = "";
 		break;
 	default:
+		command = "";
 		break;
 	}
 }
@@ -297,16 +315,12 @@ void Seguidor::testeSensores(){
 	delay(1000);
 }
 
-
 void Seguidor::initBluetooth(){
     SerialBT.begin("ESP32");
   	Serial.println("O dispositivo já pode ser pareado ou conectado!");
 }
 
-int Seguidor::comunica_serial(){
+void Seguidor::comunica_serial(){
 	command = SerialBT.readStringUntil(';');
 	SerialBT.println(command);
-	//int behavior = msg_handler();
-	command = "";
-	return 1;
 }
