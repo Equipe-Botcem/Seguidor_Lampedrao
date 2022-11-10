@@ -195,7 +195,7 @@ int Seguidor::calc_rotacional(double erro)
 int Seguidor::calc_translacional(double erro)
 {
 	//TODO testar com diferentes velocidades 
-	double value = (120- K*abs(erro));
+	double value = (VB - K*abs(erro));
 	if(value <20) value = 20;
 	Serial.print("trn:");
 	Serial.println(value);
@@ -231,14 +231,16 @@ void Seguidor::Init()
 	sensor_esq.Init();
 	sensor_dir.Init();
 
-	Set_parametros(0.1,0.05,0);
+	// Parametros default
+	Set_parametros(0.1,0.05,0, 120);
 }
 
-void Seguidor::Set_parametros(double k, double kp, double kd)
+void Seguidor::Set_parametros(double k, double kp, double kd, double vb)
 {
 	Set_K(k);
 	Set_Kp(kp);
 	Set_kd(kd);
+	Set_VB(vb);
 }
 
 void Seguidor::Auto_calibrate()

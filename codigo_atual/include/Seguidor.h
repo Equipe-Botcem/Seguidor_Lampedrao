@@ -18,7 +18,7 @@ public:
 
 	void Behavior();
 
-	void Set_parametros(double k, double kp, double kd);
+	void Set_parametros(double k, double kp, double kd, double vb);
 	void Stop();
 	void Auto_calibrate();
 	void Run();
