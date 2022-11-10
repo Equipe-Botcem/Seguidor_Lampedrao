@@ -179,7 +179,7 @@ int Seguidor::calc_rotacional(double erro)
 	double value = 0;
 	// I = I + erro;
 	//TODO unidade do last_control
-	double D = (erro - erro_antigo)/last_control;
+	double D = (erro - erro_antigo);
 	//  erro_antigo = erro;
 
 	value = (Kp * erro) + (Kd * D);
