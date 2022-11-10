@@ -7,9 +7,6 @@
 
 Seguidor seguidor = Seguidor();
 
-
-
-
 void setup()
 {
 	Serial.begin(115200);
@@ -21,6 +18,7 @@ void setup()
 void loop(){
 	
 	seguidor.Behavior();
+	seguidor.Check_stop();
 	if(seguidor.start_condition && !seguidor.stop_condition){
 		seguidor.controle();
 	}

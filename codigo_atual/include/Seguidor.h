@@ -18,7 +18,7 @@ public:
 
 	void Behavior();
 
-	void Set_parametros(double k, double kp, double kd, double vb);
+	void Set_parametros(double k, double kp, double kd, double vb, int o);
 	void Stop();
 	void Auto_calibrate();
 	void Run();
@@ -35,7 +35,7 @@ public:
 	void Set_K(double k);
 	void Set_Kp(double kp);
 	void Set_kd(double kd);
-	void Set_VB(double vb);
+	void Set_VB(int vb);
 	void Set_O(double o);
 
 	void Enable_motors_drives();
@@ -71,6 +71,8 @@ public:
 
 	void set_handler();
 
+	void Check_stop();
+
 	//-----------Atributos-----------//
 	
 	String command = "";
@@ -85,6 +87,8 @@ public:
 	bool stop_condition = false;
 	bool start_condition = false;
 
+	int stop_count = 0;
+
 	
 private:
 
@@ -95,8 +99,8 @@ private:
 	double K;
 	double Kp;
 	double Kd;
-	double VB;
-	double O;
+	int VB;
+	int O;
 
 	double erro =0;
 

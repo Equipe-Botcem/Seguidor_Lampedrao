@@ -64,7 +64,7 @@ void Seguidor::Set_kd(double kd)
 	Kd = kd;
 }
 
-void Seguidor::Set_VB(double vb){
+void Seguidor::Set_VB(int vb){
 	VB = vb;
 }
 
@@ -98,7 +98,7 @@ void Seguidor::Set_direction_reverse()
 
 int Seguidor::check_speed(int speed){
 	if (speed > 255)	speed = 255;
-	if (speed < 45)	speed = 35;
+	if (speed < 20)	speed = 20;
 	return speed;
 }
 
@@ -232,15 +232,16 @@ void Seguidor::Init()
 	sensor_dir.Init();
 
 	// Parametros default
-	Set_parametros(0.1,0.05,0, 120);
+	Set_parametros(0.1,0.05,0, 120, 20);
 }
 
-void Seguidor::Set_parametros(double k, double kp, double kd, double vb)
+void Seguidor::Set_parametros(double k, double kp, double kd, double vb, int o)
 {
 	Set_K(k);
 	Set_Kp(kp);
 	Set_kd(kd);
 	Set_VB(vb);
+	Set_O(o);
 }
 
 void Seguidor::Auto_calibrate()
@@ -364,8 +365,8 @@ void Seguidor::set_handler()
 		O += command[i];
 
 	
-	// Configura os parâmetros do controlador  
-	Set_VB(VB.toDouble() / 1000);
+	// Configura osf parâmetros do controlador  
+	Set_VB(VB.toInt());
 	Set_K(K_str.toDouble() / 1000);
 	Set_Kp(KP_str.toDouble() / 1000);
 	Set_kd(KD_str.toDouble() / 1000);
@@ -395,4 +396,10 @@ void Seguidor::set_handler()
 	SerialBT.print(O);
 	SerialBT.print(" ");
 
+}
+
+void Seguidor::Check_stop(){
+	if(sensor_esq.Read_Calibrado() == 255) stop_count += 1;
+
+	if (stop_count == 2) stop_condition = true;
 }

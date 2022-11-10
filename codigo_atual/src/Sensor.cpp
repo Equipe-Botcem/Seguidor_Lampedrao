@@ -30,7 +30,7 @@ void Sensor::Rotina()
 {
 }
 
-// TODO testar
+
 int Sensor::Read_Calibrado()
 {
 	int valor = analogRead(pin_sensor);
@@ -42,14 +42,14 @@ int Sensor::Read_Calibrado()
 	else if (valor >= calib_val_med * 1.1)
 	{
 		ant = Branco;
-		return 1023;
+		return 255;
 	}
 	else
 	{
 		if (ant == Preto)
 			return 0;
 		else
-			return 1023;
+			return 255;
 	}
 }
 
@@ -86,3 +86,5 @@ void Sensor::setValorMed(double val_med)
 {
 	calib_val_med = val_med;
 }
+
+
