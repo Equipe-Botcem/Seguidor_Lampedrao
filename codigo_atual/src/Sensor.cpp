@@ -23,7 +23,7 @@ void Sensor::Init()
 
 uint16_t Sensor::Read_sensor()
 {
-	return analogRead(pin_sensor);
+	return (255 - analogRead(pin_sensor));
 }
 
 void Sensor::Rotina()
