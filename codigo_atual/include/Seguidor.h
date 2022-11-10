@@ -31,6 +31,7 @@ public:
 	void Config_sensor_esq(unsigned char pin);
 	void Config_sensor_dir(unsigned char pin);
 
+	// Sets parametros
 	void Set_K(double k);
 	void Set_Kp(double kp);
 	void Set_kd(double kd);

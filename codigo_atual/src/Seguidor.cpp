@@ -332,7 +332,7 @@ void Seguidor::initBluetooth(){
 
 void Seguidor::comunica_serial(){
 	command = SerialBT.readStringUntil(';');
-	SerialBT.println(command);
+	//SerialBT.println(command);
 }
 
 // reescrever para tirar sobrecarga de tarefas
@@ -373,29 +373,6 @@ void Seguidor::set_handler()
 
 	stop_condition = false;
 
-	// Teste
-	Serial.print("VB:");
-	Serial.print(VB);
-	Serial.print(" ");
-
-	Serial.print("K:");
-	Serial.print(VB);
-	Serial.print(" ");
-
-	Serial.print("KP:");
-	Serial.print(VB);
-	Serial.print(" ");
-
-	Serial.print("KD:");
-	Serial.print(VB);
-	Serial.print(" ");
-
-	Serial.print("O:");
-	Serial.print(VB);
-	Serial.print(" ");
-
-	Serial.println();
-
 	// Bluetooth check
 
 	SerialBT.print("VB:");
@@ -403,20 +380,19 @@ void Seguidor::set_handler()
 	SerialBT.print(" ");
 
 	SerialBT.print("K:");
-	SerialBT.print(VB);
+	SerialBT.print(K_str);
 	SerialBT.print(" ");
 
 	SerialBT.print("KP:");
-	SerialBT.print(VB);
+	SerialBT.print(KP_str);
 	SerialBT.print(" ");
 
 	SerialBT.print("KD:");
-	SerialBT.print(VB);
+	SerialBT.print(KD_str);
 	SerialBT.print(" ");
 
 	SerialBT.print("O:");
-	SerialBT.print(VB);
+	SerialBT.print(O);
 	SerialBT.print(" ");
 
-	SerialBT.println();
 }
