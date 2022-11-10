@@ -16,7 +16,7 @@ public:
 
 	void Init();
 
-	void Behavior(int bh);
+	void Behavior();
 
 	void Set_parametros(double k, double kp, double kd);
 	void Stop();
@@ -64,7 +64,7 @@ public:
 
 	void initBluetooth();
 
-	int comunica_serial();
+	void comunica_serial();
 
 	//-----------Atributos-----------//
 	
@@ -90,6 +90,7 @@ private:
 	double K;
 	double Kp;
 	double Kd;
+	double erro =0;
 
 	double erro_antigo=0;
 
@@ -106,7 +107,7 @@ private:
 
 	//-----------Pinos-----------//
 	unsigned char pins_motor_drive_esq[5] = {15,2,18,21};
-	unsigned char pins_motor_drive_dir[5] = {5,22,4,21};
+	unsigned char pins_motor_drive_dir[5] = {5,22,4,19};
 	unsigned char pin_encoder_esq = 16;
 	unsigned char pin_encoder_dir = 17;
 	unsigned char pins_sensor_linha[8] = {36,13,14,35,32,33,25,26};
