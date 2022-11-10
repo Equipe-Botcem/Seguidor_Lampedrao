@@ -34,6 +34,8 @@ public:
 	void Set_K(double k);
 	void Set_Kp(double kp);
 	void Set_kd(double kd);
+	void Set_VB(double vb);
+	void Set_O(double o);
 
 	void Enable_motors_drives();
 	void Disable_motors_drives();
@@ -66,6 +68,8 @@ public:
 
 	void comunica_serial();
 
+	void set_handler();
+
 	//-----------Atributos-----------//
 	
 	String command = "";
@@ -90,6 +94,9 @@ private:
 	double K;
 	double Kp;
 	double Kd;
+	double VB;
+	double O;
+
 	double erro =0;
 
 	double erro_antigo=0;

@@ -64,6 +64,14 @@ void Seguidor::Set_kd(double kd)
 	Kd = kd;
 }
 
+void Seguidor::Set_VB(double vb){
+	VB = vb;
+}
+
+void Seguidor::Set_O(double o){
+	O = o;
+}
+
 void Seguidor::Enable_motors_drives()
 {
 	motor_esq.Enable_drive();
@@ -323,4 +331,44 @@ void Seguidor::initBluetooth(){
 void Seguidor::comunica_serial(){
 	command = SerialBT.readStringUntil(';');
 	SerialBT.println(command);
+}
+
+// reescrever para tirar sobrecarga de tarefas
+void Seguidor::set_handler()
+{
+	String VB = "", K_str = "", KP_str = "", KD_str = "", O = "";
+	int pos = command.indexOf(',', 2);
+	for (int i = 4; i < pos; i++)
+		VB += command[i];
+
+	int pos2 = command.indexOf(',', pos + 1);
+	for (int i = pos + 3; i < pos2; i++)
+		K_str += command[i];
+
+	pos = command.indexOf(',', pos2 + 1);
+	for (int i = pos2 + 3; i < pos; i++)
+		KP_str += command[i];
+
+	pos2 = command.indexOf(',', pos + 1);
+	for (int i = pos + 3; i < pos2; i++)
+		KD_str += command[i];
+
+	pos = command.indexOf(',', pos2 + 1);
+	for (int i = pos2 + 3; i < pos; i++)
+		K_str += command[i];
+
+	pos2 = command.indexOf(',', pos + 1);
+	for (int i = pos + 3; i < pos2; i++)
+		O += command[i];
+
+	
+	// Configura os parâmetros do controlador  
+	Set_VB(VB.toDouble() / 1000);
+	Set_K(K_str.toDouble() / 1000);
+	Set_Kp(KP_str.toDouble() / 1000);
+	Set_kd(KD_str.toDouble() / 1000);
+	Set_O(O.toDouble() / 1000);
+
+	stop_condition = false;
+
 }
