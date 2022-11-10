@@ -8,18 +8,6 @@
 Seguidor seguidor = Seguidor();
 
 
-void Rotina(){
-	//seguidor.Behavior(comunica_serial());
-	//int behavior = comunica_serial();
-	
-	//seguidor.Behavior(comunica_serial());
-	if(seguidor.start_condition && !seguidor.stop_condition){
-		seguidor.controle();
-	}
-	else if (seguidor.stop_condition){
-		seguidor.Stop();
-	}
-}
 
 
 void setup()
@@ -27,12 +15,17 @@ void setup()
 	Serial.begin(115200);
 	seguidor.Init();
 	seguidor.initBluetooth();
+	analogReadResolution(8);
 }
 
 void loop(){
-	seguidor.SerialBT.println(seguidor.sensor_linha[0].Read_sensor());
-	seguidor.testeSensores();
-
-	Rotina();
+	
+	seguidor.Behavior();
+	if(seguidor.start_condition && !seguidor.stop_condition){
+		seguidor.controle();
+	}
+	else if (seguidor.stop_condition){
+		seguidor.Stop();
+	}
 
 }
