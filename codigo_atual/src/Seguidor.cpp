@@ -336,7 +336,7 @@ void Seguidor::comunica_serial(){
 // reescrever para tirar sobrecarga de tarefas
 void Seguidor::set_handler()
 {
-	String VB = "", K_str = "", KP_str = "", KD_str = "", O = "";
+	String VB = "", K_str = "", KP_str = "", KD_str = "", VM_str = "";
 	int pos = command.indexOf(',', 2);
 	for (int i = 4; i < pos; i++)
 		VB += command[i];
@@ -359,7 +359,7 @@ void Seguidor::set_handler()
 
 	pos2 = command.indexOf(',', pos + 1);
 	for (int i = pos + 3; i < pos2; i++)
-		O += command[i];
+		VM_str += command[i];
 
 	
 	// Configura osf parâmetros do controlador  
@@ -367,7 +367,7 @@ void Seguidor::set_handler()
 	Set_K(K_str.toDouble() / 1000);
 	Set_Kp(KP_str.toDouble() / 1000);
 	Set_kd(KD_str.toDouble() / 1000);
-	Set_O(O.toDouble() / 1000);
+	Set_VM(VM_str.toInt());
 
 	stop_condition = false;
 
@@ -389,8 +389,8 @@ void Seguidor::set_handler()
 	SerialBT.print(KD_str);
 	SerialBT.print(" ");
 
-	SerialBT.print("O:");
-	SerialBT.print(O);
+	SerialBT.print("VMIN:");
+	SerialBT.print(VM);
 	SerialBT.print(" ");
 
 }
