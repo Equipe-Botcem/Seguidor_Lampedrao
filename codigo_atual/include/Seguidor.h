@@ -18,7 +18,7 @@ public:
 
 	void Behavior();
 
-	void Set_parametros(double k, double kp, double kd, double vb, int o);
+	void Set_parametros(double k, double kp, double kd, double vb, int vmin);
 	void Stop();
 	void Auto_calibrate();
 	void Run();
@@ -36,7 +36,7 @@ public:
 	void Set_Kp(double kp);
 	void Set_kd(double kd);
 	void Set_VB(int vb);
-	void Set_O(double o);
+	void Set_VM(int vmin);
 
 	void Enable_motors_drives();
 	void Disable_motors_drives();
@@ -100,7 +100,7 @@ private:
 	double Kp;
 	double Kd;
 	int VB;
-	int O;
+	int VM;
 
 	double erro =0;
 

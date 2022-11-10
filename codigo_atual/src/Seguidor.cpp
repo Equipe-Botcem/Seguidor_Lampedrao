@@ -68,8 +68,8 @@ void Seguidor::Set_VB(int vb){
 	VB = vb;
 }
 
-void Seguidor::Set_O(double o){
-	O = o;
+void Seguidor::Set_VM(int vmin){
+	VM = vmin;
 }
 
 void Seguidor::Enable_motors_drives()
@@ -98,7 +98,7 @@ void Seguidor::Set_direction_reverse()
 
 int Seguidor::check_speed(int speed){
 	if (speed > 255)	speed = 255;
-	if (speed < 20)	speed = 20;
+	if (speed < VM)	speed = VM;
 	return speed;
 }
 
@@ -164,7 +164,7 @@ void Seguidor::calibration()
 
 void Seguidor::controle()
 {
-	//last_control = millis();
+	last_control = millis();
 	erro = calc_erro();
 	int trans = calc_translacional(erro);
 	int rot = calc_rotacional(erro);
@@ -184,8 +184,8 @@ int Seguidor::calc_rotacional(double erro)
 
 	value = (Kp * erro) + (Kd * D);
 	// double valor = Kp * P + Ki * I + Kd * D;
-	Serial.print("rot:");
-	Serial.println(value);
+	//Serial.print("rot:");
+	//Serial.println(value);
 	return value;
 }
 
@@ -194,8 +194,8 @@ int Seguidor::calc_translacional(double erro)
 	//TODO testar com diferentes velocidades 
 	double value = (VB - K*abs(erro));
 	if(value <20) value = 20;
-	Serial.print("trn:");
-	Serial.println(value);
+	//Serial.print("trn:");
+	//Serial.println(value);
 	return value;
 }
 
@@ -232,13 +232,13 @@ void Seguidor::Init()
 	Set_parametros(0.1,0.05,0, 120, 20);
 }
 
-void Seguidor::Set_parametros(double k, double kp, double kd, double vb, int o)
+void Seguidor::Set_parametros(double k, double kp, double kd, double vb, int vmin)
 {
 	Set_K(k);
 	Set_Kp(kp);
 	Set_kd(kd);
 	Set_VB(vb);
-	Set_O(o);
+	Set_VM(vmin);
 }
 
 void Seguidor::Auto_calibrate()
