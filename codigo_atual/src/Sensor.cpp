@@ -2,6 +2,7 @@
 
 Sensor::Sensor()
 {
+	calib_val_med = 125;
 }
 
 Sensor::Sensor(unsigned char pin)
@@ -29,7 +30,6 @@ uint16_t Sensor::Read_sensor()
 void Sensor::Rotina()
 {
 }
-
 
 int Sensor::Read_Calibrado()
 {
@@ -60,7 +60,7 @@ int Sensor::find_min()
 	for (unsigned int i = 0; i < 20; i++)
 	{
 
-		v_lido = analogRead(pin_sensor);
+		v_lido = Read_sensor();
 		if (v_lido < v_min)
 			v_min = v_lido;
 	}
@@ -74,7 +74,7 @@ int Sensor::find_max()
 	for (unsigned int i = 0; i < 20; i++)
 	{
 
-		v_lido = analogRead(pin_sensor);
+		v_lido = Read_sensor();
 		if (v_lido > v_max)
 			v_max = v_lido;
 	}

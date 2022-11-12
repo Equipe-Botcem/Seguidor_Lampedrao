@@ -133,25 +133,27 @@ double Seguidor::calc_erro()
 }
 
 void Seguidor::calibration()
-{
-
-	// Seguidor no preto
-	int v_min_esq = sensor_esq.find_min();
-	int v_min_dir = sensor_dir.find_min();
-
-	Enable_motors_drives();
-	Set_direction_forward();
-
-	// Joga para o branco em relação a ponta do seguidor
-	// TODO ajustar o tempo e velocidade
-	Set_motor_esq_speed(100);
-	Set_motor_dir_speed(100);
-	delay(300);
-	Disable_motors_drives();
+{	
+	SerialBT.println("Calibrando");
 
 	// Seguidor no branco
 	int v_max_esq = sensor_esq.find_max();
 	int v_max_dir = sensor_dir.find_max();
+
+	SerialBT.println(v_max_esq);
+
+	Enable_motors_drives();
+	Set_direction_forward();
+
+	// Joga para o preto
+	Set_motor_esq_speed(80);
+	Set_motor_dir_speed(80);
+	delay(200);
+	Disable_motors_drives();
+
+	// Seguidor no preto
+	int v_min_esq = sensor_esq.find_min();
+	int v_min_dir = sensor_dir.find_min();
 
 	// Acha val médio
 
@@ -184,8 +186,6 @@ int Seguidor::calc_rotacional(double erro)
 
 	value = (Kp * erro) + (Kd * D);
 	// double valor = Kp * P + Ki * I + Kd * D;
-	//Serial.print("rot:");
-	//Serial.println(value);
 	return value;
 }
 
@@ -194,8 +194,6 @@ int Seguidor::calc_translacional(double erro)
 	//TODO testar com diferentes velocidades 
 	double value = (VB - K*abs(erro));
 	if(value <20) value = 20;
-	//Serial.print("trn:");
-	//Serial.println(value);
 	return value;
 }
 
@@ -229,7 +227,7 @@ void Seguidor::Init()
 	sensor_dir.Init();
 
 	// Parametros default
-	Set_parametros(0.1,0.05,0, 120, 20);
+	Set_parametros(3,55,0, 150, 50);
 }
 
 void Seguidor::Set_parametros(double k, double kp, double kd, double vb, int vmin)
@@ -241,24 +239,24 @@ void Seguidor::Set_parametros(double k, double kp, double kd, double vb, int vmi
 	Set_VM(vmin);
 }
 
-void Seguidor::Auto_calibrate()
-{
-	calibration();
-}
+
 
 void Seguidor::Run()
 {
 	Enable_motors_drives();
-	//u_c.controle();
-	//u_c.Disable_motors_drives();
+	stop_condition = false;
 	start_condition = true;
+	time_stop = millis();
 }
 
 void Seguidor::Stop(){
 	Disable_motors_drives();
+	//stop_condition = false;
+	//start_condition = false;
 }
 
 void Seguidor::Behavior()
+
 {
 	comunica_serial();
 
@@ -277,7 +275,7 @@ void Seguidor::Behavior()
 		command = "";
 		break;
 	case 'C':
-		Auto_calibrate();
+		calibration();
 		command = "";
 		break;
 	default:
@@ -290,7 +288,7 @@ void Seguidor::testeSensores(){
 
 	// Serial 
 	Serial.print("SLE:");
-	Serial.print(analogRead(39));
+	Serial.print(sensor_esq.Read_sensor());
 	Serial.print("  ");
 	Serial.print("S0:");
 	Serial.print(analogRead(36));
@@ -317,7 +315,7 @@ void Seguidor::testeSensores(){
 	Serial.print(analogRead(26));
 	Serial.print("  ");
 	Serial.print("SLD:");
-	Serial.print(analogRead(27));
+	Serial.print(sensor_dir.Read_sensor());
 	Serial.print("  ");
 	Serial.println("  ");
 	delay(1000);
@@ -329,8 +327,10 @@ void Seguidor::initBluetooth(){
 }
 
 void Seguidor::comunica_serial(){
-	command = SerialBT.readStringUntil(';');
-	//SerialBT.println(command);
+	if(SerialBT.available()){ 
+		command = SerialBT.readStringUntil(';');
+
+	}
 }
 
 // reescrever para tirar sobrecarga de tarefas
@@ -369,7 +369,6 @@ void Seguidor::set_handler()
 	Set_kd(KD_str.toDouble() / 1000);
 	Set_VM(VM_str.toInt());
 
-	stop_condition = false;
 
 	// Bluetooth check
 
@@ -396,7 +395,16 @@ void Seguidor::set_handler()
 }
 
 void Seguidor::Check_stop(){
-	if(sensor_esq.Read_Calibrado() == 255) stop_count += 1;
 
-	if (stop_count == 2) stop_condition = true;
+	Serial.print("Sensor direito: ");
+	Serial.println(sensor_dir.Read_sensor());
+
+	Serial.print("Sensor esquerdo: ");
+	Serial.println(sensor_esq.Read_sensor());
+
+	if(sensor_dir.Read_sensor() >= 180 and sensor_esq.Read_sensor() <= 100){
+		stop_condition = true;
+	}
 }
+			
+	

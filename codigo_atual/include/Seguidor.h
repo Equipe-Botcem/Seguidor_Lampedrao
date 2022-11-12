@@ -20,7 +20,6 @@ public:
 
 	void Set_parametros(double k, double kp, double kd, double vb, int vmin);
 	void Stop();
-	void Auto_calibrate();
 	void Run();
 
 	void Config_motor_esq(unsigned char *pins);
@@ -89,6 +88,8 @@ public:
 
 	int stop_count = 0;
 
+	unsigned long time_stop;
+
 	
 private:
 
@@ -106,10 +107,11 @@ private:
 
 	double erro_antigo=0;
 
+
 	unsigned long control_time = 5;
 	unsigned long last_control =0;
 
-	double pesos[8] = {-8, -4, -2, -1, 1, 2, 4, 8};
+	double pesos[8] = {-12, -6, -3, -1, 1, 3, 6, 12};
 
 	Motor_drive motor_esq;
 	Motor_drive motor_dir;

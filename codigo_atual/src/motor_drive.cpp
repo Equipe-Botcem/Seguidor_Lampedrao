@@ -65,8 +65,8 @@ void Motor_drive::Set_motor_reverse()
 
 void Motor_drive::Set_speed(int speed)
 {
-	Serial.print("motor speed:");
-	Serial.println(speed);
+	//Serial.print("motor speed:");
+	//Serial.println(speed);
 	motor_speed = speed;
 	On();
 }

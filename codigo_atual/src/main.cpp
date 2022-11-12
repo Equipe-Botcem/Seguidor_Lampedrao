@@ -7,6 +7,8 @@
 
 Seguidor seguidor = Seguidor();
 
+
+
 void setup()
 {
 	Serial.begin(115200);
@@ -15,16 +17,22 @@ void setup()
 	analogReadResolution(8);
 }
 
-unsigned long tempo = 0;
+
 void loop(){
-	tempo = millis();
+	
 	seguidor.Behavior();
-	seguidor.Check_stop();
 	if(seguidor.start_condition && !seguidor.stop_condition){
+
+		if(300 < millis() - seguidor.time_stop){
+			seguidor.Check_stop();
+		}
+
 		seguidor.controle();
 	}
 	else if (seguidor.stop_condition){
+		//delay(200);
 		seguidor.Stop();
 	}
-	seguidor.SerialBT.println(millis()-tempo);
+
+	
 }
