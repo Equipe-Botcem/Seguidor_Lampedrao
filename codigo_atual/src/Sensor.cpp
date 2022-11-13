@@ -24,7 +24,11 @@ void Sensor::Init()
 
 uint16_t Sensor::Read_sensor()
 {
-	return (255 - analogRead(pin_sensor));
+	uint16_t leitura = 255 - analogRead(pin_sensor);
+
+	//if(leitura < 50) leitura = 0;
+
+	return leitura;
 }
 
 void Sensor::Rotina()

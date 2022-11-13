@@ -116,7 +116,6 @@ double Seguidor::calc_erro()
 {
 	double erro = 0;
 	int Leituras[8];
-	// TODO testar coleta de valor
 	
 	for(unsigned i = 0; i < 8; i++){
 		Leituras[i] = sensor_linha[i].Read_sensor();
@@ -126,9 +125,6 @@ double Seguidor::calc_erro()
 		erro += Leituras[i] * pesos[i];
 	}
 
-	//Serial.print("Erro: ");
-	//Serial.println(erro);
-	//delay(100);
 	return erro;
 }
 
@@ -193,7 +189,7 @@ int Seguidor::calc_translacional(double erro)
 {
 	//TODO testar com diferentes velocidades 
 	double value = (VB - K*abs(erro));
-	if(value <20) value = 20;
+	if(value <10) value = 10;
 	return value;
 }
 
@@ -239,8 +235,6 @@ void Seguidor::Set_parametros(double k, double kp, double kd, double vb, int vmi
 	Set_VM(vmin);
 }
 
-
-
 void Seguidor::Run()
 {
 	Enable_motors_drives();
@@ -251,8 +245,8 @@ void Seguidor::Run()
 
 void Seguidor::Stop(){
 	Disable_motors_drives();
-	//stop_condition = false;
-	//start_condition = false;
+	stop_condition = false;
+	start_condition = false;
 }
 
 void Seguidor::Behavior()
@@ -291,28 +285,28 @@ void Seguidor::testeSensores(){
 	Serial.print(sensor_esq.Read_sensor());
 	Serial.print("  ");
 	Serial.print("S0:");
-	Serial.print(analogRead(36));
+	Serial.print(sensor_linha[0].Read_sensor());
 	Serial.print("  ");
 	Serial.print("S1:");
-	Serial.print(analogRead(13));
+	Serial.print(sensor_linha[1].Read_sensor());
 	Serial.print("  ");
 	Serial.print("S2:");
-	Serial.print(analogRead(14));
+	Serial.print(sensor_linha[2].Read_sensor());
 	Serial.print("  ");
 	Serial.print("S3:");
-	Serial.print(analogRead(35));
+	Serial.print(sensor_linha[3].Read_sensor());
 	Serial.print("  ");
 	Serial.print("S4:");
-	Serial.print(analogRead(32));
+	Serial.print(sensor_linha[4].Read_sensor());
 	Serial.print("  ");
 	Serial.print("S5:");
-	Serial.print(analogRead(33));
+	Serial.print(sensor_linha[5].Read_sensor());
 	Serial.print("  ");
 	Serial.print("S6:");
-	Serial.print(analogRead(25));
+	Serial.print(sensor_linha[6].Read_sensor());
 	Serial.print("  ");
 	Serial.print("S7:");
-	Serial.print(analogRead(26));
+	Serial.print(sensor_linha[7].Read_sensor());
 	Serial.print("  ");
 	Serial.print("SLD:");
 	Serial.print(sensor_dir.Read_sensor());
@@ -336,8 +330,9 @@ void Seguidor::comunica_serial(){
 // reescrever para tirar sobrecarga de tarefas
 void Seguidor::set_handler()
 {
-	String VB = "", K_str = "", KP_str = "", KD_str = "", VM_str = "";
+	String VB = "", K_str = "", KP_str = "", KD_str = "", VM_str = "", lixo_str = "";
 	int pos = command.indexOf(',', 2);
+	Serial.println(command);
 	for (int i = 4; i < pos; i++)
 		VB += command[i];
 
@@ -355,14 +350,15 @@ void Seguidor::set_handler()
 
 	pos = command.indexOf(',', pos2 + 1);
 	for (int i = pos2 + 3; i < pos; i++)
-		K_str += command[i];
+		VM_str += command[i];
 
 	pos2 = command.indexOf(',', pos + 1);
 	for (int i = pos + 3; i < pos2; i++)
-		VM_str += command[i];
+		lixo_str += command[i];
 
 	
 	// Configura osf parâmetros do controlador  
+	Serial.println(VM_str);
 	Set_VB(VB.toInt());
 	Set_K(K_str.toDouble() / 1000);
 	Set_Kp(KP_str.toDouble() / 1000);

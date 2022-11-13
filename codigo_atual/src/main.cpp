@@ -19,18 +19,19 @@ void setup()
 
 
 void loop(){
+
 	
 	seguidor.Behavior();
 	if(seguidor.start_condition && !seguidor.stop_condition){
 
-		if(300 < millis() - seguidor.time_stop){
+		if(30000 < millis() - seguidor.time_stop){
 			seguidor.Check_stop();
 		}
 
 		seguidor.controle();
 	}
 	else if (seguidor.stop_condition){
-		//delay(200);
+		delay(200);
 		seguidor.Stop();
 	}
 

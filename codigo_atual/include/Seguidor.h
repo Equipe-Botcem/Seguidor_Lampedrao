@@ -111,7 +111,7 @@ private:
 	unsigned long control_time = 5;
 	unsigned long last_control =0;
 
-	double pesos[8] = {-12, -6, -3, -1, 1, 3, 6, 12};
+	double pesos[8] = {0, -8, -3.5, -1, 1, 3.5, 8, 0};
 
 	Motor_drive motor_esq;
 	Motor_drive motor_dir;
