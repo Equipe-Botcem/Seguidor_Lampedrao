@@ -115,9 +115,11 @@ void Seguidor::Set_motor_dir_speed(int speed)
 double Seguidor::calc_erro()
 {
 	double erro = 0;
-	int Leituras[8];
+	uint16_t Leituras[8];
 	
 	for(unsigned i = 0; i < 8; i++){
+		//uint16_t d = sensor_linha[i].Read_sensor();
+		//Leituras[i] = sensor_linha[i].Read_Calibrado(d);
 		Leituras[i] = sensor_linha[i].Read_sensor();
 	}
 
@@ -130,44 +132,54 @@ double Seguidor::calc_erro()
 
 void Seguidor::calibration()
 {	
-	SerialBT.println("Calibrando");
+	unsigned long tempo;
 
-	// Seguidor no branco
-	int v_max_esq = sensor_esq.find_max();
-	int v_max_dir = sensor_dir.find_max();
+	tempo = millis();
 
-	SerialBT.println(v_max_esq);
+	while(millis() - tempo < 500){
 
-	Enable_motors_drives();
-	Set_direction_forward();
+		Enable_motors_drives();
+		Set_direction_reverse();
 
-	// Joga para o preto
-	Set_motor_esq_speed(80);
-	Set_motor_dir_speed(80);
-	delay(200);
+		Set_motor_esq_speed(80);
+		Set_motor_dir_speed(80);
+
+		for(unsigned i = 0; i < 8; i++) sensor_linha[i].find_max();
+
+		sensor_esq.find_max();
+		sensor_dir.find_max();
+	}
+
+	tempo = millis();
+
 	Disable_motors_drives();
 
-	// Seguidor no preto
-	int v_min_esq = sensor_esq.find_min();
-	int v_min_dir = sensor_dir.find_min();
+	while(millis() - tempo < 500){
 
-	// Acha val médio
+		Enable_motors_drives();
+		Set_direction_forward();
 
-	double v_med_esq = (v_max_esq - v_min_esq) / 2;
-	double v_med_dir = (v_max_dir - v_min_dir) / 2;
+		Set_motor_esq_speed(80);
+		Set_motor_dir_speed(80);
 
-	sensor_esq.setValorMed(v_med_esq);
-	sensor_dir.setValorMed(v_med_dir);
+		for(unsigned i = 0; i < 8; i++) sensor_linha[i].find_min();
+
+		sensor_esq.find_min();
+		sensor_dir.find_min();
+	}
+
+	Disable_motors_drives();
+	
 }
 
 void Seguidor::controle()
 {
-	last_control = millis();
 	erro = calc_erro();
-	int trans = calc_translacional(erro);
+	//int trans = calc_translacional(erro);
 	int rot = calc_rotacional(erro);
-	Set_motor_esq_speed(trans + rot);
-	Set_motor_dir_speed(trans - rot);
+
+	Set_motor_esq_speed(VB + rot);
+	Set_motor_dir_speed(VB - rot);
 	
 }
 
@@ -176,7 +188,6 @@ int Seguidor::calc_rotacional(double erro)
 
 	double value = 0;
 	// I = I + erro;
-	//TODO unidade do last_control
 	double D = (erro - erro_antigo);
 	//  erro_antigo = erro;
 
@@ -223,7 +234,7 @@ void Seguidor::Init()
 	sensor_dir.Init();
 
 	// Parametros default
-	Set_parametros(3,55,0, 150, 50);
+	Set_parametros(0.09,0.1,0, 60, 0);
 }
 
 void Seguidor::Set_parametros(double k, double kp, double kd, double vb, int vmin)
@@ -401,6 +412,27 @@ void Seguidor::Check_stop(){
 	if(sensor_dir.Read_sensor() >= 180 and sensor_esq.Read_sensor() <= 100){
 		stop_condition = true;
 	}
-}
-			
+}		
 	
+void Seguidor::testeMotores(){
+	Serial.print("Erro:");
+	double erro = calc_erro();
+	Serial.print(erro);
+	Serial.print("     ");
+
+	Serial.print("Erro rot:");
+	double rot = calc_rotacional(erro);
+	Serial.print(rot);
+	Serial.print("     ");
+
+	Serial.print("Motor esq:");
+	Serial.print(100 + rot);
+	Serial.print("     ");
+
+	Serial.print("Motor dir:");
+	Serial.print(100 - rot);
+	Serial.print("     ");
+
+	Serial.println();
+	delay(500);
+}

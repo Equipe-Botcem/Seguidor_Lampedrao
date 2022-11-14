@@ -72,6 +72,8 @@ public:
 
 	void Check_stop();
 
+	void testeMotores();
+
 	//-----------Atributos-----------//
 	
 	String command = "";
@@ -111,7 +113,7 @@ private:
 	unsigned long control_time = 5;
 	unsigned long last_control =0;
 
-	double pesos[8] = {0, -8, -3.5, -1, 1, 3.5, 8, 0};
+	double pesos[8] = {-5, -4, -2, -1, 1, 2, 4, 5};
 
 	Motor_drive motor_esq;
 	Motor_drive motor_dir;

@@ -8,23 +8,23 @@ class Sensor
 public:
 	Sensor();
 	Sensor(unsigned char pin);
-	Sensor(unsigned char pin, double val_med);
 
 	void Init();
 
 	uint16_t Read_sensor();
 	
-	int Read_Calibrado();
-	virtual void Rotina();
-	int find_min();	
-	int find_max();	
+	uint16_t Read_Calibrado(uint16_t valor_descalibrado);
+	void find_min();	
+	void find_max();	
 
-	void setValorMed(double val_med);
+	double Vmax = 0;
+	double Vmin = 255;
+	
 
 private:
 	unsigned char pin_sensor;
-	//TODO inicializar valor médio caso não seja feita calibração 
-	double calib_val_med;
+	
+
 	enum estado{
 		Preto = 0,
 		Branco

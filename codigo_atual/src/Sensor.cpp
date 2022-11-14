@@ -2,18 +2,11 @@
 
 Sensor::Sensor()
 {
-	calib_val_med = 125;
 }
 
 Sensor::Sensor(unsigned char pin)
 {
 	pin_sensor = pin;
-}
-
-Sensor::Sensor(unsigned char pin, double val_med)
-{
-	pin_sensor = pin;
-	calib_val_med = val_med;
 }
 
 void Sensor::Init()
@@ -26,69 +19,41 @@ uint16_t Sensor::Read_sensor()
 {
 	uint16_t leitura = 255 - analogRead(pin_sensor);
 
-	//if(leitura < 50) leitura = 0;
+	if(leitura < 40) return 0;
 
 	return leitura;
 }
 
-void Sensor::Rotina()
+uint16_t Sensor::Read_Calibrado(uint16_t valor_descalibrado)
 {
+	uint16_t c = 0;
+	c = (valor_descalibrado - Vmin) * (255 / (Vmax - Vmin));
+
+
+	if (c > 255)
+		c = 255;
+	if (c < 0)
+		c = 0;
+
+	return c;
 }
 
-int Sensor::Read_Calibrado()
-{
-	int valor = analogRead(pin_sensor);
-	if (valor <= calib_val_med * 0.9)
-	{
-		ant = Preto;
-		return 0;
-	}
-	else if (valor >= calib_val_med * 1.1)
-	{
-		ant = Branco;
-		return 255;
-	}
-	else
-	{
-		if (ant == Preto)
-			return 0;
-		else
-			return 255;
-	}
-}
-
-int Sensor::find_min()
+void Sensor::find_min()
 {
 	int v_lido = 0;
-	int v_min = 1023;
-	for (unsigned int i = 0; i < 20; i++)
-	{
 
-		v_lido = Read_sensor();
-		if (v_lido < v_min)
-			v_min = v_lido;
-	}
-	return v_min;
+	
+	v_lido = Read_sensor();
+
+	if (v_lido < Vmin)	Vmin = v_lido;
+
 }
 
-int Sensor::find_max()
+void Sensor::find_max()
 {
 	int v_lido = 0;
-	int v_max = 0;
-	for (unsigned int i = 0; i < 20; i++)
-	{
+	
+	v_lido = Read_sensor();
 
-		v_lido = Read_sensor();
-		if (v_lido > v_max)
-			v_max = v_lido;
-	}
-
-	return v_max;
+	if (v_lido > Vmax)	Vmax = v_lido;
 }
-
-void Sensor::setValorMed(double val_med)
-{
-	calib_val_med = val_med;
-}
-
-
