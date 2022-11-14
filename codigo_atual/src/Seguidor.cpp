@@ -86,8 +86,10 @@ void Seguidor::Disable_motors_drives()
 
 void Seguidor::Set_direction_forward()
 {
+	//Disable_motors_drives();
 	motor_esq.Set_motor_forward();
 	motor_dir.Set_motor_forward();
+	//Enable_motors_drives();
 }
 
 void Seguidor::Set_direction_reverse()
@@ -96,20 +98,58 @@ void Seguidor::Set_direction_reverse()
 	motor_dir.Set_motor_reverse();
 }
 
-int Seguidor::check_speed(int speed){
-	if (speed > 255)	speed = 255;
-	if (speed < VM)	speed = VM;
+int Seguidor::check_speed_esq(int speed){
+
+	if (speed < 0){
+		motor_esq.Disable_drive();
+		motor_esq.Set_motor_reverse();
+		motor_esq.Enable_drive();
+		SerialBT.println(Kd);
+		speed = Kd;
+		return speed;
+	}
+
+
+	if (speed > 255){
+		speed = 255;
+	}
+	
+
+	motor_esq.Disable_drive();
+	motor_esq.Set_motor_forward();
+	motor_esq.Enable_drive();
+	return speed;
+}
+
+int Seguidor::check_speed_dir(int speed){
+
+	if (speed < 0){
+		motor_dir.Disable_drive();
+		SerialBT.println(Kd);
+		motor_dir.Set_motor_reverse();
+		motor_dir.Enable_drive();
+		speed = Kd;
+		return speed;
+	}
+
+	if (speed > 255){
+		speed = 255;
+	}
+
+	motor_dir.Disable_drive();
+	motor_dir.Set_motor_forward();
+	motor_dir.Enable_drive();
 	return speed;
 }
 
 void Seguidor::Set_motor_esq_speed(int speed)
 {
-	motor_esq.Set_speed(check_speed(speed));
+	motor_esq.Set_speed(check_speed_esq(speed));
 }
 
 void Seguidor::Set_motor_dir_speed(int speed)
 {
-	motor_dir.Set_speed(check_speed(speed));
+	motor_dir.Set_speed(check_speed_dir(speed));
 }
 
 double Seguidor::calc_erro()
@@ -188,10 +228,10 @@ int Seguidor::calc_rotacional(double erro)
 
 	double value = 0;
 	// I = I + erro;
-	double D = (erro - erro_antigo);
+	//double D = (erro - erro_antigo);
 	//  erro_antigo = erro;
 
-	value = (Kp * erro) + (Kd * D);
+	value = (Kp * erro);
 	// double valor = Kp * P + Ki * I + Kd * D;
 	return value;
 }
@@ -234,7 +274,7 @@ void Seguidor::Init()
 	sensor_dir.Init();
 
 	// Parametros default
-	Set_parametros(0.09,0.1,0, 60, 0);
+	Set_parametros(0,0.1,10, 70, 0);
 }
 
 void Seguidor::Set_parametros(double k, double kp, double kd, double vb, int vmin)
@@ -249,6 +289,7 @@ void Seguidor::Set_parametros(double k, double kp, double kd, double vb, int vmi
 void Seguidor::Run()
 {
 	Enable_motors_drives();
+	
 	stop_condition = false;
 	start_condition = true;
 	time_stop = millis();
@@ -369,11 +410,10 @@ void Seguidor::set_handler()
 
 	
 	// Configura osf parâmetros do controlador  
-	Serial.println(VM_str);
 	Set_VB(VB.toInt());
 	Set_K(K_str.toDouble() / 1000);
 	Set_Kp(KP_str.toDouble() / 1000);
-	Set_kd(KD_str.toDouble() / 1000);
+	Set_kd(KD_str.toDouble());
 	Set_VM(VM_str.toInt());
 
 
@@ -426,11 +466,11 @@ void Seguidor::testeMotores(){
 	Serial.print("     ");
 
 	Serial.print("Motor esq:");
-	Serial.print(100 + rot);
+	Serial.print(check_speed_esq(100 + rot));
 	Serial.print("     ");
 
 	Serial.print("Motor dir:");
-	Serial.print(100 - rot);
+	Serial.print(check_speed_dir(100 - rot));
 	Serial.print("     ");
 
 	Serial.println();

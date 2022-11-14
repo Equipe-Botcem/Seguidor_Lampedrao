@@ -25,6 +25,7 @@ public:
 
 	double Get_current_milliamps();
 
+	bool motor_direction;
 private:
 
 	unsigned char pin_PWM_1;
@@ -33,7 +34,6 @@ private:
 	unsigned char pin_OCM;
 	
 	// 1 para forward ; 0 para reverse;
-	bool motor_direction;
 	int motor_speed=0;
 
 	void On();

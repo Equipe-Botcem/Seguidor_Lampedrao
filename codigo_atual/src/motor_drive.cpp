@@ -42,14 +42,6 @@ void Motor_drive::Disable_drive()
 	digitalWrite(pin_EN, LOW);
 }
 
-//! Pino DIAG não está sendo usado
-/* 
-unsigned char Motor_drive::Get_fault()
-{
-	return !digitalRead(pin_DIAG);
-}
-*/
-
 
 void Motor_drive::Set_motor_forward()
 {
@@ -59,14 +51,14 @@ void Motor_drive::Set_motor_forward()
 
 void Motor_drive::Set_motor_reverse()
 {
+	
 	motor_direction = 0;
 	On();
+
 }
 
 void Motor_drive::Set_speed(int speed)
 {
-	//Serial.print("motor speed:");
-	//Serial.println(speed);
 	motor_speed = speed;
 	On();
 }

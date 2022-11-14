@@ -45,7 +45,9 @@ public:
 	void Set_direction_forward();
 	void Set_direction_reverse();
 
-	int check_speed(int speed);
+	int check_speed_esq(int speed);
+
+	int check_speed_dir(int speed);
 
 	void Set_motor_esq_speed(int speed);
 	void Set_motor_dir_speed(int speed);
@@ -107,13 +109,12 @@ private:
 
 	double erro =0;
 
-	double erro_antigo=0;
 
 
 	unsigned long control_time = 5;
 	unsigned long last_control =0;
 
-	double pesos[8] = {-5, -4, -2, -1, 1, 2, 4, 5};
+	double pesos[8] = {-3, -4, -2, -1, 1, 2, 4, 3};
 
 	Motor_drive motor_esq;
 	Motor_drive motor_dir;

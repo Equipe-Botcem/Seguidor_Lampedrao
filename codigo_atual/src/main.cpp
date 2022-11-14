@@ -20,6 +20,8 @@ void setup()
 
 void loop(){
 	
+	//seguidor.testeMotores();
+	 
 	seguidor.Behavior();
 	if(seguidor.start_condition && !seguidor.stop_condition){
 
