@@ -94,6 +94,8 @@ public:
 
 	unsigned long time_stop;
 
+	double K;
+
 	
 private:
 
@@ -101,7 +103,7 @@ private:
 
 	//-----------Atributos-----------//
 
-	double K;
+	
 	double Kp;
 	double Kd;
 	int VB;
@@ -114,7 +116,7 @@ private:
 	unsigned long control_time = 5;
 	unsigned long last_control =0;
 
-	double pesos[8] = {-3, -4, -2, -1, 1, 2, 4, 3};
+	double pesos[8] = {-4.2, -4, -2, -1, 1, 2, 4, 4.2};
 
 	Motor_drive motor_esq;
 	Motor_drive motor_dir;

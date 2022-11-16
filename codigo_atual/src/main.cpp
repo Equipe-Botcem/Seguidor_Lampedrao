@@ -25,14 +25,15 @@ void loop(){
 	seguidor.Behavior();
 	if(seguidor.start_condition && !seguidor.stop_condition){
 
-		if(2000000 < millis() - seguidor.time_stop){
+		if((seguidor.K*1000) < millis() - seguidor.time_stop){
+			seguidor.SerialBT.println("Parando");
 			seguidor.Check_stop();
 		}
 
 		seguidor.controle();
 	}
 	else if (seguidor.stop_condition){
-		//delay(200);
+		delay(100);
 		seguidor.Stop();
 	}
 	

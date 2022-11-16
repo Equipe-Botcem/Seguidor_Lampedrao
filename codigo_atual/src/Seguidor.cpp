@@ -86,10 +86,8 @@ void Seguidor::Disable_motors_drives()
 
 void Seguidor::Set_direction_forward()
 {
-	//Disable_motors_drives();
 	motor_esq.Set_motor_forward();
 	motor_dir.Set_motor_forward();
-	//Enable_motors_drives();
 }
 
 void Seguidor::Set_direction_reverse()
@@ -104,8 +102,7 @@ int Seguidor::check_speed_esq(int speed){
 		motor_esq.Disable_drive();
 		motor_esq.Set_motor_reverse();
 		motor_esq.Enable_drive();
-		SerialBT.println(Kd);
-		speed = Kd;
+		speed = -1*speed;
 		return speed;
 	}
 
@@ -125,10 +122,9 @@ int Seguidor::check_speed_dir(int speed){
 
 	if (speed < 0){
 		motor_dir.Disable_drive();
-		SerialBT.println(Kd);
 		motor_dir.Set_motor_reverse();
 		motor_dir.Enable_drive();
-		speed = Kd;
+		speed = -1*speed;
 		return speed;
 	}
 
@@ -236,9 +232,9 @@ int Seguidor::calc_rotacional(double erro)
 	return value;
 }
 
-int Seguidor::calc_translacional(double erro)
+int Seguidor::calc_translacional(double erro)  
 {
-	//TODO testar com diferentes velocidades 
+	
 	double value = (VB - K*abs(erro));
 	if(value <10) value = 10;
 	return value;
@@ -302,7 +298,6 @@ void Seguidor::Stop(){
 }
 
 void Seguidor::Behavior()
-
 {
 	comunica_serial();
 
@@ -411,7 +406,7 @@ void Seguidor::set_handler()
 	
 	// Configura osf parâmetros do controlador  
 	Set_VB(VB.toInt());
-	Set_K(K_str.toDouble() / 1000);
+	Set_K(K_str.toDouble());
 	Set_Kp(KP_str.toDouble() / 1000);
 	Set_kd(KD_str.toDouble());
 	Set_VM(VM_str.toInt());
@@ -443,13 +438,7 @@ void Seguidor::set_handler()
 
 void Seguidor::Check_stop(){
 
-	Serial.print("Sensor direito: ");
-	Serial.println(sensor_dir.Read_sensor());
-
-	Serial.print("Sensor esquerdo: ");
-	Serial.println(sensor_esq.Read_sensor());
-
-	if(sensor_dir.Read_sensor() >= 180 and sensor_esq.Read_sensor() <= 100){
+	if(sensor_dir.Read_sensor() >= 180 and sensor_esq.Read_sensor() <= 60){
 		stop_condition = true;
 	}
 }		
