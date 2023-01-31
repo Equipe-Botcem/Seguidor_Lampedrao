@@ -14,11 +14,17 @@ Seguidor::Seguidor(double K, double kp, double kd)
 void Seguidor::Config_motor_esq(unsigned char *pins)
 {
 	motor_esq = Motor_drive(pins[0], pins[1], pins[2], pins[3]);
+	#if defined(DIAG_MODE)
+		motor_esq.set_name("MOTOR ESQ");
+	#endif
 }
 
 void Seguidor::Config_motor_dir(unsigned char *pins)
 {
 	motor_dir = Motor_drive(pins[0], pins[1], pins[2], pins[3]);
+	#if defined(DIAG_MODE)
+		motor_dir.set_name("MOTOR DIR");
+	#endif
 }
 
 void Seguidor::Config_encoder_esq(unsigned char pin_interrupt)
@@ -166,6 +172,7 @@ double Seguidor::calc_erro()
 	return erro;
 }
 
+//TODO validar calibracao
 void Seguidor::calibration()
 {	
 	unsigned long tempo;
@@ -325,43 +332,6 @@ void Seguidor::Behavior()
 	}
 }
 
-void Seguidor::testeSensores(){
-
-	// Serial 
-	Serial.print("SLE:");
-	Serial.print(sensor_esq.Read_sensor());
-	Serial.print("  ");
-	Serial.print("S0:");
-	Serial.print(sensor_linha[0].Read_sensor());
-	Serial.print("  ");
-	Serial.print("S1:");
-	Serial.print(sensor_linha[1].Read_sensor());
-	Serial.print("  ");
-	Serial.print("S2:");
-	Serial.print(sensor_linha[2].Read_sensor());
-	Serial.print("  ");
-	Serial.print("S3:");
-	Serial.print(sensor_linha[3].Read_sensor());
-	Serial.print("  ");
-	Serial.print("S4:");
-	Serial.print(sensor_linha[4].Read_sensor());
-	Serial.print("  ");
-	Serial.print("S5:");
-	Serial.print(sensor_linha[5].Read_sensor());
-	Serial.print("  ");
-	Serial.print("S6:");
-	Serial.print(sensor_linha[6].Read_sensor());
-	Serial.print("  ");
-	Serial.print("S7:");
-	Serial.print(sensor_linha[7].Read_sensor());
-	Serial.print("  ");
-	Serial.print("SLD:");
-	Serial.print(sensor_dir.Read_sensor());
-	Serial.print("  ");
-	Serial.println("  ");
-	delay(1000);
-}
-
 void Seguidor::initBluetooth(){
     SerialBT.begin("ESP32");
   	Serial.println("O dispositivo já pode ser pareado ou conectado!");
@@ -442,26 +412,3 @@ void Seguidor::Check_stop(){
 		stop_condition = true;
 	}
 }		
-	
-void Seguidor::testeMotores(){
-	Serial.print("Erro:");
-	double erro = calc_erro();
-	Serial.print(erro);
-	Serial.print("     ");
-
-	Serial.print("Erro rot:");
-	double rot = calc_rotacional(erro);
-	Serial.print(rot);
-	Serial.print("     ");
-
-	Serial.print("Motor esq:");
-	Serial.print(check_speed_esq(100 + rot));
-	Serial.print("     ");
-
-	Serial.print("Motor dir:");
-	Serial.print(check_speed_dir(100 - rot));
-	Serial.print("     ");
-
-	Serial.println();
-	delay(500);
-}

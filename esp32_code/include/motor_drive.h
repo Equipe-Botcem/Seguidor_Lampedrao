@@ -3,6 +3,8 @@
 
 #include "include.h"
 
+#define ON
+
 class Motor_drive
 {
 
@@ -26,6 +28,12 @@ public:
 	double Get_current_milliamps();
 
 	bool motor_direction;
+
+	#if defined(DIAG_MODE)
+		String name;
+		void set_name(String nome);
+		void telemetria();
+	#endif
 private:
 
 	unsigned char pin_PWM_1;

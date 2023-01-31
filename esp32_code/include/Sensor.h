@@ -1,5 +1,9 @@
 #ifndef _SENSOR_
 #define _SENSOR_
+#define RESOLUTION 4095
+
+
+#define READ_SENSOR
 
 #include "include.h"
 
@@ -19,6 +23,9 @@ public:
 
 	double Vmax = 0;
 	double Vmin = 255;
+#if defined(DIAG_MODE)
+	uint16_t telemetria();
+#endif
 	
 
 private:
