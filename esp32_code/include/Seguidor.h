@@ -36,44 +36,29 @@ public:
 	void Set_kd(double kd);
 	void Set_VB(int vb);
 	void Set_VM(int vmin);
+	void Set_direction_forward();
+	void Set_direction_reverse();
+	void Set_motor_esq_speed(int speed);
+	void Set_motor_dir_speed(int speed);
+	void set_handler();
 
 	void Enable_motors_drives();
 	void Disable_motors_drives();
-
-	//void Detec_motors_drives_fault();
-
-	void Set_direction_forward();
-	void Set_direction_reverse();
 
 	//!refatorar
 	int check_speed_esq(int speed);
 	int check_speed_dir(int speed);
 
-	void Set_motor_esq_speed(int speed);
-	void Set_motor_dir_speed(int speed);
-
-	void Check_current_motors_drives();
-
 	double calc_erro();
-
 	void calibration();
-
 	void controle();
-
 	int calc_rotacional(double erro);
 	int calc_translacional(double erro);
-
-
-	void testeSensores();
-
 	void initBluetooth();
-
 	void comunica_serial();
-
-	void set_handler();
-
 	void Check_stop();
-
+	
+	void testeSensores();
 	void testeMotores();
 
 	//-----------Atributos-----------//
@@ -110,8 +95,6 @@ private:
 	int VM;
 
 	double erro =0;
-
-
 
 	unsigned long control_time = 5;
 	unsigned long last_control =0;

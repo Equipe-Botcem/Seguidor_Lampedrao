@@ -142,6 +142,78 @@ void Seguidor::Set_parametros(double k, double kp, double kd, double vb, int vmi
 	Set_VM(vmin);
 }
 
+// reescrever para tirar sobrecarga de tarefas
+void Seguidor::set_handler()
+{
+	String VB = "", K_str = "", KP_str = "", KD_str = "", VM_str = "", lixo_str = "";
+	int pos = command.indexOf(',', 2);
+	Serial.println(command);
+	for (int i = 4; i < pos; i++)
+		VB += command[i];
+
+	int pos2 = command.indexOf(',', pos + 1);
+	for (int i = pos + 3; i < pos2; i++)
+		K_str += command[i];
+
+	pos = command.indexOf(',', pos2 + 1);
+	for (int i = pos2 + 3; i < pos; i++)
+		KP_str += command[i];
+
+	pos2 = command.indexOf(',', pos + 1);
+	for (int i = pos + 3; i < pos2; i++)
+		KD_str += command[i];
+
+	pos = command.indexOf(',', pos2 + 1);
+	for (int i = pos2 + 3; i < pos; i++)
+		VM_str += command[i];
+
+	pos2 = command.indexOf(',', pos + 1);
+	for (int i = pos + 3; i < pos2; i++)
+		lixo_str += command[i];
+
+	
+	// Configura osf parâmetros do controlador  
+	Set_VB(VB.toInt());
+	Set_K(K_str.toDouble());
+	Set_Kp(KP_str.toDouble() / 1000);
+	Set_kd(KD_str.toDouble());
+	Set_VM(VM_str.toInt());
+
+
+	// Bluetooth check
+
+	SerialBT.print("VB:");
+	SerialBT.print(VB);
+	SerialBT.print(" ");
+
+	SerialBT.print("K:");
+	SerialBT.print(K_str);
+	SerialBT.print(" ");
+
+	SerialBT.print("KP:");
+	SerialBT.print(KP_str);
+	SerialBT.print(" ");
+
+	SerialBT.print("KD:");
+	SerialBT.print(KD_str);
+	SerialBT.print(" ");
+
+	SerialBT.print("VMIN:");
+	SerialBT.print(VM);
+	SerialBT.print(" ");
+
+}
+
+void Seguidor::Set_motor_esq_speed(int speed)
+{
+	motor_esq.Set_speed(check_speed_esq(speed));
+}
+
+void Seguidor::Set_motor_dir_speed(int speed)
+{
+	motor_dir.Set_speed(check_speed_dir(speed));
+}
+
 //----------------------- Other Functions -----------------------//
 
 void Seguidor::Enable_motors_drives()
@@ -338,71 +410,48 @@ void Seguidor::comunica_serial(){
 	}
 }
 
-// reescrever para tirar sobrecarga de tarefas
-void Seguidor::set_handler()
-{
-	String VB = "", K_str = "", KP_str = "", KD_str = "", VM_str = "", lixo_str = "";
-	int pos = command.indexOf(',', 2);
-	Serial.println(command);
-	for (int i = 4; i < pos; i++)
-		VB += command[i];
-
-	int pos2 = command.indexOf(',', pos + 1);
-	for (int i = pos + 3; i < pos2; i++)
-		K_str += command[i];
-
-	pos = command.indexOf(',', pos2 + 1);
-	for (int i = pos2 + 3; i < pos; i++)
-		KP_str += command[i];
-
-	pos2 = command.indexOf(',', pos + 1);
-	for (int i = pos + 3; i < pos2; i++)
-		KD_str += command[i];
-
-	pos = command.indexOf(',', pos2 + 1);
-	for (int i = pos2 + 3; i < pos; i++)
-		VM_str += command[i];
-
-	pos2 = command.indexOf(',', pos + 1);
-	for (int i = pos + 3; i < pos2; i++)
-		lixo_str += command[i];
-
-	
-	// Configura osf parâmetros do controlador  
-	Set_VB(VB.toInt());
-	Set_K(K_str.toDouble());
-	Set_Kp(KP_str.toDouble() / 1000);
-	Set_kd(KD_str.toDouble());
-	Set_VM(VM_str.toInt());
-
-
-	// Bluetooth check
-
-	SerialBT.print("VB:");
-	SerialBT.print(VB);
-	SerialBT.print(" ");
-
-	SerialBT.print("K:");
-	SerialBT.print(K_str);
-	SerialBT.print(" ");
-
-	SerialBT.print("KP:");
-	SerialBT.print(KP_str);
-	SerialBT.print(" ");
-
-	SerialBT.print("KD:");
-	SerialBT.print(KD_str);
-	SerialBT.print(" ");
-
-	SerialBT.print("VMIN:");
-	SerialBT.print(VM);
-	SerialBT.print(" ");
-
-}
-
 void Seguidor::Check_stop(){
 
 	if(sensor_dir.Read_sensor() >= 180 and sensor_esq.Read_sensor() <= 60){
 		stop_condition = true;
 	}
 }		
+
+void Seguidor::testeSensores(){
+	Serial.println("Não calibrados");
+	Serial.print("S1: ");
+	Serial.print(sensor_linha[0].Read_sensor());
+	Serial.print("  S2: ");
+	Serial.print(sensor_linha[1].Read_sensor());
+	Serial.print("  S3: ");
+	Serial.print(sensor_linha[2].Read_sensor());
+	Serial.print("  S4: ");
+	Serial.print(sensor_linha[3].Read_sensor());
+	Serial.print("  S5: ");
+	Serial.print(sensor_linha[4].Read_sensor());
+	Serial.print("  S6: ");
+	Serial.print(sensor_linha[5].Read_sensor());
+	Serial.print("  S7: ");
+	Serial.print(sensor_linha[6].Read_sensor());
+	Serial.print("  S8: ");
+	Serial.print(sensor_linha[6].Read_sensor());
+
+	Serial.println("Calibrados");
+	Serial.print("S1: ");
+	Serial.print(sensor_linha[0].Read_Calibrado());
+	Serial.print("  S2: ");
+	Serial.print(sensor_linha[1].Read_Calibrado());
+	Serial.print("  S3: ");
+	Serial.print(sensor_linha[2].Read_Calibrado());
+	Serial.print("  S4: ");
+	Serial.print(sensor_linha[3].Read_Calibrado());
+	Serial.print("  S5: ");
+	Serial.print(sensor_linha[4].Read_Calibrado());
+	Serial.print("  S6: ");
+	Serial.print(sensor_linha[5].Read_Calibrado());
+	Serial.print("  S7: ");
+	Serial.print(sensor_linha[6].Read_Calibrado());
+	Serial.print("  S8: ");
+	Serial.print(sensor_linha[6].Read_Calibrado());
+}		
+

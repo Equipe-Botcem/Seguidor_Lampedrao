@@ -46,9 +46,9 @@ uint16_t Sensor::Read_sensor()
 #endif
 }
 
-// TODO Validar calibracao e desenvolver telemetria
-uint16_t Sensor::Read_Calibrado(uint16_t valor_descalibrado)
+uint16_t Sensor::Read_Calibrado()
 {
+	uint16_t valor_descalibrado = Read_sensor();
 	uint16_t c = 0;
 	c = (valor_descalibrado - Cmin) * (RESOLUTION / (Cmax - Cmin));
 

@@ -17,7 +17,7 @@ public:
 
 	uint16_t Read_sensor();
 	
-	uint16_t Read_Calibrado(uint16_t valor_descalibrado);
+	uint16_t Read_Calibrado();
 	void find_min();	
 	void find_max();	
 
