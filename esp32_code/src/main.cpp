@@ -14,7 +14,8 @@ void setup()
 	Serial.begin(115200);
 	seguidor.Init();
 	seguidor.initBluetooth();
-	analogReadResolution(8);
+	//analogReadResolution(8);
+	timer_exec = millis();
 }
 
 

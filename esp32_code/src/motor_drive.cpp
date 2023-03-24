@@ -1,13 +1,49 @@
 #include "motor_drive.h"
 
+#if defined(DIAG_MODE)
+void Motor_drive::set_name(String nome){
+	name = nome;
+}
+
+void Motor_drive::telemetria()
+{
+	Serial.println("|===============TELEMETRIA DO MOTOR DO ROBO===============|");
+	Serial.print("\tMOTOR VERIFICADO: ");
+	Serial.println(name);
+	Serial.print("\tTIME: ");
+	Serial.print((millis() - timer_exec) / 1000);
+	Serial.println(" sec");
+	Serial.println("---------------------------------------------------------------");
+	Serial.print("MOTOR DIRECTION: ");
+	if (motor_direction)
+	{
+		Serial.println("FRENTE");
+		analogWrite(pin_PWM_1, motor_speed);
+		analogWrite(pin_PWM_2, LOW);
+
+	}
+	else
+	{
+		Serial.println("TRAS");
+		analogWrite(pin_PWM_1, LOW);
+		analogWrite(pin_PWM_2, motor_speed);
+	}
+	Serial.print("MOTOR SPEED: ");
+	Serial.println(motor_speed);
+	Serial.print("MOTOR CURRENT: ");
+	Serial.println(Get_current_milliamps());
+	Serial.println("|==============================================================|");
+}
+#endif
+
 Motor_drive::Motor_drive()
 {
 
-	//pin_PWM_1 = 99;
-	//pin_PWM_2 = 99;
-	//pin_EN = 99;
-	//pin_DIAG = 99;
-	//pin_OCM = 99;
+	// pin_PWM_1 = 99;
+	// pin_PWM_2 = 99;
+	// pin_EN = 99;
+	// pin_DIAG = 99;
+	// pin_OCM = 99;
 
 	motor_direction = 1;
 }
@@ -42,7 +78,6 @@ void Motor_drive::Disable_drive()
 	digitalWrite(pin_EN, LOW);
 }
 
-
 void Motor_drive::Set_motor_forward()
 {
 	motor_direction = 1;
@@ -51,10 +86,9 @@ void Motor_drive::Set_motor_forward()
 
 void Motor_drive::Set_motor_reverse()
 {
-	
+
 	motor_direction = 0;
 	On();
-
 }
 
 void Motor_drive::Set_speed(int speed)
@@ -63,7 +97,10 @@ void Motor_drive::Set_speed(int speed)
 	On();
 }
 
-void Motor_drive::On(){
+void Motor_drive::On()
+{
+
+#if (!defined(DIAG_MODE) || !defined(ON))
 	if (motor_direction)
 	{
 		analogWrite(pin_PWM_1, motor_speed);
@@ -74,8 +111,12 @@ void Motor_drive::On(){
 		analogWrite(pin_PWM_1, LOW);
 		analogWrite(pin_PWM_2, motor_speed);
 	}
+#else
+	telemetria();
+#endif
 }
 
-double Motor_drive::Get_current_milliamps(){
+double Motor_drive::Get_current_milliamps()
+{
 	return analogRead(pin_OCM) * 9.765625;
 }

@@ -40,13 +40,13 @@ public:
 	void Enable_motors_drives();
 	void Disable_motors_drives();
 
-	void Detec_motors_drives_fault();
+	//void Detec_motors_drives_fault();
 
 	void Set_direction_forward();
 	void Set_direction_reverse();
 
+	//!refatorar
 	int check_speed_esq(int speed);
-
 	int check_speed_dir(int speed);
 
 	void Set_motor_esq_speed(int speed);

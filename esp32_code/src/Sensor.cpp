@@ -1,4 +1,23 @@
 #include "Sensor.h"
+// #include "vector"
+
+#if defined(DIAG_MODE)
+uint16_t Sensor::telemetria()
+{
+	Serial.println("|===============TELEMETRIA DO SENSOR DO ROBO===============|");
+	Serial.print("\tSENSOR VERIFICADO: ");
+	Serial.println(pin_sensor);
+	Serial.print("\tTIME: ");
+	Serial.print((millis() - timer_exec) / 1000);
+	Serial.println(" sec");
+	Serial.println("---------------------------------------------------------------");
+	uint16_t leitura = RESOLUTION - analogRead(pin_sensor);
+	Serial.print("\tLEITURA: ");
+	Serial.println(leitura);
+	Serial.println("|==============================================================|");
+	return leitura;
+}
+#endif
 
 Sensor::Sensor()
 {
@@ -7,6 +26,7 @@ Sensor::Sensor()
 Sensor::Sensor(unsigned char pin)
 {
 	pin_sensor = pin;
+	Serial.print(pin);
 }
 
 void Sensor::Init()
@@ -17,18 +37,25 @@ void Sensor::Init()
 
 uint16_t Sensor::Read_sensor()
 {
+#if (!defined(DIAG_MODE) || !defined(READ_SENSOR))
 	uint16_t leitura = 255 - analogRead(pin_sensor);
 
-	if(leitura < 40) return 0;
+	//! Estudar se nao atrapalha a calibracao
+	if (leitura < 40)
+		return 0;
 
 	return leitura;
+
+#else
+	return telemetria();
+#endif
 }
 
+// TODO Validar calibracao e desenvolver telemetria
 uint16_t Sensor::Read_Calibrado(uint16_t valor_descalibrado)
 {
 	uint16_t c = 0;
 	c = (valor_descalibrado - Vmin) * (255 / (Vmax - Vmin));
-
 
 	if (c > 255)
 		c = 255;
@@ -42,18 +69,18 @@ void Sensor::find_min()
 {
 	int v_lido = 0;
 
-	
 	v_lido = Read_sensor();
 
-	if (v_lido < Vmin)	Vmin = v_lido;
-
+	if (v_lido < Vmin)
+		Vmin = v_lido;
 }
 
 void Sensor::find_max()
 {
 	int v_lido = 0;
-	
+
 	v_lido = Read_sensor();
 
-	if (v_lido > Vmax)	Vmax = v_lido;
+	if (v_lido > Vmax)
+		Vmax = v_lido;
 }
