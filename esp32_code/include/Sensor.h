@@ -21,21 +21,20 @@ public:
 	void find_min();	
 	void find_max();	
 
-	double Vmax = 0;
-	double Vmin = 255;
+	double Cmax = 0;
+	double Cmin = RESOLUTION;
 #if defined(DIAG_MODE)
 	uint16_t telemetria();
 #endif
 	
-
 private:
 	unsigned char pin_sensor;
 	
-
 	enum estado{
 		Preto = 0,
 		Branco
 	};
+
 	estado ant;
 };
 

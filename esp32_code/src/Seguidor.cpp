@@ -1,5 +1,7 @@
 #include "Seguidor.h"
 
+//----------------------- Construtores -----------------------//
+
 Seguidor::Seguidor()
 {
 }
@@ -10,6 +12,8 @@ Seguidor::Seguidor(double K, double kp, double kd)
 	Kp = kp;
 	Kd = kd;
 }
+
+//----------------------- Configs e inits -----------------------//
 
 void Seguidor::Config_motor_esq(unsigned char *pins)
 {
@@ -55,6 +59,45 @@ void Seguidor::Config_sensor_dir(unsigned char pin)
 	sensor_dir = Sensor(pin);
 }
 
+void Seguidor::Config_pins()
+{
+
+	Config_motor_esq(pins_motor_drive_esq);
+	Config_motor_dir(pins_motor_drive_dir);
+	Config_encoder_esq(pin_encoder_esq);
+	Config_encoder_dir(pin_encoder_dir);
+	Config_sensor_linha(pins_sensor_linha);
+	Config_sensor_esq(pin_sensor_esq);
+	Config_sensor_dir(pin_sensor_dir);
+}
+
+void Seguidor::initBluetooth(){
+    SerialBT.begin("ESP32");
+  	Serial.println("O dispositivo já pode ser pareado ou conectado!");
+}
+
+void Seguidor::Init()
+{
+	Config_pins();
+
+	motor_dir.Init();
+	motor_esq.Init();
+	encoder_esq.Init();
+	encoder_dir.Init();
+
+	for(unsigned i = 0; i < 8; i++){
+		sensor_linha[i].Init();
+	}
+	
+	sensor_esq.Init();
+	sensor_dir.Init();
+
+	// Parametros default
+	Set_parametros(0,0.1,10, 70, 0);
+}
+
+//----------------------- Sets -----------------------//
+
 void Seguidor::Set_K(double k)
 {
 	K = k;
@@ -78,18 +121,6 @@ void Seguidor::Set_VM(int vmin){
 	VM = vmin;
 }
 
-void Seguidor::Enable_motors_drives()
-{
-	motor_esq.Enable_drive();
-	motor_dir.Enable_drive();
-}
-
-void Seguidor::Disable_motors_drives()
-{
-	motor_esq.Disable_drive();
-	motor_dir.Disable_drive();
-}
-
 void Seguidor::Set_direction_forward()
 {
 	motor_esq.Set_motor_forward();
@@ -100,6 +131,29 @@ void Seguidor::Set_direction_reverse()
 {
 	motor_esq.Set_motor_reverse();
 	motor_dir.Set_motor_reverse();
+}
+
+void Seguidor::Set_parametros(double k, double kp, double kd, double vb, int vmin)
+{
+	Set_K(k);
+	Set_Kp(kp);
+	Set_kd(kd);
+	Set_VB(vb);
+	Set_VM(vmin);
+}
+
+//----------------------- Other Functions -----------------------//
+
+void Seguidor::Enable_motors_drives()
+{
+	motor_esq.Enable_drive();
+	motor_dir.Enable_drive();
+}
+
+void Seguidor::Disable_motors_drives()
+{
+	motor_esq.Disable_drive();
+	motor_dir.Disable_drive();
 }
 
 int Seguidor::check_speed_esq(int speed){
@@ -144,16 +198,6 @@ int Seguidor::check_speed_dir(int speed){
 	return speed;
 }
 
-void Seguidor::Set_motor_esq_speed(int speed)
-{
-	motor_esq.Set_speed(check_speed_esq(speed));
-}
-
-void Seguidor::Set_motor_dir_speed(int speed)
-{
-	motor_dir.Set_speed(check_speed_dir(speed));
-}
-
 double Seguidor::calc_erro()
 {
 	double erro = 0;
@@ -172,7 +216,7 @@ double Seguidor::calc_erro()
 	return erro;
 }
 
-//TODO validar calibracao
+//TODO testar
 void Seguidor::calibration()
 {	
 	unsigned long tempo;
@@ -192,11 +236,9 @@ void Seguidor::calibration()
 		sensor_esq.find_max();
 		sensor_dir.find_max();
 	}
-
-	tempo = millis();
-
 	Disable_motors_drives();
 
+	tempo = millis();
 	while(millis() - tempo < 500){
 
 		Enable_motors_drives();
@@ -240,53 +282,10 @@ int Seguidor::calc_rotacional(double erro)
 }
 
 int Seguidor::calc_translacional(double erro)  
-{
-	
+{	
 	double value = (VB - K*abs(erro));
 	if(value <10) value = 10;
 	return value;
-}
-
-void Seguidor::Config_pins()
-{
-
-	Config_motor_esq(pins_motor_drive_esq);
-	Config_motor_dir(pins_motor_drive_dir);
-	Config_encoder_esq(pin_encoder_esq);
-	Config_encoder_dir(pin_encoder_dir);
-	Config_sensor_linha(pins_sensor_linha);
-	Config_sensor_esq(pin_sensor_esq);
-	Config_sensor_dir(pin_sensor_dir);
-}
-
-void Seguidor::Init()
-{
-
-	Config_pins();
-
-	motor_dir.Init();
-	motor_esq.Init();
-	encoder_esq.Init();
-	encoder_dir.Init();
-
-	for(unsigned i = 0; i < 8; i++){
-		sensor_linha[i].Init();
-	}
-	
-	sensor_esq.Init();
-	sensor_dir.Init();
-
-	// Parametros default
-	Set_parametros(0,0.1,10, 70, 0);
-}
-
-void Seguidor::Set_parametros(double k, double kp, double kd, double vb, int vmin)
-{
-	Set_K(k);
-	Set_Kp(kp);
-	Set_kd(kd);
-	Set_VB(vb);
-	Set_VM(vmin);
 }
 
 void Seguidor::Run()
@@ -330,11 +329,6 @@ void Seguidor::Behavior()
 		command = "";
 		break;
 	}
-}
-
-void Seguidor::initBluetooth(){
-    SerialBT.begin("ESP32");
-  	Serial.println("O dispositivo já pode ser pareado ou conectado!");
 }
 
 void Seguidor::comunica_serial(){
