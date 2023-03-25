@@ -31,36 +31,30 @@ Sensor::Sensor(unsigned char pin)
 
 void Sensor::Init()
 {
-
 	pinMode(pin_sensor, INPUT);
 }
 
 uint16_t Sensor::Read_sensor()
 {
-#if (!defined(DIAG_MODE) || !defined(READ_SENSOR))
-	uint16_t leitura = 255 - analogRead(pin_sensor);
-
-	//! Estudar se nao atrapalha a calibracao
-	if (leitura < 40)
-		return 0;
+//#if (!defined(DIAG_MODE) || !defined(READ_SENSOR))
+	uint16_t leitura = RESOLUTION - analogRead(pin_sensor);
 
 	return leitura;
 
-#else
-	return telemetria();
-#endif
+//#else
+	//return telemetria();
+//#endif
 }
 
-// TODO Validar calibracao e desenvolver telemetria
-uint16_t Sensor::Read_Calibrado(uint16_t valor_descalibrado)
+uint16_t Sensor::Read_Calibrado()
 {
-	uint16_t c = 0;
-	c = (valor_descalibrado - Vmin) * (255 / (Vmax - Vmin));
+	uint16_t valor_descalibrado = Read_sensor();
+	uint16_t c;
+	c = (valor_descalibrado - Cmin) * (RESOLUTION / (Cmax - Cmin));
 
-	if (c > 255)
-		c = 255;
-	if (c < 0)
-		c = 0;
+	if (c > RESOLUTION) c = RESOLUTION;
+
+	if (c < 0) c = 0;
 
 	return c;
 }
@@ -71,8 +65,7 @@ void Sensor::find_min()
 
 	v_lido = Read_sensor();
 
-	if (v_lido < Vmin)
-		Vmin = v_lido;
+	if (v_lido < Cmin) Cmin = v_lido;
 }
 
 void Sensor::find_max()
@@ -81,6 +74,5 @@ void Sensor::find_max()
 
 	v_lido = Read_sensor();
 
-	if (v_lido > Vmax)
-		Vmax = v_lido;
+	if (v_lido > Cmax) Cmax = v_lido;
 }

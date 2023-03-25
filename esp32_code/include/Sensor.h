@@ -3,7 +3,7 @@
 #define RESOLUTION 4095
 
 
-#define READ_SENSOR
+//#define READ_SENSOR
 
 #include "include.h"
 
@@ -17,25 +17,24 @@ public:
 
 	uint16_t Read_sensor();
 	
-	uint16_t Read_Calibrado(uint16_t valor_descalibrado);
+	uint16_t Read_Calibrado();
 	void find_min();	
 	void find_max();	
 
-	double Vmax = 0;
-	double Vmin = 255;
+	double Cmax = 0;
+	double Cmin = RESOLUTION;
 #if defined(DIAG_MODE)
 	uint16_t telemetria();
 #endif
 	
-
 private:
 	unsigned char pin_sensor;
 	
-
 	enum estado{
 		Preto = 0,
 		Branco
 	};
+
 	estado ant;
 };
 

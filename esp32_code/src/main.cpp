@@ -20,10 +20,9 @@ void setup()
 
 
 void loop(){
-	
-	//seguidor.testeMotores();
-	 
+
 	seguidor.Behavior();
+	
 	if(seguidor.start_condition && !seguidor.stop_condition){
 
 		if((seguidor.K*1000) < millis() - seguidor.time_stop){
@@ -37,6 +36,5 @@ void loop(){
 		delay(100);
 		seguidor.Stop();
 	}
-	
 	
 }

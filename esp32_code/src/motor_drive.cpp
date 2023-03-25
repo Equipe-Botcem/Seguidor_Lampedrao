@@ -38,14 +38,6 @@ void Motor_drive::telemetria()
 
 Motor_drive::Motor_drive()
 {
-
-	// pin_PWM_1 = 99;
-	// pin_PWM_2 = 99;
-	// pin_EN = 99;
-	// pin_DIAG = 99;
-	// pin_OCM = 99;
-
-	motor_direction = 1;
 }
 
 Motor_drive::Motor_drive(unsigned char PWM_1, unsigned char PWM_2, unsigned char EN, unsigned char OCM)
@@ -55,8 +47,6 @@ Motor_drive::Motor_drive(unsigned char PWM_1, unsigned char PWM_2, unsigned char
 	pin_PWM_2 = PWM_2;
 	pin_EN = EN;
 	pin_OCM = OCM;
-
-	motor_direction = 1;
 }
 
 void Motor_drive::Init()
@@ -70,6 +60,7 @@ void Motor_drive::Init()
 void Motor_drive::Enable_drive()
 {
 	digitalWrite(pin_EN, HIGH);
+
 }
 
 void Motor_drive::Disable_drive()
@@ -78,45 +69,24 @@ void Motor_drive::Disable_drive()
 	digitalWrite(pin_EN, LOW);
 }
 
-void Motor_drive::Set_motor_forward()
-{
-	motor_direction = 1;
-	On();
-}
-
-void Motor_drive::Set_motor_reverse()
-{
-
-	motor_direction = 0;
-	On();
-}
-
 void Motor_drive::Set_speed(int speed)
 {
-	motor_speed = speed;
-	On();
-}
 
-void Motor_drive::On()
-{
+	// Checa se a velocidade está entre os valores permitidos
+	if(speed > 255) speed = 255;
+	if(speed < -255) speed = -255;
 
-#if (!defined(DIAG_MODE) || !defined(ON))
-	if (motor_direction)
+
+	if (speed >= 0)
 	{
-		analogWrite(pin_PWM_1, motor_speed);
+		analogWrite(pin_PWM_1, speed);
 		analogWrite(pin_PWM_2, LOW);
 	}
 	else
 	{
+		speed = -1*speed;
 		analogWrite(pin_PWM_1, LOW);
-		analogWrite(pin_PWM_2, motor_speed);
+		analogWrite(pin_PWM_2, speed);
 	}
-#else
-	telemetria();
-#endif
-}
 
-double Motor_drive::Get_current_milliamps()
-{
-	return analogRead(pin_OCM) * 9.765625;
 }

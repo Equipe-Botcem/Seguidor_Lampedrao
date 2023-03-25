@@ -1,7 +1,7 @@
 #ifndef _INCLUDE_
 #define _INCLUDE_
 
-#define DIAG_MODE
+//#define DIAG_MODE
 
 #include "Arduino.h"
 //!verificar se é um unico timer
