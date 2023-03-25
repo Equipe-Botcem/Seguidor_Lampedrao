@@ -164,7 +164,7 @@ void Seguidor::set_handler()
 	Set_VB(VB.toInt());
 	Set_K(K_str.toDouble());
 	Set_Kp(KP_str.toDouble() / 1000);
-	Set_kd(KD_str.toDouble());
+	Set_kd(KD_str.toDouble() / 1000);
 	Set_VM(VM_str.toInt());
 
 
@@ -225,7 +225,6 @@ double Seguidor::calc_erro()
 	return erro;
 }
 
-//TODO testar
 void Seguidor::calibration()
 {	
 	unsigned long tempo;
@@ -260,7 +259,8 @@ void Seguidor::calibration()
 	}
 
 	Disable_motors_drives();
-	calib = true;
+
+
 }
 
 void Seguidor::controle()
@@ -297,15 +297,12 @@ int Seguidor::calc_translacional(double erro)
 void Seguidor::Run()
 {
 	Enable_motors_drives();
-	
-	stop_condition = false;
 	start_condition = true;
-	time_stop = millis();
+
 }
 
 void Seguidor::Stop(){
 	Disable_motors_drives();
-	stop_condition = false;
 	start_condition = false;
 }
 
@@ -343,10 +340,51 @@ void Seguidor::comunica_serial(){
 	}
 }
 
-void Seguidor::Check_stop(){
+bool Seguidor::Check_stop(){
 
 	if(sensor_dir.Read_sensor() >= 180 and sensor_esq.Read_sensor() <= 60){
-		stop_condition = true;
+		return true;
 	}
+
+	return false;
 }		
 	
+void Seguidor::testeSensores(){
+	Serial.println("Não calibrados");
+	Serial.print("S1: ");
+	Serial.print(sensor_linha[0].Read_sensor());
+	Serial.print("  S2: ");
+	Serial.print(sensor_linha[1].Read_sensor());
+	Serial.print("  S3: ");
+	Serial.print(sensor_linha[2].Read_sensor());
+	Serial.print("  S4: ");
+	Serial.print(sensor_linha[3].Read_sensor());
+	Serial.print("  S5: ");
+	Serial.print(sensor_linha[4].Read_sensor());
+	Serial.print("  S6: ");
+	Serial.print(sensor_linha[5].Read_sensor());
+	Serial.print("  S7: ");
+	Serial.print(sensor_linha[6].Read_sensor());
+	Serial.print("  S8: ");
+	Serial.println(sensor_linha[7].Read_sensor());
+
+	Serial.println("Calibrados");
+	Serial.print("S1: ");
+	Serial.print(sensor_linha[0].Read_Calibrado());
+	Serial.print("  S2: ");
+	Serial.print(sensor_linha[1].Read_Calibrado());
+	Serial.print("  S3: ");
+	Serial.print(sensor_linha[2].Read_Calibrado());
+	Serial.print("  S4: ");
+	Serial.print(sensor_linha[3].Read_Calibrado());
+	Serial.print("  S5: ");
+	Serial.print(sensor_linha[4].Read_Calibrado());
+	Serial.print("  S6: ");
+	Serial.print(sensor_linha[5].Read_Calibrado());
+	Serial.print("  S7: ");
+	Serial.print(sensor_linha[6].Read_Calibrado());
+	Serial.print("  S8: ");
+	Serial.println(sensor_linha[7].Read_Calibrado());
+
+	delay(500);
+}

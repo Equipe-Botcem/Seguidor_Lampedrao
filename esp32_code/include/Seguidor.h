@@ -11,17 +11,11 @@ class Seguidor{
 
 public:
 
+	// Constrtutores
 	Seguidor();
 	Seguidor(double kp, double ki, double kd);
 
-	void Init();
-
-	void Behavior();
-
-	void Set_parametros(double k, double kp, double kd, double vb, int vmin);
-	void Stop();
-	void Run();
-
+	// Configs e inits
 	void Config_motor_esq(unsigned char *pins);
 	void Config_motor_dir(unsigned char *pins);
 	void Config_encoder_dir(unsigned char pin_interrupt);
@@ -29,6 +23,9 @@ public:
 	void Config_sensor_linha(unsigned char *pins);
 	void Config_sensor_esq(unsigned char pin);
 	void Config_sensor_dir(unsigned char pin);
+	void Config_pins();
+	void initBluetooth();
+	void Init();
 
 	// Sets parametros
 	void Set_K(double k);
@@ -37,65 +34,51 @@ public:
 	void Set_VB(int vb);
 	void Set_VM(int vmin);
 	void set_handler();
+	void Set_parametros(double k, double kp, double kd, double vb, int vmin);
 
+	// Other functions 
+	void Behavior();
+	void Stop();
+	void Run();
 	void Enable_motors_drives();
 	void Disable_motors_drives();
-
 	double calc_erro();
 	void calibration();
 	void controle();
 	int calc_rotacional(double erro);
 	int calc_translacional(double erro);
-	void initBluetooth();
 	void comunica_serial();
-	void Check_stop();
+	bool Check_stop();
 
 	void testeSensores();
 
 
-	//-----------Atributos-----------//
-	
+	bool teste = false;
 	String command = "";
-
-	Sensor sensor_linha[8];
-	Sensor sensor_esq;
-	Sensor sensor_dir;
-
 	BluetoothSerial SerialBT;
-
-
-	bool stop_condition = false;
 	bool start_condition = false;
-
-	int stop_count = 0;
-
-	unsigned long time_stop;
-
-	double K;
-
-	
 private:
 
 	enum Comando {SET = 0, STOP, RUN, CALIBRACAO};
 
 	//-----------Atributos-----------//
 
-	
-	double Kp;
-	double Kd;
-	int VB;
-	int VM;
-
-	double erro =0;
-
-	unsigned long control_time = 5;
-	unsigned long last_control =0;
-
 	double pesos[8] = {-4.2, -4, -2, -1, 1, 2, 4, 4.2};
+	
+	double Kp = 0.18;
+	double Kd = 0;
+	int VB = 100;
+	int VM = 5;
+	double erro =0;
+	double K;	
 
+
+	//-----------Objetos-----------//
 	Motor_drive motor_esq;
 	Motor_drive motor_dir;
-
+	Sensor sensor_linha[8];
+	Sensor sensor_esq;
+	Sensor sensor_dir;
 	Encoder encoder_esq;
 	Encoder encoder_dir;
 
@@ -108,9 +91,6 @@ private:
 	unsigned char pin_sensor_esq = 39;
 	unsigned char pin_sensor_dir = 27;
 
-	void Config_pins();
-	
-	
 };
 
 #endif

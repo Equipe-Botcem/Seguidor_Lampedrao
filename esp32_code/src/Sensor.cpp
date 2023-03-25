@@ -46,10 +46,10 @@ uint16_t Sensor::Read_sensor()
 //#endif
 }
 
-uint16_t Sensor::Read_Calibrado()
+int Sensor::Read_Calibrado()
 {
 	uint16_t valor_descalibrado = Read_sensor();
-	uint16_t c;
+	int c;
 	c = (valor_descalibrado - Cmin) * (RESOLUTION / (Cmax - Cmin));
 
 	if (c > RESOLUTION) c = RESOLUTION;
