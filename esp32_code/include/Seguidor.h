@@ -36,18 +36,12 @@ public:
 	void Set_kd(double kd);
 	void Set_VB(int vb);
 	void Set_VM(int vmin);
-	void Set_direction_forward();
-	void Set_direction_reverse();
-	void Set_motor_esq_speed(int speed);
-	void Set_motor_dir_speed(int speed);
 	void set_handler();
 
 	void Enable_motors_drives();
 	void Disable_motors_drives();
 
 	//!refatorar
-	int check_speed_esq(int speed);
-	int check_speed_dir(int speed);
 
 	double calc_erro();
 	void calibration();
@@ -57,9 +51,9 @@ public:
 	void initBluetooth();
 	void comunica_serial();
 	void Check_stop();
-	
+
 	void testeSensores();
-	void testeMotores();
+	void testeCalib();
 
 	//-----------Atributos-----------//
 	

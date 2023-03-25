@@ -121,18 +121,6 @@ void Seguidor::Set_VM(int vmin){
 	VM = vmin;
 }
 
-void Seguidor::Set_direction_forward()
-{
-	motor_esq.Set_motor_forward();
-	motor_dir.Set_motor_forward();
-}
-
-void Seguidor::Set_direction_reverse()
-{
-	motor_esq.Set_motor_reverse();
-	motor_dir.Set_motor_reverse();
-}
-
 void Seguidor::Set_parametros(double k, double kp, double kd, double vb, int vmin)
 {
 	Set_K(k);
@@ -204,15 +192,6 @@ void Seguidor::set_handler()
 
 }
 
-void Seguidor::Set_motor_esq_speed(int speed)
-{
-	motor_esq.Set_speed(check_speed_esq(speed));
-}
-
-void Seguidor::Set_motor_dir_speed(int speed)
-{
-	motor_dir.Set_speed(check_speed_dir(speed));
-}
 
 //----------------------- Other Functions -----------------------//
 
@@ -226,48 +205,6 @@ void Seguidor::Disable_motors_drives()
 {
 	motor_esq.Disable_drive();
 	motor_dir.Disable_drive();
-}
-
-int Seguidor::check_speed_esq(int speed){
-
-	if (speed < 0){
-		motor_esq.Disable_drive();
-		motor_esq.Set_motor_reverse();
-		motor_esq.Enable_drive();
-		speed = -1*speed;
-		return speed;
-	}
-
-
-	if (speed > 255){
-		speed = 255;
-	}
-	
-
-	motor_esq.Disable_drive();
-	motor_esq.Set_motor_forward();
-	motor_esq.Enable_drive();
-	return speed;
-}
-
-int Seguidor::check_speed_dir(int speed){
-
-	if (speed < 0){
-		motor_dir.Disable_drive();
-		motor_dir.Set_motor_reverse();
-		motor_dir.Enable_drive();
-		speed = -1*speed;
-		return speed;
-	}
-
-	if (speed > 255){
-		speed = 255;
-	}
-
-	motor_dir.Disable_drive();
-	motor_dir.Set_motor_forward();
-	motor_dir.Enable_drive();
-	return speed;
 }
 
 double Seguidor::calc_erro()
@@ -298,10 +235,9 @@ void Seguidor::calibration()
 	while(millis() - tempo < 500){
 
 		Enable_motors_drives();
-		Set_direction_reverse();
 
-		Set_motor_esq_speed(80);
-		Set_motor_dir_speed(80);
+		motor_dir.Set_speed(-80);
+		motor_esq.Set_speed(-80);
 
 		for(unsigned i = 0; i < 8; i++) sensor_linha[i].find_max();
 
@@ -312,12 +248,10 @@ void Seguidor::calibration()
 
 	tempo = millis();
 	while(millis() - tempo < 500){
-
 		Enable_motors_drives();
-		Set_direction_forward();
 
-		Set_motor_esq_speed(80);
-		Set_motor_dir_speed(80);
+		motor_dir.Set_speed(80);
+		motor_esq.Set_speed(80);
 
 		for(unsigned i = 0; i < 8; i++) sensor_linha[i].find_min();
 
@@ -335,8 +269,8 @@ void Seguidor::controle()
 	//int trans = calc_translacional(erro);
 	int rot = calc_rotacional(erro);
 
-	Set_motor_esq_speed(VB + rot);
-	Set_motor_dir_speed(VB - rot);
+	motor_dir.Set_speed(VB + rot);
+	motor_esq.Set_speed(VB - rot);
 	
 }
 
@@ -406,7 +340,6 @@ void Seguidor::Behavior()
 void Seguidor::comunica_serial(){
 	if(SerialBT.available()){ 
 		command = SerialBT.readStringUntil(';');
-
 	}
 }
 
@@ -453,5 +386,17 @@ void Seguidor::testeSensores(){
 	Serial.print(sensor_linha[6].Read_Calibrado());
 	Serial.print("  S8: ");
 	Serial.print(sensor_linha[6].Read_Calibrado());
-}		
+}	
 
+
+void Seguidor::testeCalib(){
+
+	Enable_motors_drives();
+
+	motor_dir.Set_speed(-80);
+	motor_esq.Set_speed(-80);
+
+	delay(5000);
+
+	Disable_motors_drives();
+}

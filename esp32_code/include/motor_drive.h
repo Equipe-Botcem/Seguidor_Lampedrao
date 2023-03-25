@@ -3,7 +3,7 @@
 
 #include "include.h"
 
-#define ON
+//#define ON
 
 class Motor_drive
 {
@@ -17,17 +17,8 @@ public:
 	void Init();
 	void Enable_drive();
 	void Disable_drive();
-
-	unsigned char Get_fault();
-
-	void Set_motor_forward();
-	void Set_motor_reverse();
+ 
 	void Set_speed(int speed);
-	
-
-	double Get_current_milliamps();
-
-	bool motor_direction;
 
 	#if defined(DIAG_MODE)
 		String name;
@@ -41,10 +32,6 @@ private:
 	unsigned char pin_EN;
 	unsigned char pin_OCM;
 	
-	// 1 para forward ; 0 para reverse;
-	int motor_speed=0;
-
-	void On();
 
 };
 
