@@ -41,8 +41,6 @@ public:
 	void Enable_motors_drives();
 	void Disable_motors_drives();
 
-	//!refatorar
-
 	double calc_erro();
 	void calibration();
 	void controle();
@@ -53,7 +51,7 @@ public:
 	void Check_stop();
 
 	void testeSensores();
-	void testeCalib();
+
 
 	//-----------Atributos-----------//
 	

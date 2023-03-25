@@ -232,7 +232,7 @@ void Seguidor::calibration()
 
 	tempo = millis();
 
-	while(millis() - tempo < 500){
+	while(millis() - tempo < 300){
 
 		Enable_motors_drives();
 
@@ -247,7 +247,7 @@ void Seguidor::calibration()
 	Disable_motors_drives();
 
 	tempo = millis();
-	while(millis() - tempo < 500){
+	while(millis() - tempo < 300){
 		Enable_motors_drives();
 
 		motor_dir.Set_speed(80);
@@ -260,7 +260,7 @@ void Seguidor::calibration()
 	}
 
 	Disable_motors_drives();
-	
+	calib = true;
 }
 
 void Seguidor::controle()
@@ -349,54 +349,4 @@ void Seguidor::Check_stop(){
 		stop_condition = true;
 	}
 }		
-
-void Seguidor::testeSensores(){
-	Serial.println("Não calibrados");
-	Serial.print("S1: ");
-	Serial.print(sensor_linha[0].Read_sensor());
-	Serial.print("  S2: ");
-	Serial.print(sensor_linha[1].Read_sensor());
-	Serial.print("  S3: ");
-	Serial.print(sensor_linha[2].Read_sensor());
-	Serial.print("  S4: ");
-	Serial.print(sensor_linha[3].Read_sensor());
-	Serial.print("  S5: ");
-	Serial.print(sensor_linha[4].Read_sensor());
-	Serial.print("  S6: ");
-	Serial.print(sensor_linha[5].Read_sensor());
-	Serial.print("  S7: ");
-	Serial.print(sensor_linha[6].Read_sensor());
-	Serial.print("  S8: ");
-	Serial.print(sensor_linha[6].Read_sensor());
-
-	Serial.println("Calibrados");
-	Serial.print("S1: ");
-	Serial.print(sensor_linha[0].Read_Calibrado());
-	Serial.print("  S2: ");
-	Serial.print(sensor_linha[1].Read_Calibrado());
-	Serial.print("  S3: ");
-	Serial.print(sensor_linha[2].Read_Calibrado());
-	Serial.print("  S4: ");
-	Serial.print(sensor_linha[3].Read_Calibrado());
-	Serial.print("  S5: ");
-	Serial.print(sensor_linha[4].Read_Calibrado());
-	Serial.print("  S6: ");
-	Serial.print(sensor_linha[5].Read_Calibrado());
-	Serial.print("  S7: ");
-	Serial.print(sensor_linha[6].Read_Calibrado());
-	Serial.print("  S8: ");
-	Serial.print(sensor_linha[6].Read_Calibrado());
-}	
-
-
-void Seguidor::testeCalib(){
-
-	Enable_motors_drives();
-
-	motor_dir.Set_speed(-80);
-	motor_esq.Set_speed(-80);
-
-	delay(5000);
-
-	Disable_motors_drives();
-}
+	

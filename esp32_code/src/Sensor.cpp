@@ -36,26 +36,25 @@ void Sensor::Init()
 
 uint16_t Sensor::Read_sensor()
 {
-#if (!defined(DIAG_MODE) || !defined(READ_SENSOR))
+//#if (!defined(DIAG_MODE) || !defined(READ_SENSOR))
 	uint16_t leitura = RESOLUTION - analogRead(pin_sensor);
 
 	return leitura;
 
-#else
-	return telemetria();
-#endif
+//#else
+	//return telemetria();
+//#endif
 }
 
 uint16_t Sensor::Read_Calibrado()
 {
 	uint16_t valor_descalibrado = Read_sensor();
-	uint16_t c = 0;
+	uint16_t c;
 	c = (valor_descalibrado - Cmin) * (RESOLUTION / (Cmax - Cmin));
 
-	if (c > RESOLUTION)
-		c = RESOLUTION;
-	if (c < RESOLUTION)
-		c = 0;
+	if (c > RESOLUTION) c = RESOLUTION;
+
+	if (c < 0) c = 0;
 
 	return c;
 }
