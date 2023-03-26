@@ -21,8 +21,8 @@ public:
 	void find_min();	
 	void find_max();	
 
-	double Cmax = 250;
-	double Cmin = 42.5;
+	double Cmax = 0;
+	double Cmin = RESOLUTION;
 #if defined(DIAG_MODE)
 	uint16_t telemetria();
 #endif

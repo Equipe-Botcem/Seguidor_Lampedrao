@@ -210,12 +210,10 @@ void Seguidor::Disable_motors_drives()
 double Seguidor::calc_erro()
 {
 	double erro = 0;
-	uint16_t Leituras[8];
+	int Leituras[8];
 	
 	for(unsigned i = 0; i < 8; i++){
-		//uint16_t d = sensor_linha[i].Read_sensor();
-		//Leituras[i] = sensor_linha[i].Read_Calibrado(d);
-		Leituras[i] = sensor_linha[i].Read_sensor();
+		Leituras[i] = sensor_linha[i].Read_Calibrado();
 	}
 
 	for (unsigned int i = 0; i < 8; i++){
@@ -266,7 +264,6 @@ void Seguidor::calibration()
 void Seguidor::controle()
 {
 	erro = calc_erro();
-	//int trans = calc_translacional(erro);
 	int rot = calc_rotacional(erro);
 
 	motor_dir.Set_speed(VB + rot);
@@ -387,4 +384,15 @@ void Seguidor::testeSensores(){
 	Serial.println(sensor_linha[7].Read_Calibrado());
 
 	delay(500);
+}
+
+void Seguidor::testeMotores(){
+	int rot = calc_rotacional(calc_erro());
+	Serial.print("Speed motor dir: ");
+	Serial.println(VB + rot);
+
+	Serial.print("Speed motor esq: ");
+	Serial.println(VB - rot);
+
+	delay(1000);
 }

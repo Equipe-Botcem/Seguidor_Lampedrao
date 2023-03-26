@@ -51,6 +51,7 @@ public:
 	bool Check_stop();
 
 	void testeSensores();
+	void testeMotores();
 
 
 	bool teste = false;

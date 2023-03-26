@@ -20,10 +20,6 @@ void setup()
 
 
 void loop(){
-
-
-	seguidor.testeSensores();
-	/* 
 	seguidor.Behavior();
 	if(seguidor.start_condition){
 		seguidor.controle();
@@ -33,5 +29,5 @@ void loop(){
 	if (seguidor.Check_stop()){
 		seguidor.Stop();
 	}
-	*/
+	
 }
