@@ -14,7 +14,6 @@ public:
 
 	// Constrtutores
 	Seguidor();
-	Seguidor(double kp, double ki, double kd);
 
 	// Configs e inits
 	void Config_motor_esq(unsigned char *pins);
@@ -60,7 +59,6 @@ private:
 	//-----------Atributos-----------//
 
 	double pesos[8] = {-8, -4, -2, -1, 1, 2, 4, 8};
-	
 
 	int VB;
 	int VM;

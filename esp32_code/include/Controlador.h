@@ -28,6 +28,8 @@ private:
 	double Kd;
     double Ki;
 
+    double I, erro_antigo;
+
 };
 
 #endif
