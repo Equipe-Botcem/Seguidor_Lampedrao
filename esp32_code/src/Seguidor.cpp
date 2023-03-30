@@ -6,13 +6,6 @@ Seguidor::Seguidor()
 {
 }
 
-Seguidor::Seguidor(double K, double kp, double kd)
-{
-	K = K;
-	Kp = kp;
-	Kd = kd;
-}
-
 //----------------------- Configs e inits -----------------------//
 
 void Seguidor::Config_motor_esq(unsigned char *pins)
@@ -93,25 +86,11 @@ void Seguidor::Init()
 	sensor_dir.Init();
 
 	// Parametros default
-	Set_parametros(0,0.0225,0, 100, 5);
+	Set_parametros(0.0225,0, 100, 5);
 }
 
 //----------------------- Sets -----------------------//
 
-void Seguidor::Set_K(double k)
-{
-	K = k;
-}
-
-void Seguidor::Set_Kp(double kp)
-{
-	Kp = kp;
-}
-
-void Seguidor::Set_kd(double kd)
-{
-	Kd = kd;
-}
 
 void Seguidor::Set_VB(int vb){
 	VB = vb;
@@ -121,13 +100,11 @@ void Seguidor::Set_VM(int vmin){
 	VM = vmin;
 }
 
-void Seguidor::Set_parametros(double k, double kp, double kd, double vb, int vmin)
+void Seguidor::Set_parametros(double kp, double kd, double vb, int vmin)
 {
-	Set_K(k);
-	Set_Kp(kp);
-	Set_kd(kd);
 	Set_VB(vb);
 	Set_VM(vmin);
+	controlador.setControlador(0.0225, 0, 0);
 }
 
 // reescrever para tirar sobrecarga de tarefas
@@ -162,9 +139,8 @@ void Seguidor::set_handler()
 	
 	// Configura osf parâmetros do controlador  
 	Set_VB(VB.toInt());
-	Set_K(K_str.toDouble());
-	Set_Kp(KP_str.toDouble() / 1000);
-	Set_kd(KD_str.toDouble() / 1000);
+	controlador.setKp(KP_str.toDouble() / 1000);
+	controlador.setKd(KD_str.toDouble() / 1000);
 	Set_VM(VM_str.toInt());
 
 
@@ -263,32 +239,11 @@ void Seguidor::calibration()
 
 void Seguidor::controle()
 {
-	erro = calc_erro();
-	int rot = calc_rotacional(erro);
+	int rot = controlador.calcRot(calc_erro());
 
 	motor_dir.Set_speed(VB + rot);
 	motor_esq.Set_speed(VB - rot);
 	
-}
-
-int Seguidor::calc_rotacional(double erro)
-{
-
-	double value = 0;
-	// I = I + erro;
-	//double D = (erro - erro_antigo);
-	//  erro_antigo = erro;
-
-	value = (Kp * erro);
-	// double valor = Kp * P + Ki * I + Kd * D;
-	return value;
-}
-
-int Seguidor::calc_translacional(double erro)  
-{	
-	double value = (VB - K*abs(erro));
-	if(value <10) value = 10;
-	return value;
 }
 
 void Seguidor::Run()
@@ -369,7 +324,7 @@ void Seguidor::testeSensores(){
 }
 
 void Seguidor::testeMotores(){
-	int rot = calc_rotacional(calc_erro());
+	int rot = controlador.calcRot(calc_erro());
 	Serial.print("Speed motor dir: ");
 	Serial.println(VB + rot);
 
