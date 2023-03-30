@@ -93,7 +93,7 @@ void Seguidor::Init()
 	sensor_dir.Init();
 
 	// Parametros default
-	Set_parametros(0,0.1,10, 70, 0);
+	Set_parametros(0,0.0225,0, 100, 5);
 }
 
 //----------------------- Sets -----------------------//
@@ -339,7 +339,7 @@ void Seguidor::comunica_serial(){
 
 bool Seguidor::Check_stop(){
 
-	if(sensor_dir.Read_sensor() >= 180 and sensor_esq.Read_sensor() <= 60){
+	if(sensor_dir.Read_sensor() >= (RESOLUTION - 100) and sensor_esq.Read_sensor() <= 100){
 		return true;
 	}
 
@@ -347,25 +347,7 @@ bool Seguidor::Check_stop(){
 }		
 	
 void Seguidor::testeSensores(){
-	Serial.println("Não calibrados");
-	Serial.print("S1: ");
-	Serial.print(sensor_linha[0].Read_sensor());
-	Serial.print("  S2: ");
-	Serial.print(sensor_linha[1].Read_sensor());
-	Serial.print("  S3: ");
-	Serial.print(sensor_linha[2].Read_sensor());
-	Serial.print("  S4: ");
-	Serial.print(sensor_linha[3].Read_sensor());
-	Serial.print("  S5: ");
-	Serial.print(sensor_linha[4].Read_sensor());
-	Serial.print("  S6: ");
-	Serial.print(sensor_linha[5].Read_sensor());
-	Serial.print("  S7: ");
-	Serial.print(sensor_linha[6].Read_sensor());
-	Serial.print("  S8: ");
-	Serial.println(sensor_linha[7].Read_sensor());
 
-	Serial.println("Calibrados");
 	Serial.print("S1: ");
 	Serial.print(sensor_linha[0].Read_Calibrado());
 	Serial.print("  S2: ");
@@ -383,7 +365,7 @@ void Seguidor::testeSensores(){
 	Serial.print("  S8: ");
 	Serial.println(sensor_linha[7].Read_Calibrado());
 
-	delay(500);
+	
 }
 
 void Seguidor::testeMotores(){
@@ -394,5 +376,4 @@ void Seguidor::testeMotores(){
 	Serial.print("Speed motor esq: ");
 	Serial.println(VB - rot);
 
-	delay(1000);
 }

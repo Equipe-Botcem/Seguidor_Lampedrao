@@ -14,13 +14,20 @@ void setup()
 	Serial.begin(115200);
 	seguidor.Init();
 	seguidor.initBluetooth();
-	analogReadResolution(8);
 	timer_exec = millis();
 }
 
 
 void loop(){
 	seguidor.Behavior();
+
+	//if(seguidor.teste){
+		//seguidor.testeSensores();
+		//seguidor.testeMotores();
+		//delay(1000);	
+	//} 
+
+	
 	if(seguidor.start_condition){
 		seguidor.controle();
 	}
@@ -29,5 +36,6 @@ void loop(){
 	if (seguidor.Check_stop()){
 		seguidor.Stop();
 	}
+	
 	
 }

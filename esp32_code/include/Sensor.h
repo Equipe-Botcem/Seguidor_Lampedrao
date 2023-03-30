@@ -1,6 +1,6 @@
 #ifndef _SENSOR_
 #define _SENSOR_
-#define RESOLUTION 255
+#define RESOLUTION 4095
 
 
 //#define READ_SENSOR
@@ -21,8 +21,9 @@ public:
 	void find_min();	
 	void find_max();	
 
-	double Cmax = 0;
-	double Cmin = RESOLUTION;
+	double Cmax = 4050;
+	double Cmin = 55;
+	
 #if defined(DIAG_MODE)
 	uint16_t telemetria();
 #endif

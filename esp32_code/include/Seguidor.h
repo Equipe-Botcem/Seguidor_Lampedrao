@@ -54,7 +54,6 @@ public:
 	void testeMotores();
 
 
-	bool teste = false;
 	String command = "";
 	BluetoothSerial SerialBT;
 	bool start_condition = false;
@@ -64,13 +63,13 @@ private:
 
 	//-----------Atributos-----------//
 
-	double pesos[8] = {-4.2, -4, -2, -1, 1, 2, 4, 4.2};
+	double pesos[8] = {-8, -4, -2, -1, 1, 2, 4, 8};
 	
-	double Kp = 0.18;
-	double Kd = 0;
-	int VB = 100;
-	int VM = 5;
-	double erro =0;
+	double Kp;
+	double Kd;
+	int VB;
+	int VM;
+	double erro;
 	double K;	
 
 
@@ -88,9 +87,11 @@ private:
 	unsigned char pins_motor_drive_dir[5] = {5,22,4,19};
 	unsigned char pin_encoder_esq = 16;
 	unsigned char pin_encoder_dir = 17;
-	unsigned char pins_sensor_linha[8] = {36,13,14,35,32,33,25,26};
-	unsigned char pin_sensor_esq = 39;
-	unsigned char pin_sensor_dir = 27;
+	unsigned char pins_sensor_linha[8] = {39,35,36,14,25,26,27,32};
+	unsigned char pin_sensor_esq = 13;
+	unsigned char pin_sensor_dir = 33;
+
+	
 
 };
 
