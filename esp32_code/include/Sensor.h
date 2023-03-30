@@ -17,12 +17,13 @@ public:
 
 	uint16_t Read_sensor();
 	
-	uint16_t Read_Calibrado();
+	int Read_Calibrado();
 	void find_min();	
 	void find_max();	
 
-	double Cmax = 0;
-	double Cmin = RESOLUTION;
+	double Cmax = 4050;
+	double Cmin = 55;
+	
 #if defined(DIAG_MODE)
 	uint16_t telemetria();
 #endif

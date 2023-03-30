@@ -93,7 +93,7 @@ void Seguidor::Init()
 	sensor_dir.Init();
 
 	// Parametros default
-	Set_parametros(0,0.1,10, 70, 0);
+	Set_parametros(0,0.0225,0, 100, 5);
 }
 
 //----------------------- Sets -----------------------//
@@ -164,7 +164,7 @@ void Seguidor::set_handler()
 	Set_VB(VB.toInt());
 	Set_K(K_str.toDouble());
 	Set_Kp(KP_str.toDouble() / 1000);
-	Set_kd(KD_str.toDouble());
+	Set_kd(KD_str.toDouble() / 1000);
 	Set_VM(VM_str.toInt());
 
 
@@ -210,12 +210,10 @@ void Seguidor::Disable_motors_drives()
 double Seguidor::calc_erro()
 {
 	double erro = 0;
-	uint16_t Leituras[8];
+	int Leituras[8];
 	
 	for(unsigned i = 0; i < 8; i++){
-		//uint16_t d = sensor_linha[i].Read_sensor();
-		//Leituras[i] = sensor_linha[i].Read_Calibrado(d);
-		Leituras[i] = sensor_linha[i].Read_sensor();
+		Leituras[i] = sensor_linha[i].Read_Calibrado();
 	}
 
 	for (unsigned int i = 0; i < 8; i++){
@@ -225,7 +223,6 @@ double Seguidor::calc_erro()
 	return erro;
 }
 
-//TODO testar
 void Seguidor::calibration()
 {	
 	unsigned long tempo;
@@ -260,13 +257,13 @@ void Seguidor::calibration()
 	}
 
 	Disable_motors_drives();
-	calib = true;
+
+
 }
 
 void Seguidor::controle()
 {
 	erro = calc_erro();
-	//int trans = calc_translacional(erro);
 	int rot = calc_rotacional(erro);
 
 	motor_dir.Set_speed(VB + rot);
@@ -297,15 +294,12 @@ int Seguidor::calc_translacional(double erro)
 void Seguidor::Run()
 {
 	Enable_motors_drives();
-	
-	stop_condition = false;
 	start_condition = true;
-	time_stop = millis();
+
 }
 
 void Seguidor::Stop(){
 	Disable_motors_drives();
-	stop_condition = false;
 	start_condition = false;
 }
 
@@ -343,10 +337,43 @@ void Seguidor::comunica_serial(){
 	}
 }
 
-void Seguidor::Check_stop(){
+bool Seguidor::Check_stop(){
 
-	if(sensor_dir.Read_sensor() >= 180 and sensor_esq.Read_sensor() <= 60){
-		stop_condition = true;
+	if(sensor_dir.Read_sensor() >= (RESOLUTION - 100) and sensor_esq.Read_sensor() <= 100){
+		return true;
 	}
+
+	return false;
 }		
 	
+void Seguidor::testeSensores(){
+
+	Serial.print("S1: ");
+	Serial.print(sensor_linha[0].Read_Calibrado());
+	Serial.print("  S2: ");
+	Serial.print(sensor_linha[1].Read_Calibrado());
+	Serial.print("  S3: ");
+	Serial.print(sensor_linha[2].Read_Calibrado());
+	Serial.print("  S4: ");
+	Serial.print(sensor_linha[3].Read_Calibrado());
+	Serial.print("  S5: ");
+	Serial.print(sensor_linha[4].Read_Calibrado());
+	Serial.print("  S6: ");
+	Serial.print(sensor_linha[5].Read_Calibrado());
+	Serial.print("  S7: ");
+	Serial.print(sensor_linha[6].Read_Calibrado());
+	Serial.print("  S8: ");
+	Serial.println(sensor_linha[7].Read_Calibrado());
+
+	
+}
+
+void Seguidor::testeMotores(){
+	int rot = calc_rotacional(calc_erro());
+	Serial.print("Speed motor dir: ");
+	Serial.println(VB + rot);
+
+	Serial.print("Speed motor esq: ");
+	Serial.println(VB - rot);
+
+}
