@@ -5,6 +5,7 @@
 #include "Sensor.h"
 #include "Encoder.h"
 #include "BluetoothSerial.h"
+#include "Controlador.h"
 
 
 class Seguidor{
@@ -13,7 +14,6 @@ public:
 
 	// Constrtutores
 	Seguidor();
-	Seguidor(double kp, double ki, double kd);
 
 	// Configs e inits
 	void Config_motor_esq(unsigned char *pins);
@@ -28,13 +28,10 @@ public:
 	void Init();
 
 	// Sets parametros
-	void Set_K(double k);
-	void Set_Kp(double kp);
-	void Set_kd(double kd);
 	void Set_VB(int vb);
 	void Set_VM(int vmin);
 	void set_handler();
-	void Set_parametros(double k, double kp, double kd, double vb, int vmin);
+	void Set_parametros(double kp, double kd, double vb, int vmin);
 
 	// Other functions 
 	void Behavior();
@@ -45,8 +42,6 @@ public:
 	double calc_erro();
 	void calibration();
 	void controle();
-	int calc_rotacional(double erro);
-	int calc_translacional(double erro);
 	void comunica_serial();
 	bool Check_stop();
 
@@ -64,13 +59,9 @@ private:
 	//-----------Atributos-----------//
 
 	double pesos[8] = {-8, -4, -2, -1, 1, 2, 4, 8};
-	
-	double Kp;
-	double Kd;
+
 	int VB;
 	int VM;
-	double erro;
-	double K;	
 
 
 	//-----------Objetos-----------//
@@ -81,6 +72,8 @@ private:
 	Sensor sensor_dir;
 	Encoder encoder_esq;
 	Encoder encoder_dir;
+	Controlador controlador;
+	
 
 	//-----------Pinos-----------//
 	unsigned char pins_motor_drive_esq[5] = {15,2,18,21};

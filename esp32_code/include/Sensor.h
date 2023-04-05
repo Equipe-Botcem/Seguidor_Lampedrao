@@ -21,6 +21,7 @@ public:
 	void find_min();	
 	void find_max();	
 
+	//! Trocar quando for testar na pista
 	double Cmax = 4050;
 	double Cmin = 55;
 	

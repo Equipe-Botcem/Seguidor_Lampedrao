@@ -1,5 +1,4 @@
 #include "Sensor.h"
-// #include "vector"
 
 #if defined(DIAG_MODE)
 uint16_t Sensor::telemetria()
