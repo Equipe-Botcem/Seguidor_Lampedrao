@@ -19,15 +19,15 @@ void setup()
 
 
 void loop(){
-	seguidor.Behavior();
+	//seguidor.Behavior();
 
 	//if(seguidor.teste){
 		//seguidor.testeSensores();
-		//seguidor.testeMotores();
-		//delay(1000);	
+		seguidor.testeMotores();
+		delay(1000);	
 	//} 
 
-	
+	/* 
 	if(seguidor.start_condition){
 		seguidor.controle();
 	}
@@ -37,5 +37,5 @@ void loop(){
 		seguidor.Stop();
 	}
 	
-	
+	*/
 }
