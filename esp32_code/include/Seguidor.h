@@ -76,13 +76,25 @@ private:
 	
 
 	//-----------Pinos-----------//
-	unsigned char pins_motor_drive_esq[5] = {15,2,18,21};
-	unsigned char pins_motor_drive_dir[5] = {5,22,4,19};
+	// Motor 2
+	unsigned char pins_motor_drive_esq[4] = {2,15,18,21};
 	unsigned char pin_encoder_esq = 16;
+	unsigned char led_dir = 12;
+
+	// Motor 1
+	unsigned char pins_motor_drive_dir[4] = {5,22,4,19};
 	unsigned char pin_encoder_dir = 17;
+	unsigned char led_esq = 23;
+
+	// Sensores 
 	unsigned char pins_sensor_linha[8] = {39,35,36,14,25,26,27,32};
 	unsigned char pin_sensor_esq = 13;
 	unsigned char pin_sensor_dir = 33;
+
+	// Outros
+	unsigned char bateria = 34;
+	unsigned char led1 = 23;
+	unsigned char led2 = 12;
 
 	
 
