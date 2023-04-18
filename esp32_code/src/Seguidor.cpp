@@ -8,6 +8,20 @@ Seguidor::Seguidor()
 
 //----------------------- Configs e inits -----------------------//
 
+
+void Seguidor::Config_led_esq(unsigned char pin)
+{
+	pinMode(pin, OUTPUT);
+	digitalWrite(pin, LOW);
+}
+
+void Seguidor::Config_led_dir(unsigned char pin)
+{
+	pinMode(pin, OUTPUT);
+	digitalWrite(pin, LOW);
+}
+
+
 void Seguidor::Config_motor_esq(unsigned char *pins)
 {
 	motor_esq = Motor_drive(pins[0], pins[1], pins[2], pins[3]);
@@ -52,9 +66,13 @@ void Seguidor::Config_sensor_dir(unsigned char pin)
 	sensor_dir = Sensor(pin);
 }
 
+
+
 void Seguidor::Config_pins()
 {
 
+	Config_led_esq(led_esq);
+	Config_led_esq(led_dir);
 	Config_motor_esq(pins_motor_drive_esq);
 	Config_motor_dir(pins_motor_drive_dir);
 	Config_encoder_esq(pin_encoder_esq);
@@ -87,6 +105,8 @@ void Seguidor::Init()
 
 	// Parametros default
 	Set_parametros(0.0225,0, 100, 5);
+	digitalWrite(led1, HIGH);
+	digitalWrite(led2, HIGH);
 }
 
 //----------------------- Sets -----------------------//

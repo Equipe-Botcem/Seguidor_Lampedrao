@@ -16,6 +16,8 @@ public:
 	Seguidor();
 
 	// Configs e inits
+	void Config_led_esq(unsigned char pin);
+	void Config_led_dir(unsigned char pin);
 	void Config_motor_esq(unsigned char *pins);
 	void Config_motor_dir(unsigned char *pins);
 	void Config_encoder_dir(unsigned char pin_interrupt);
