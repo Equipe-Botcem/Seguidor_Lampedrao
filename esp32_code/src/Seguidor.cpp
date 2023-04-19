@@ -105,8 +105,6 @@ void Seguidor::Init()
 
 	// Parametros default
 	Set_parametros(0.0225,0, 100, 5);
-	digitalWrite(led1, HIGH);
-	digitalWrite(led2, HIGH);
 }
 
 //----------------------- Sets -----------------------//
@@ -323,12 +321,12 @@ bool Seguidor::Check_stop(){
 	
 void Seguidor::testeSensores(){
 
-	Serial.print("SE: ");
-	Serial.println(sensor_esq.Read_sensor());
-	Serial.print("SD: ");
-	Serial.println(sensor_dir.Read_sensor());
+	// Serial.print("SE: ");
+	// Serial.println(sensor_esq.Read_sensor());
+	// Serial.print("SD: ");
+	// Serial.println(sensor_dir.Read_sensor());
 
-	/*
+	
 	Serial.print("S2: ");
 	Serial.print(sensor_linha[0].Read_sensor());
 	Serial.print("  S3: ");
@@ -345,7 +343,7 @@ void Seguidor::testeSensores(){
 	Serial.print(sensor_linha[6].Read_sensor());
 	Serial.print("  S9: ");
 	Serial.println(sensor_linha[7].Read_sensor());
-	 */
+	 
 	
 }
 
@@ -353,8 +351,11 @@ void Seguidor::testeMotores(){
 	int rot = controlador.calcRot(calc_erro());
 	Serial.print("Speed motor dir: ");
 	Serial.println(VB + rot);
+	motor_dir.Set_speed(VB + rot);
 
 	Serial.print("Speed motor esq: ");
 	Serial.println(VB - rot);
+	motor_esq.Set_speed(VB - rot);
+
 
 }
