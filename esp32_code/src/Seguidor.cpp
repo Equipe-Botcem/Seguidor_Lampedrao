@@ -128,7 +128,7 @@ void Seguidor::Set_parametros(double kp, double kd, double vb, int vmin)
 // reescrever para tirar sobrecarga de tarefas
 void Seguidor::set_handler()
 {
-	String VB = "", K_str = "", KP_str = "", KD_str = "", VM_str = "", lixo_str = "";
+	String VB = "", KI_str = "", KP_str = "", KD_str = "", VM_str = "", lixo_str = "";
 	int pos = command.indexOf(',', 2);
 	Serial.println(command);
 	for (int i = 4; i < pos; i++)
@@ -136,7 +136,7 @@ void Seguidor::set_handler()
 
 	int pos2 = command.indexOf(',', pos + 1);
 	for (int i = pos + 3; i < pos2; i++)
-		K_str += command[i];
+		KI_str += command[i];
 
 	pos = command.indexOf(',', pos2 + 1);
 	for (int i = pos2 + 3; i < pos; i++)
@@ -159,6 +159,7 @@ void Seguidor::set_handler()
 	Set_VB(VB.toInt());
 	controlador.setKp(KP_str.toDouble() / 1000);
 	controlador.setKd(KD_str.toDouble() / 1000);
+	controlador.setKi(KI_str.toDouble() / 1000);
 	Set_VM(VM_str.toInt());
 
 
@@ -168,8 +169,8 @@ void Seguidor::set_handler()
 	SerialBT.print(VB);
 	SerialBT.print(" ");
 
-	SerialBT.print("K:");
-	SerialBT.print(K_str);
+	SerialBT.print("KI:");
+	SerialBT.print(KI_str);
 	SerialBT.print(" ");
 
 	SerialBT.print("KP:");
