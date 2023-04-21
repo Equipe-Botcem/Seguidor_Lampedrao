@@ -50,6 +50,8 @@ public:
 	void testeSensores();
 	void testeMotores();
 
+	void returnLine(bool sentido);
+
 
 	String command = "";
 	BluetoothSerial SerialBT;
@@ -60,7 +62,7 @@ private:
 
 	//-----------Atributos-----------//
 
-	double pesos[8] = {-8, -4, -2, -1, 1, 2, 4, 8};
+	double pesos[8] = {-12, -6, -4, -1, 1, 4, 6, 12};
 
 	int VB;
 	int VM;

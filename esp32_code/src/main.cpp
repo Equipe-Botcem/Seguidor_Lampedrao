@@ -15,10 +15,15 @@ void setup()
 	seguidor.Init();
 	seguidor.initBluetooth();
 	
+	
 }
 
 
 void loop(){
+
+	// seguidor.testeMotores();
+	// delay(1000);
+
 	seguidor.Behavior();
 
 	

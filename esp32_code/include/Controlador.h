@@ -21,6 +21,7 @@ public:
     void setKi(float ki);
 
     int calcRot(float erro);
+    double I, erro_antigo;
     
 private:
 	
@@ -28,7 +29,6 @@ private:
 	float Kd;
     float Ki;
 
-    double I, erro_antigo;
 
 };
 

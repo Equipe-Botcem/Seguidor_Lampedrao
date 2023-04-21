@@ -122,7 +122,7 @@ void Seguidor::Set_parametros(float kp, float kd, float ki, float vb, int vmin)
 {
 	Set_VB(vb);
 	Set_VM(vmin);
-	controlador.setControlador(0.0225, 0, 0);
+	controlador.setControlador(0.0055, 0, 0);
 }
 
 
@@ -257,12 +257,43 @@ void Seguidor::calibration()
 }
 
 void Seguidor::controle()
-{
-	int rot = controlador.calcRot(calc_erro());
+{	
+	float erro = calc_erro();
+	bool sentido;
+
+	//Serial.println(erro);
+	if(abs(erro) <= 20 and abs(controlador.erro_antigo) > 18000){
+		if(controlador.erro_antigo < 0){
+			// esquerda 
+			SerialBT.println("Girar esquerda");
+			sentido = false;
+		}else{
+			// direita
+			SerialBT.println("Girar direita");
+			sentido = true;
+		}
+
+		returnLine(sentido);
+		return;
+	} 
+
+	int rot = controlador.calcRot(erro);
 
 	motor_dir.Set_speed(VB + rot);
 	motor_esq.Set_speed(VB - rot);
 	
+}
+
+void Seguidor::returnLine(bool sentido){
+	if(sentido){
+		motor_dir.Set_speed(-100);
+		motor_esq.Set_speed(200);
+	}else{
+		motor_dir.Set_speed(200);
+		motor_esq.Set_speed(-100);
+	}
+
+
 }
 
 void Seguidor::Run()
@@ -349,14 +380,17 @@ void Seguidor::testeSensores(){
 }
 
 void Seguidor::testeMotores(){
-	int rot = controlador.calcRot(calc_erro());
-	Serial.print("Speed motor dir: ");
-	Serial.println(VB + rot);
-	motor_dir.Set_speed(VB + rot);
+	controle();
 
-	Serial.print("Speed motor esq: ");
-	Serial.println(VB - rot);
-	motor_esq.Set_speed(VB - rot);
+	//int rot = controlador.calcRot(erro);
+	//Serial.print("Speed motor dir: ");
+
+	// Serial.println(VB + rot);
+	// motor_dir.Set_speed(VB + rot);
+
+	// Serial.print("Speed motor esq: ");
+	// Serial.println(VB - rot);
+	// motor_esq.Set_speed(VB - rot);
 
 
 }
