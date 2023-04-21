@@ -157,9 +157,9 @@ void Seguidor::set_handler()
 	
 	// Configura osf parâmetros do controlador  
 	Set_VB(VB.toInt());
-	controlador.setKp(KP_str.toDouble() / 1000);
-	controlador.setKd(KD_str.toDouble() / 1000);
-	controlador.setKi(KI_str.toDouble() / 1000);
+	controlador.setKp(KP_str.toDouble() / 10000);
+	controlador.setKd(KD_str.toDouble() / 10000);
+	controlador.setKi(KI_str.toDouble() / 10000);
 	Set_VM(VM_str.toInt());
 
 
