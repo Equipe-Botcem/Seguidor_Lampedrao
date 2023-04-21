@@ -23,19 +23,13 @@ void Controlador::setControlador(float kp, float kd, float ki){
     setKi(ki);
 }   
 
-int Controlador::calcRot(float erro){
+float Controlador::calcPID(float erro, bool outside){
 
-    // Calculo do I
-    if(erro < 100){
-	    I = 0;
-    }else{
-        I = erro + I;
-    }
+    if(!outside) I += erro * 0.1;
+    else D = (erro - erro_antigo) / 0.1;
 
-    // Calculo do D
-	double D = (erro - erro_antigo);
-	erro_antigo = erro;
+    erro_antigo = erro;
 
-	double valor = Kp * erro + Ki * I + Kd * D;
-	return valor;
+
+	return Kp * erro + Ki * I + Kd * D;
 }

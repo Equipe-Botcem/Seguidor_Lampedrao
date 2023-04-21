@@ -21,8 +21,7 @@ void setup()
 
 void loop(){
 
-	// seguidor.testeMotores();
-	// delay(1000);
+	//seguidor.testeMotores();
 
 	seguidor.Behavior();
 

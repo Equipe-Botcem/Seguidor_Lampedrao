@@ -41,11 +41,12 @@ public:
 	void Run();
 	void Enable_motors_drives();
 	void Disable_motors_drives();
-	double calc_erro();
+	float calc_erro();
 	void calibration();
 	void controle();
 	void comunica_serial();
 	bool Check_stop();
+	void returnToLine(float);
 
 	void testeSensores();
 	void testeMotores();
@@ -66,6 +67,9 @@ private:
 
 	int VB;
 	int VM;
+	bool outside;
+	float direcao_erro;
+	unsigned long tempo_corrido = 0;
 
 
 	//-----------Objetos-----------//

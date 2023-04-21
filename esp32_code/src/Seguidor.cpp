@@ -122,7 +122,7 @@ void Seguidor::Set_parametros(float kp, float kd, float ki, float vb, int vmin)
 {
 	Set_VB(vb);
 	Set_VM(vmin);
-	controlador.setControlador(0.0055, 0, 0);
+	controlador.setControlador(0.0055, 0.0125, 0.0125);
 }
 
 
@@ -202,7 +202,7 @@ void Seguidor::Disable_motors_drives()
 	motor_dir.Disable_drive();
 }
 
-double Seguidor::calc_erro()
+float Seguidor::calc_erro()
 {
 	double erro = 0;
 	int Leituras[8];
@@ -212,9 +212,14 @@ double Seguidor::calc_erro()
 	}
 
 	for (unsigned int i = 0; i < 8; i++){
-		erro += Leituras[i] * pesos[i];
-	}
+		//erro +=abs(Leituras[i] * pesos[i]);
+		erro +=(Leituras[i] * pesos[i]);
+		direcao_erro += Leituras[i] * pesos[i];
 
+	}
+	//direcao_erro /= abs(direcao_erro);
+
+	erro /= 8;
 	return erro;
 }
 
@@ -259,9 +264,33 @@ void Seguidor::calibration()
 void Seguidor::controle()
 {	
 	float erro = calc_erro();
-	bool sentido;
 
+	//returnToLine(erro);
+
+	if (!tempo_corrido)
+	{
+		tempo_corrido = millis();
+
+	}else if(millis() - tempo_corrido >= 0.1){
+		tempo_corrido = 0;
+		float erro = calc_erro();
+
+		Serial.println(erro);
+
+		if (erro > 200) outside = true;
+		int rot = controlador.calcPID(abs(erro), outside);
+
+		motor_dir.Set_speed(VB + rot*direcao_erro);
+		motor_esq.Set_speed(VB - rot*direcao_erro);
+
+	}
+	
+}
+
+
+void Seguidor::returnToLine(float erro){
 	//Serial.println(erro);
+	bool sentido;
 	if(abs(erro) <= 20 and abs(controlador.erro_antigo) > 18000){
 		if(controlador.erro_antigo < 0){
 			// esquerda 
@@ -276,12 +305,6 @@ void Seguidor::controle()
 		returnLine(sentido);
 		return;
 	} 
-
-	int rot = controlador.calcRot(erro);
-
-	motor_dir.Set_speed(VB + rot);
-	motor_esq.Set_speed(VB - rot);
-	
 }
 
 void Seguidor::returnLine(bool sentido){

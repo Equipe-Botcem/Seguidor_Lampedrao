@@ -19,9 +19,9 @@ public:
     void setKp(float kp);
     void setKd(float kd);
     void setKi(float ki);
+    float calcPID(float erro, bool outside);
 
-    int calcRot(float erro);
-    double I, erro_antigo;
+    double I, D, erro_antigo;
     
 private:
 	
