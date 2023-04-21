@@ -66,8 +66,6 @@ void Seguidor::Config_sensor_dir(unsigned char pin)
 	sensor_dir = Sensor(pin);
 }
 
-
-
 void Seguidor::Config_pins()
 {
 
@@ -104,7 +102,7 @@ void Seguidor::Init()
 	sensor_dir.Init();
 
 	// Parametros default
-	Set_parametros(0.0225,0,0, 100, 5);
+	Set_parametros(0.0055,0.0125,0.0125, 100, 5);
 }
 
 //----------------------- Sets -----------------------//
@@ -122,7 +120,7 @@ void Seguidor::Set_parametros(float kp, float kd, float ki, float vb, int vmin)
 {
 	Set_VB(vb);
 	Set_VM(vmin);
-	controlador.setControlador(0.0055, 0.0125, 0.0125);
+	controlador.setControlador(kp, kd, ki);
 }
 
 
@@ -211,15 +209,16 @@ float Seguidor::calc_erro()
 		Leituras[i] = sensor_linha[i].Read_Calibrado();
 	}
 
+	if((Leituras[3] < 100 and Leituras[4] < 100)){
+		outside = true;
+	}else{
+		outside = false;	
+	} 
+
 	for (unsigned int i = 0; i < 8; i++){
-		//erro +=abs(Leituras[i] * pesos[i]);
-		erro +=(Leituras[i] * pesos[i]);
-		direcao_erro += Leituras[i] * pesos[i];
-
+		erro += Leituras[i] * pesos[i];
 	}
-	//direcao_erro /= abs(direcao_erro);
 
-	erro /= 8;
 	return erro;
 }
 
@@ -275,13 +274,16 @@ void Seguidor::controle()
 		tempo_corrido = 0;
 		float erro = calc_erro();
 
-		Serial.println(erro);
+		int rot = controlador.calcPID(erro, outside);
 
-		if (erro > 200) outside = true;
-		int rot = controlador.calcPID(abs(erro), outside);
+		Serial.print("Motor Dir = ");
+		Serial.println(VB + rot);
 
-		motor_dir.Set_speed(VB + rot*direcao_erro);
-		motor_esq.Set_speed(VB - rot*direcao_erro);
+		Serial.print("Motor Esq = ");
+		Serial.println(VB - rot);
+
+		// motor_dir.Set_speed(VB + rot*direcao_erro);
+		// motor_esq.Set_speed(VB - rot*direcao_erro);
 
 	}
 	
@@ -404,16 +406,5 @@ void Seguidor::testeSensores(){
 
 void Seguidor::testeMotores(){
 	controle();
-
-	//int rot = controlador.calcRot(erro);
-	//Serial.print("Speed motor dir: ");
-
-	// Serial.println(VB + rot);
-	// motor_dir.Set_speed(VB + rot);
-
-	// Serial.print("Speed motor esq: ");
-	// Serial.println(VB - rot);
-	// motor_esq.Set_speed(VB - rot);
-
 
 }

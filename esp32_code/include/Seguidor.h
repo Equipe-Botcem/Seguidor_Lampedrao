@@ -47,6 +47,7 @@ public:
 	void comunica_serial();
 	bool Check_stop();
 	void returnToLine(float);
+	void checkSensoresHigh();
 
 	void testeSensores();
 	void testeMotores();
