@@ -104,7 +104,7 @@ void Seguidor::Init()
 	sensor_dir.Init();
 
 	// Parametros default
-	Set_parametros(0.0225,0, 100, 5);
+	Set_parametros(0.0225,0,0, 100, 5);
 }
 
 //----------------------- Sets -----------------------//
@@ -118,14 +118,14 @@ void Seguidor::Set_VM(int vmin){
 	VM = vmin;
 }
 
-void Seguidor::Set_parametros(double kp, double kd, double vb, int vmin)
+void Seguidor::Set_parametros(float kp, float kd, float ki, float vb, int vmin)
 {
 	Set_VB(vb);
 	Set_VM(vmin);
 	controlador.setControlador(0.0225, 0, 0);
 }
 
-// reescrever para tirar sobrecarga de tarefas
+
 void Seguidor::set_handler()
 {
 	String VB = "", KI_str = "", KP_str = "", KD_str = "", VM_str = "", lixo_str = "";

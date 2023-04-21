@@ -33,7 +33,7 @@ public:
 	void Set_VB(int vb);
 	void Set_VM(int vmin);
 	void set_handler();
-	void Set_parametros(double kp, double kd, double vb, int vmin);
+	void Set_parametros(float kp, float kd, float ki, float vb, int vmin);
 
 	// Other functions 
 	void Behavior();

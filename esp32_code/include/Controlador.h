@@ -24,9 +24,9 @@ public:
     
 private:
 	
-    double Kp;
-	double Kd;
-    double Ki;
+    float Kp;
+	float Kd;
+    float Ki;
 
     double I, erro_antigo;
 
