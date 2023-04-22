@@ -14,14 +14,13 @@ void setup()
 	Serial.begin(115200);
 	seguidor.Init();
 	seguidor.initBluetooth();
-	
-	
+
 }
 
 
 void loop(){
 
-	// seguidor.testeMotores();
+	// seguidor.testeSensores();
 	// delay(1000);
 
 	seguidor.Behavior();

@@ -41,16 +41,15 @@ public:
 	void Run();
 	void Enable_motors_drives();
 	void Disable_motors_drives();
-	double calc_erro();
+	float calc_erro();
 	void calibration();
 	void controle();
 	void comunica_serial();
 	bool Check_stop();
+	void returnToLine(float);
 
 	void testeSensores();
 	void testeMotores();
-
-	void returnLine(bool sentido);
 
 
 	String command = "";
@@ -62,10 +61,12 @@ private:
 
 	//-----------Atributos-----------//
 
-	double pesos[8] = {-12, -6, -4, -1, 1, 4, 6, 12};
+	double pesos[8] = {-5, -4, -2, -1, 1, 2, 4, 5};
 
 	int VB;
 	int VM;
+	bool outside = false;
+	unsigned long tempo_corrido = 0;
 
 
 	//-----------Objetos-----------//
