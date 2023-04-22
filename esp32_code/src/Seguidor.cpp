@@ -221,6 +221,11 @@ float Seguidor::calc_erro()
 		erro += Leituras[i] * pesos[i];
 	}
 
+	if(abs(erro) >= 20475){
+		if (erro > 0) erro = 20475;
+		else erro = -20475;
+	}
+
 	return erro;
 }
 

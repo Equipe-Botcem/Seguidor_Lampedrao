@@ -61,7 +61,7 @@ private:
 
 	//-----------Atributos-----------//
 
-	double pesos[8] = {-10, -6, -2, -1, 1, 2, 6, 10};
+	double pesos[8] = {-5, -4, -2, -1, 1, 2, 4, 5};
 
 	int VB;
 	int VM;
