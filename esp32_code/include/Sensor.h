@@ -22,8 +22,8 @@ public:
 	void find_max();	
 
 	//! Trocar quando for testar na pista
-	double Cmax = 4000;
-	double Cmin = 100;
+	double Cmax = 1200;
+	double Cmin = 20;
 	
 #if defined(DIAG_MODE)
 	uint16_t telemetria();
