@@ -20,6 +20,8 @@ public:
     void setKd(float kd);
     void setKi(float ki);
     float calcPID(float erro);
+    float calcTrans(float erro);
+
     // True - direita
     // False - esquerda
 

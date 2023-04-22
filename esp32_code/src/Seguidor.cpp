@@ -270,21 +270,22 @@ void Seguidor::calibration()
 void Seguidor::controle()
 {	
 	// Taxa de amostragem 
-	if (!tempo_corrido)
-	{
-		tempo_corrido = millis();
+	//if (!tempo_corrido)
+	//{
+		//tempo_corrido = millis();
 
-	}else if(millis() - tempo_corrido >= controlador.getAmostragem()){
-		tempo_corrido = 0;
+	//}else if(millis() - tempo_corrido >= controlador.getAmostragem()){
+		//tempo_corrido = 0;
 		float erro = calc_erro();
 
-		// Checa se saiu da linha 
-		if (outside and (millis() - tempo_corrido >= 50)){
-			returnToLine(erro);
-			return;
-		} 
+		// // Checa se saiu da linha 
+		// if (outside and (millis() - tempo_corrido >= 50)){
+		// 	returnToLine(erro);
+		// 	return;
+		// } 
 
 		int rot = controlador.calcPID(erro);
+		//int trans = controlador.calcTrans(erro);
 
 		// Serial.print("Motor Dir = ");
 		// Serial.println(VB + rot);
@@ -295,7 +296,7 @@ void Seguidor::controle()
 		motor_dir.Set_speed(VB + rot);
 		motor_esq.Set_speed(VB - rot);
 
-	}
+	//}
 	
 }
 
@@ -364,7 +365,7 @@ void Seguidor::comunica_serial(){
 
 bool Seguidor::Check_stop(){
 
-	if(sensor_dir.Read_sensor() >= (RESOLUTION - 100) and sensor_esq.Read_sensor() <= 100){
+	if(sensor_dir.Read_Calibrado() >= (RESOLUTION - 100) and sensor_esq.Read_Calibrado() <= 100){
 		return true;
 	}
 
@@ -400,5 +401,5 @@ void Seguidor::testeSensores(){
 }
 
 void Seguidor::testeMotores(){
-	controle();
+	calc_erro();
 }
