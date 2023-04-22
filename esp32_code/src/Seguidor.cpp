@@ -226,6 +226,7 @@ float Seguidor::calc_erro()
 		else erro = -20475;
 	}
 
+	Serial.println(erro);
 	return erro;
 }
 
@@ -293,8 +294,13 @@ void Seguidor::controle()
 		// Serial.print("Motor Esq = ");
 		// Serial.println(VB - rot);
 
-		motor_dir.Set_speed(VB + rot);
-		motor_esq.Set_speed(VB - rot);
+		if(abs(erro) > 6000){
+			motor_dir.Set_speed(0.7*VB + rot);
+			motor_esq.Set_speed(0.7*VB - rot);
+		}else{
+			motor_dir.Set_speed(VB + rot);
+			motor_esq.Set_speed(VB - rot);
+		}
 
 	//}
 	
@@ -321,7 +327,7 @@ void Seguidor::Run()
 {
 	Enable_motors_drives();
 	start_condition = true;
-
+	tempo_corrido = millis();
 }
 
 void Seguidor::Stop(){
@@ -365,7 +371,8 @@ void Seguidor::comunica_serial(){
 
 bool Seguidor::Check_stop(){
 
-	if(sensor_dir.Read_Calibrado() >= (RESOLUTION - 100) and sensor_esq.Read_Calibrado() <= 100){
+	if(sensor_dir.Read_sensor() >= 400 and sensor_esq.Read_sensor() <= 100){
+		Serial.println("Li lateral");
 		return true;
 	}
 
@@ -374,28 +381,28 @@ bool Seguidor::Check_stop(){
 	
 void Seguidor::testeSensores(){
 
-	// Serial.print("SE: ");
-	// Serial.println(sensor_esq.Read_sensor());
-	// Serial.print("SD: ");
-	// Serial.println(sensor_dir.Read_sensor());
+	Serial.print("SE: ");
+	Serial.println(sensor_esq.Read_sensor());
+	Serial.print("SD: ");
+	Serial.println(sensor_dir.Read_sensor());
 
 	
-	Serial.print("S2: ");
-	Serial.print(sensor_linha[0].Read_Calibrado());
-	Serial.print("  S3: ");
-	Serial.print(sensor_linha[1].Read_Calibrado());
-	Serial.print("  S4: ");
-	Serial.print(sensor_linha[2].Read_Calibrado());
-	Serial.print("  S5: ");
-	Serial.print(sensor_linha[3].Read_Calibrado());
-	Serial.print("  S6: ");
-	Serial.print(sensor_linha[4].Read_Calibrado());
-	Serial.print("  S7: ");
-	Serial.print(sensor_linha[5].Read_Calibrado());
-	Serial.print("  S8: ");
-	Serial.print(sensor_linha[6].Read_Calibrado());
-	Serial.print("  S9: ");
-	Serial.println(sensor_linha[7].Read_Calibrado());
+	// Serial.print("S2: ");
+	// Serial.print(sensor_linha[0].Read_Calibrado());
+	// Serial.print("  S3: ");
+	// Serial.print(sensor_linha[1].Read_Calibrado());
+	// Serial.print("  S4: ");
+	// Serial.print(sensor_linha[2].Read_Calibrado());
+	// Serial.print("  S5: ");
+	// Serial.print(sensor_linha[3].Read_Calibrado());
+	// Serial.print("  S6: ");
+	// Serial.print(sensor_linha[4].Read_Calibrado());
+	// Serial.print("  S7: ");
+	// Serial.print(sensor_linha[5].Read_Calibrado());
+	// Serial.print("  S8: ");
+	// Serial.print(sensor_linha[6].Read_Calibrado());
+	// Serial.print("  S9: ");
+	// Serial.println(sensor_linha[7].Read_Calibrado());
 	 
 	
 }
