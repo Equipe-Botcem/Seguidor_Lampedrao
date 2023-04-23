@@ -35,10 +35,15 @@ void loop(){
 	if(millis() - seguidor.tempo_corrido > 5000){
 		Serial.println("Habilitei parada");
 
-		if (seguidor.Check_stop()){
-			delay(500);
+		if (seguidor.Check_stop() and seguidor.fimPista == false){
+			seguidor.habiliteiStop();
+		} 
+
+		if(seguidor.fimPista == true and (millis() - seguidor.tempo_stop > 300)){
 			seguidor.Stop();
 		}
+	
+
 	}
 
 	

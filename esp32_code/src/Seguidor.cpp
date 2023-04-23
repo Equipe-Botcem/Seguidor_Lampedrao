@@ -210,12 +210,7 @@ float Seguidor::calc_erro()
 		Leituras[i] = sensor_linha[i].Read_Calibrado();
 		if(Leituras[i] < 200) outsideCheck += 1;
 	}
-
-	if(outsideCheck == 8){
-		outside = true;
-	}else{
-		outside = false;
-	}
+	outside = outsideCheck == 8;
 
 	for (unsigned int i = 0; i < 8; i++){
 		erro += Leituras[i] * pesos[i];
@@ -298,8 +293,12 @@ void Seguidor::controle()
 			motor_dir.Set_speed(0.7*VB + rot);
 			motor_esq.Set_speed(0.7*VB - rot);
 		}else{
+
 			motor_dir.Set_speed(VB + rot);
 			motor_esq.Set_speed(VB - rot);
+
+			// motor_dir.Set_speed(VB*1.5 + rot);
+			// motor_esq.Set_speed(VB*1.5 - rot);
 		}
 
 	//}
@@ -328,6 +327,7 @@ void Seguidor::Run()
 	Enable_motors_drives();
 	start_condition = true;
 	tempo_corrido = millis();
+	bool fimPista = false;
 }
 
 void Seguidor::Stop(){
@@ -409,4 +409,10 @@ void Seguidor::testeSensores(){
 
 void Seguidor::testeMotores(){
 	calc_erro();
+}
+
+void Seguidor::habiliteiStop(){
+	fimPista = true;
+	tempo_stop = millis();
+	SerialBT.println("Habilitei Stop");
 }
