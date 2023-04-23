@@ -210,12 +210,7 @@ float Seguidor::calc_erro()
 		Leituras[i] = sensor_linha[i].Read_Calibrado();
 		if(Leituras[i] < 200) outsideCheck += 1;
 	}
-
-	if(outsideCheck == 8){
-		outside = true;
-	}else{
-		outside = false;
-	}
+	outside = outsideCheck == 8;
 
 	for (unsigned int i = 0; i < 8; i++){
 		erro += Leituras[i] * pesos[i];
@@ -226,6 +221,7 @@ float Seguidor::calc_erro()
 		else erro = -20475;
 	}
 
+	Serial.println(erro);
 	return erro;
 }
 
@@ -270,21 +266,22 @@ void Seguidor::calibration()
 void Seguidor::controle()
 {	
 	// Taxa de amostragem 
-	if (!tempo_corrido)
-	{
-		tempo_corrido = millis();
+	//if (!tempo_corrido)
+	//{
+		//tempo_corrido = millis();
 
-	}else if(millis() - tempo_corrido >= controlador.getAmostragem()){
-		tempo_corrido = 0;
+	//}else if(millis() - tempo_corrido >= controlador.getAmostragem()){
+		//tempo_corrido = 0;
 		float erro = calc_erro();
 
-		// Checa se saiu da linha 
-		if (outside and (millis() - tempo_corrido >= 50)){
-			returnToLine(erro);
-			return;
-		} 
+		// // Checa se saiu da linha 
+		// if (outside and (millis() - tempo_corrido >= 50)){
+		// 	returnToLine(erro);
+		// 	return;
+		// } 
 
 		int rot = controlador.calcPID(erro);
+		//int trans = controlador.calcTrans(erro);
 
 		// Serial.print("Motor Dir = ");
 		// Serial.println(VB + rot);
@@ -292,10 +289,19 @@ void Seguidor::controle()
 		// Serial.print("Motor Esq = ");
 		// Serial.println(VB - rot);
 
-		motor_dir.Set_speed(VB + rot);
-		motor_esq.Set_speed(VB - rot);
+		if(abs(erro) > 6000){
+			motor_dir.Set_speed(0.7*VB + rot);
+			motor_esq.Set_speed(0.7*VB - rot);
+		}else{
 
-	}
+			motor_dir.Set_speed(VB + rot);
+			motor_esq.Set_speed(VB - rot);
+
+			// motor_dir.Set_speed(VB*1.5 + rot);
+			// motor_esq.Set_speed(VB*1.5 - rot);
+		}
+
+	//}
 	
 }
 
@@ -320,7 +326,8 @@ void Seguidor::Run()
 {
 	Enable_motors_drives();
 	start_condition = true;
-
+	tempo_corrido = millis();
+	bool fimPista = false;
 }
 
 void Seguidor::Stop(){
@@ -364,7 +371,8 @@ void Seguidor::comunica_serial(){
 
 bool Seguidor::Check_stop(){
 
-	if(sensor_dir.Read_sensor() >= (RESOLUTION - 100) and sensor_esq.Read_sensor() <= 100){
+	if(sensor_dir.Read_sensor() >= 400 and sensor_esq.Read_sensor() <= 100){
+		Serial.println("Li lateral");
 		return true;
 	}
 
@@ -373,32 +381,38 @@ bool Seguidor::Check_stop(){
 	
 void Seguidor::testeSensores(){
 
-	// Serial.print("SE: ");
-	// Serial.println(sensor_esq.Read_sensor());
-	// Serial.print("SD: ");
-	// Serial.println(sensor_dir.Read_sensor());
+	Serial.print("SE: ");
+	Serial.println(sensor_esq.Read_sensor());
+	Serial.print("SD: ");
+	Serial.println(sensor_dir.Read_sensor());
 
 	
-	Serial.print("S2: ");
-	Serial.print(sensor_linha[0].Read_Calibrado());
-	Serial.print("  S3: ");
-	Serial.print(sensor_linha[1].Read_Calibrado());
-	Serial.print("  S4: ");
-	Serial.print(sensor_linha[2].Read_Calibrado());
-	Serial.print("  S5: ");
-	Serial.print(sensor_linha[3].Read_Calibrado());
-	Serial.print("  S6: ");
-	Serial.print(sensor_linha[4].Read_Calibrado());
-	Serial.print("  S7: ");
-	Serial.print(sensor_linha[5].Read_Calibrado());
-	Serial.print("  S8: ");
-	Serial.print(sensor_linha[6].Read_Calibrado());
-	Serial.print("  S9: ");
-	Serial.println(sensor_linha[7].Read_Calibrado());
+	// Serial.print("S2: ");
+	// Serial.print(sensor_linha[0].Read_Calibrado());
+	// Serial.print("  S3: ");
+	// Serial.print(sensor_linha[1].Read_Calibrado());
+	// Serial.print("  S4: ");
+	// Serial.print(sensor_linha[2].Read_Calibrado());
+	// Serial.print("  S5: ");
+	// Serial.print(sensor_linha[3].Read_Calibrado());
+	// Serial.print("  S6: ");
+	// Serial.print(sensor_linha[4].Read_Calibrado());
+	// Serial.print("  S7: ");
+	// Serial.print(sensor_linha[5].Read_Calibrado());
+	// Serial.print("  S8: ");
+	// Serial.print(sensor_linha[6].Read_Calibrado());
+	// Serial.print("  S9: ");
+	// Serial.println(sensor_linha[7].Read_Calibrado());
 	 
 	
 }
 
 void Seguidor::testeMotores(){
-	controle();
+	calc_erro();
+}
+
+void Seguidor::habiliteiStop(){
+	fimPista = true;
+	tempo_stop = millis();
+	SerialBT.println("Habilitei Stop");
 }

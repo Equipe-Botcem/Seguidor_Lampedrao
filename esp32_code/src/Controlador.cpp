@@ -40,6 +40,23 @@ float Controlador::calcPID(float erro){
 	return Kp * erro + Ki * I + Kd * D;
 }
 
+float Controlador::calcTrans(float erro){
+
+    // if(!outside){
+    //     I += erro * 0.1;   
+    // }else{
+    //     I = 0;
+    //     D = (erro - erro_antigo) / tempo_amostragem;
+    // } 
+
+    // D = (erro - erro_antigo) / tempo_amostragem;
+
+    // erro_antigo = erro;
+
+
+	return Ki * erro;
+}
+
 
 bool Controlador::getLastDir(){
     // Saiu pela esquerda 
