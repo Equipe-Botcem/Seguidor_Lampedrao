@@ -50,11 +50,17 @@ public:
 
 	void testeSensores();
 	void testeMotores();
+	void habiliteiStop();
 
 
 	String command = "";
 	BluetoothSerial SerialBT;
 	bool start_condition = false;
+	unsigned stop_counter = 0;
+	unsigned long tempo_corrido = 0;
+	unsigned long tempo_stop = 0;
+	bool fimPista = false;
+
 private:
 
 	enum Comando {SET = 0, STOP, RUN, CALIBRACAO};
@@ -66,7 +72,6 @@ private:
 	int VB;
 	int VM;
 	bool outside = false;
-	unsigned long tempo_corrido = 0;
 
 
 	//-----------Objetos-----------//
