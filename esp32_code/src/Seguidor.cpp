@@ -21,21 +21,14 @@ void Seguidor::Config_led_dir(unsigned char pin)
 	digitalWrite(pin, LOW);
 }
 
-
 void Seguidor::Config_motor_esq(unsigned char *pins)
 {
 	motor_esq = Motor_drive(pins[0], pins[1], pins[2], pins[3]);
-	#if defined(DIAG_MODE)
-		motor_esq.set_name("MOTOR ESQ");
-	#endif
 }
 
 void Seguidor::Config_motor_dir(unsigned char *pins)
 {
 	motor_dir = Motor_drive(pins[0], pins[1], pins[2], pins[3]);
-	#if defined(DIAG_MODE)
-		motor_dir.set_name("MOTOR DIR");
-	#endif
 }
 
 void Seguidor::Config_encoder_esq(unsigned char pin_interrupt)
@@ -123,7 +116,6 @@ void Seguidor::Set_parametros(float kp, float kd, float ki, float vb, int vmin)
 	controlador.setControlador(kp, kd, ki);
 }
 
-
 void Seguidor::set_handler()
 {
 	String VB = "", KI_str = "", KP_str = "", KD_str = "", VM_str = "", lixo_str = "";
@@ -204,13 +196,10 @@ float Seguidor::calc_erro()
 {
 	double erro = 0;
 	int Leituras[8];
-	unsigned outsideCheck = 0;
 	
 	for(unsigned i = 0; i < 8; i++){
 		Leituras[i] = sensor_linha[i].Read_Calibrado();
-		if(Leituras[i] < 200) outsideCheck += 1;
 	}
-	outside = outsideCheck == 8;
 
 	for (unsigned int i = 0; i < 8; i++){
 		erro += Leituras[i] * pesos[i];
@@ -221,7 +210,6 @@ float Seguidor::calc_erro()
 		else erro = -20475;
 	}
 
-	Serial.println(erro);
 	return erro;
 }
 
@@ -305,7 +293,7 @@ void Seguidor::controle()
 	
 }
 
-
+//! Não funciona
 void Seguidor::returnToLine(float erro){
 	bool sentido;
 	if(!controlador.getLastDir()){
@@ -325,7 +313,7 @@ void Seguidor::returnToLine(float erro){
 void Seguidor::Run()
 {
 	Enable_motors_drives();
-	start_condition = true;
+	start= true;
 	tempo_corrido = millis();
 	bool fimPista = false;
 }
@@ -371,8 +359,7 @@ void Seguidor::comunica_serial(){
 
 bool Seguidor::Check_stop(){
 
-	if(sensor_dir.Read_sensor() >= 400 and sensor_esq.Read_sensor() <= 100){
-		Serial.println("Li lateral");
+	if(sensor_dir.Read_sensor() >= 2000 and sensor_esq.Read_sensor() <= 100){
 		return true;
 	}
 
@@ -412,7 +399,14 @@ void Seguidor::testeMotores(){
 }
 
 void Seguidor::habiliteiStop(){
-	fimPista = true;
+	end = true;
 	tempo_stop = millis();
-	SerialBT.println("Habilitei Stop");
+}
+
+bool Seguidor::isEnd(){
+	return end;
+}
+
+bool Seguidor::isStar(){
+	return start;
 }

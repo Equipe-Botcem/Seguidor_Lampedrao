@@ -47,6 +47,8 @@ public:
 	void comunica_serial();
 	bool Check_stop();
 	void returnToLine(float);
+	bool isEnd();
+	bool isStar();
 
 	void testeSensores();
 	void testeMotores();
@@ -55,11 +57,8 @@ public:
 
 	String command = "";
 	BluetoothSerial SerialBT;
-	bool start_condition = false;
-	unsigned stop_counter = 0;
 	unsigned long tempo_corrido = 0;
 	unsigned long tempo_stop = 0;
-	bool fimPista = false;
 
 private:
 
@@ -71,7 +70,8 @@ private:
 
 	int VB;
 	int VM;
-	bool outside = false;
+	bool end = false;
+	bool start = false;
 
 
 	//-----------Objetos-----------//

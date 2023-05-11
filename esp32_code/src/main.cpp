@@ -14,36 +14,26 @@ void setup()
 	Serial.begin(115200);
 	seguidor.Init();
 	seguidor.initBluetooth();
-	seguidor.tempo_corrido = millis();
 }
 
 
 void loop(){
-	// seguidor.testeSensores();
-	// seguidor.Check_stop();
-	// delay(1000);
 	
 
 	seguidor.Behavior();
 
-	
-	if(seguidor.start_condition){
+	if(seguidor.isStar()){
 		seguidor.controle();
 	}
 	
-	// Checa se chegou no final
+	// Para o seguidor no final
 	if(millis() - seguidor.tempo_corrido > 5000){
 		Serial.println("Habilitei parada");
-
-		if (seguidor.Check_stop() and seguidor.fimPista == false){
+		if (seguidor.Check_stop() and seguidor.isEnd() == false){
 			seguidor.habiliteiStop();
-		} 
-
-		if(seguidor.fimPista == true and (millis() - seguidor.tempo_stop > 300)){
+		}else if (millis() - seguidor.tempo_stop > 300){
 			seguidor.Stop();
 		}
-	
-
 	}
 
 	
