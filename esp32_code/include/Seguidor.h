@@ -71,6 +71,8 @@ private:
 	int VM;
 	bool end = false;
 	bool start = false;
+
+	// Timers 
 	unsigned long startTime = 0;
 	unsigned long stopTime = 0;
 	unsigned long samplingTime = 0;
