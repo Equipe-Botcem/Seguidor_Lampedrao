@@ -205,6 +205,7 @@ float Seguidor::calc_erro()
 		erro += Leituras[i] * pesos[i];
 	}
 
+	//! O erro max possível será o dos sensores mais nos extremos 
 	if(abs(erro) >= 20475){
 		if (erro > 0) erro = 20475;
 		else erro = -20475;
@@ -254,42 +255,21 @@ void Seguidor::calibration()
 void Seguidor::controle()
 {	
 	// Taxa de amostragem 
-	//if (!tempo_corrido)
-	//{
-		//tempo_corrido = millis();
-
-	//}else if(millis() - tempo_corrido >= controlador.getAmostragem()){
-		//tempo_corrido = 0;
+	if (!samplingTime) samplingTime = millis();
+	else if(millis() - samplingTime >= controlador.getAmostragem()){
+		samplingTime = 0;
 		float erro = calc_erro();
-
-		// // Checa se saiu da linha 
-		// if (outside and (millis() - tempo_corrido >= 50)){
-		// 	returnToLine(erro);
-		// 	return;
-		// } 
-
 		int rot = controlador.calcPID(erro);
-		//int trans = controlador.calcTrans(erro);
-
-		// Serial.print("Motor Dir = ");
-		// Serial.println(VB + rot);
-
-		// Serial.print("Motor Esq = ");
-		// Serial.println(VB - rot);
-
+		// O seguidor reduz quando o erro está muito alto
 		if(abs(erro) > 6000){
 			motor_dir.Set_speed(0.7*VB + rot);
 			motor_esq.Set_speed(0.7*VB - rot);
 		}else{
-
 			motor_dir.Set_speed(VB + rot);
 			motor_esq.Set_speed(VB - rot);
-
-			// motor_dir.Set_speed(VB*1.5 + rot);
-			// motor_esq.Set_speed(VB*1.5 - rot);
 		}
 
-	//}
+	}
 	
 }
 
@@ -310,17 +290,25 @@ void Seguidor::returnToLine(float erro){
 	return;
 }
 
+void Seguidor::stopRoutine(){
+	// Para o seguidor no final da pista 
+	if(millis() - startTime > 5000){
+		if (Check_stop() and isEnd() == false) habiliteiStop();
+		else if (millis() - stopTime > 300) Stop();
+	}
+}
+
 void Seguidor::Run()
 {
 	Enable_motors_drives();
 	start= true;
-	tempo_corrido = millis();
+	stopTime = millis();
 	bool fimPista = false;
 }
 
 void Seguidor::Stop(){
 	Disable_motors_drives();
-	start_condition = false;
+	start = false;
 }
 
 void Seguidor::Behavior()

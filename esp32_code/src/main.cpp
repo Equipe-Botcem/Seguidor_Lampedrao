@@ -25,16 +25,8 @@ void loop(){
 	if(seguidor.isStar()){
 		seguidor.controle();
 	}
-	
-	// Para o seguidor no final
-	if(millis() - seguidor.tempo_corrido > 5000){
-		Serial.println("Habilitei parada");
-		if (seguidor.Check_stop() and seguidor.isEnd() == false){
-			seguidor.habiliteiStop();
-		}else if (millis() - seguidor.tempo_stop > 300){
-			seguidor.Stop();
-		}
-	}
+
+	seguidor.stopRoutine();
 
 	
 }

@@ -49,6 +49,7 @@ public:
 	void returnToLine(float);
 	bool isEnd();
 	bool isStar();
+	void stopRoutine();
 
 	void testeSensores();
 	void testeMotores();
@@ -57,8 +58,6 @@ public:
 
 	String command = "";
 	BluetoothSerial SerialBT;
-	unsigned long tempo_corrido = 0;
-	unsigned long tempo_stop = 0;
 
 private:
 
@@ -72,6 +71,9 @@ private:
 	int VM;
 	bool end = false;
 	bool start = false;
+	unsigned long startTime = 0;
+	unsigned long stopTime = 0;
+	unsigned long samplingTime = 0;
 
 
 	//-----------Objetos-----------//
