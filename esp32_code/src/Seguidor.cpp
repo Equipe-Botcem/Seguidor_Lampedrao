@@ -388,7 +388,7 @@ void Seguidor::testeMotores(){
 
 void Seguidor::habiliteiStop(){
 	end = true;
-	tempo_stop = millis();
+	stopTime = millis();
 }
 
 bool Seguidor::isEnd(){
