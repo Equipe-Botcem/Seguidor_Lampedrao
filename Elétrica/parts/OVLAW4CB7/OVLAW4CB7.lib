@@ -1,0 +1,28 @@
+EESchema-LIBRARY Version 2.3
+#encoding utf-8
+#(c) SnapEDA 2016 (snapeda.com)
+#This work is licensed under a Creative Commons Attribution-ShareAlike 4.0 International License (CC BY-SA) with Design Exception 1.0
+#
+# OVLAW4CB7
+#
+DEF OVLAW4CB7 D 0 40 Y N 1 L N
+F0 "D" -340 90 50 H V L BNN
+F1 "OVLAW4CB7" -341 -130 50 H V L BNN
+F2 "LEDRD254W50D305H520P" 0 0 50 H I L BNN
+F3 "" 0 0 50 H I L BNN
+F4 "OPTEK" 0 0 50 H I L BNN "MANUFACTURER"
+DRAW
+P 2 0 0 10 -100 0 -100 -60 N
+P 2 0 0 10 -100 -60 0 0 N
+P 2 0 0 10 0 0 -100 60 N
+P 2 0 0 10 0 60 0 -60 N
+P 2 0 0 6 -100 0 -200 0 N
+P 2 0 0 10 -30 80 40 160 N
+P 2 0 0 10 -70 80 0 160 N
+S -100 0 -100 60 0 0 10 f
+X ~ C 200 0 200 L 40 40 0 0 P 
+X ~ A -300 0 100 R 40 40 0 0 P 
+ENDDRAW
+ENDDEF
+#
+# End Library

@@ -1,0 +1,25 @@
+EESchema-LIBRARY Version 2.3
+#encoding utf-8
+#(c) SnapEDA 2016 (snapeda.com)
+#This work is licensed under a Creative Commons Attribution-ShareAlike 4.0 International License (CC BY-SA) with Design Exception 1.0
+#
+# FG24X7R2A104KNT06
+#
+DEF FG24X7R2A104KNT06 C 0 40 Y N 1 L N
+F0 "C" 0 150 50 H V L BNN
+F1 "FG24X7R2A104KNT06" 0 -200 50 H V L BNN
+F2 "CAPRB500W50L450T300H550" 0 0 50 H I L BNN
+F3 "" 0 0 50 H I L BNN
+F4 "IPC-7351B" 0 0 50 H I L BNN "STANDARD"
+F5 "0.0 mm" 0 0 50 H I L BNN "MAXIMUM_PACKAGE_HEIGHT"
+F6 "TDK" 0 0 50 H I L BNN "MANUFACTURER"
+F7 "20200310" 0 0 50 H I L BNN "PARTREV"
+DRAW
+S 0 -75 25 75 0 0 0 F
+S 75 -75 100 75 0 0 0 F
+X ~ 1 -100 0 100 R 40 40 0 0 P 
+X ~ 2 200 0 100 L 40 40 0 0 P 
+ENDDRAW
+ENDDEF
+#
+# End Library
