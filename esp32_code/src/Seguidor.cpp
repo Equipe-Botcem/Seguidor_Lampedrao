@@ -42,7 +42,8 @@ void Seguidor::Config_encoder_dir(unsigned char pin_interrupt)
 }
 
 void Seguidor::Config_sensor_linha(unsigned char *pins)
-{
+{	
+
 	for(unsigned i = 0; i < 8; i++){
 		sensor_linha[i] = Sensor(pins[i]);
 	}
@@ -192,28 +193,6 @@ void Seguidor::Disable_motors_drives()
 	motor_dir.Disable_drive();
 }
 
-float Seguidor::calc_erro()
-{
-	double erro = 0;
-	int Leituras[8];
-	
-	for(unsigned i = 0; i < 8; i++){
-		Leituras[i] = sensor_linha[i].Read_Calibrado();
-	}
-
-	for (unsigned int i = 0; i < 8; i++){
-		erro += Leituras[i] * pesos[i];
-	}
-
-	//! O erro max possível será o dos sensores mais nos extremos 
-	if(abs(erro) >= 20475){
-		if (erro > 0) erro = 20475;
-		else erro = -20475;
-	}
-
-	return erro;
-}
-
 void Seguidor::calibration()
 {	
 	unsigned long tempo;
@@ -356,10 +335,31 @@ bool Seguidor::Check_stop(){
 	
 void Seguidor::testeSensores(){
 
-	Serial.print("SE: ");
-	Serial.println(sensor_esq.Read_sensor());
-	Serial.print("SD: ");
-	Serial.println(sensor_dir.Read_sensor());
+	Serial.println(getAngle());
+
+	// Serial.print("S2: ");
+	// Serial.print(sensor_linha[0].Read_histerese());
+	// Serial.print("  S3: ");
+	// Serial.print(sensor_linha[1].Read_histerese());
+	// Serial.print("  S4: ");
+	// Serial.print(sensor_linha[2].Read_histerese());
+	// Serial.print("  S5: ");
+	// Serial.print(sensor_linha[3].Read_histerese());
+	// Serial.print("  S6: ");
+	// Serial.print(sensor_linha[4].Read_histerese());
+	// Serial.print("  S7: ");
+	// Serial.print(sensor_linha[5].Read_histerese());
+	// Serial.print("  S8: ");
+	// Serial.print(sensor_linha[6].Read_histerese());
+	// Serial.print("  S9: ");
+	// Serial.println(sensor_linha[7].Read_histerese());
+	 
+
+
+	// Serial.print("SE: ");
+	// Serial.println(sensor_esq.Read_sensor());
+	// Serial.print("SD: ");
+	// Serial.println(sensor_dir.Read_sensor());
 
 	
 	// Serial.print("S2: ");
@@ -378,6 +378,23 @@ void Seguidor::testeSensores(){
 	// Serial.print(sensor_linha[6].Read_Calibrado());
 	// Serial.print("  S9: ");
 	// Serial.println(sensor_linha[7].Read_Calibrado());
+
+	// Serial.print("S2: ");
+	// Serial.print(sensor_linha[0].Read_sensor());
+	// Serial.print("  S3: ");
+	// Serial.print(sensor_linha[1].Read_sensor());
+	// Serial.print("  S4: ");
+	// Serial.print(sensor_linha[2].Read_sensor());
+	// Serial.print("  S5: ");
+	// Serial.print(sensor_linha[3].Read_sensor());
+	// Serial.print("  S6: ");
+	// Serial.print(sensor_linha[4].Read_sensor());
+	// Serial.print("  S7: ");
+	// Serial.print(sensor_linha[5].Read_sensor());
+	// Serial.print("  S8: ");
+	// Serial.print(sensor_linha[6].Read_sensor());
+	// Serial.print("  S9: ");
+	// Serial.println(sensor_linha[7].Read_sensor());
 	 
 	
 }
@@ -397,4 +414,34 @@ bool Seguidor::isEnd(){
 
 bool Seguidor::isStar(){
 	return start;
+}
+
+
+float Seguidor::mediaPond(int* pos){
+	if((abs(abs(angulos[pos[0]]) - abs(angulos[pos[1]])) > 10)) return angulos[pos[0]];
+	
+	float num = angulos[pos[0]] * sensor_linha[pos[0]].Read_Calibrado() + angulos[pos[1]] * sensor_linha[pos[1]].Read_Calibrado();
+	float den = sensor_linha[pos[0]].Read_Calibrado() + sensor_linha[pos[1]].Read_Calibrado();
+
+	return num / den;
+}
+
+float Seguidor::getAngle(){
+	int pos[2];
+	int aux = 0;
+	bool leitura;
+
+	for(int i = 0; i < 8; i++){
+		leitura = sensor_linha[i].Read_histerese();
+		if (leitura){
+			pos[aux] = i;
+			aux ++;
+		}
+
+		if (aux == 2) break;
+	}
+
+
+	return mediaPond(pos);
+	
 }
