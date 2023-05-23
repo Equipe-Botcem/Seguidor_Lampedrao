@@ -416,32 +416,32 @@ bool Seguidor::isStar(){
 	return start;
 }
 
+float Seguidor::mediaPond(int pos){
+	int num;
+	int den;
 
-float Seguidor::mediaPond(int* pos){
-	if((abs(abs(angulos[pos[0]]) - abs(angulos[pos[1]])) > 10)) return angulos[pos[0]];
-	
-	float num = angulos[pos[0]] * sensor_linha[pos[0]].Read_Calibrado() + angulos[pos[1]] * sensor_linha[pos[1]].Read_Calibrado();
-	float den = sensor_linha[pos[0]].Read_Calibrado() + sensor_linha[pos[1]].Read_Calibrado();
+	if(pos == 0){
+		num = angulos[pos]*sensor_linha[pos].Read_Calibrado() + angulos[pos + 1]*sensor_linha[pos + 1].Read_Calibrado();
+		den = angulos[pos]*angulos[pos + 1];
+	}else if (pos == 7){
+		num = angulos[pos]*sensor_linha[pos].Read_Calibrado() + angulos[pos - 1]*sensor_linha[pos - 1].Read_Calibrado();
+		den = angulos[pos]*angulos[pos - 1];
+	}else{
+		num = angulos[pos]*sensor_linha[pos].Read_Calibrado() + angulos[pos - 1]*sensor_linha[pos - 1].Read_Calibrado() + angulos[pos + 1]*sensor_linha[pos + 1].Read_Calibrado();
+		den = angulos[pos]*angulos[pos - 1]*angulos[pos + 1];
+	}
 
 	return num / den;
 }
 
 float Seguidor::getAngle(){
-	int pos[2];
-	int aux = 0;
-	bool leitura;
+	for(int i = 3; i > 0; i++){
+		if(sensor_linha[i].Read_histerese()) return mediaPond(i);
 
-	for(int i = 0; i < 8; i++){
-		leitura = sensor_linha[i].Read_histerese();
-		if (leitura){
-			pos[aux] = i;
-			aux ++;
+		for(int j = 4; j <= 7; i++){
+			if(sensor_linha[j].Read_histerese()) return mediaPond(j);
 		}
-
-		if (aux == 2) break;
 	}
-
-
-	return mediaPond(pos);
 	
+	return 0;
 }
