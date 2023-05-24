@@ -53,7 +53,6 @@ void Sensor::find_max()
 	if (v_lido > Cmax) Cmax = v_lido;
 }
 
-// ! Testar
 bool Sensor::Read_histerese(){
 	uint16_t v = Read_sensor();
 	int x = (Cmax / 2);

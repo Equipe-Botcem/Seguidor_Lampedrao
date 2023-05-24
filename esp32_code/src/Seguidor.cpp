@@ -422,25 +422,28 @@ float Seguidor::mediaPond(int pos){
 
 	if(pos == 0){
 		num = angulos[pos]*sensor_linha[pos].Read_Calibrado() + angulos[pos + 1]*sensor_linha[pos + 1].Read_Calibrado();
-		den = angulos[pos]*angulos[pos + 1];
+		den = sensor_linha[pos].Read_Calibrado() + sensor_linha[pos + 1].Read_Calibrado();
 	}else if (pos == 7){
 		num = angulos[pos]*sensor_linha[pos].Read_Calibrado() + angulos[pos - 1]*sensor_linha[pos - 1].Read_Calibrado();
-		den = angulos[pos]*angulos[pos - 1];
+		den = sensor_linha[pos].Read_Calibrado() + sensor_linha[pos - 1].Read_Calibrado();
 	}else{
 		num = angulos[pos]*sensor_linha[pos].Read_Calibrado() + angulos[pos - 1]*sensor_linha[pos - 1].Read_Calibrado() + angulos[pos + 1]*sensor_linha[pos + 1].Read_Calibrado();
-		den = angulos[pos]*angulos[pos - 1]*angulos[pos + 1];
+		den = sensor_linha[pos].Read_Calibrado() + sensor_linha[pos - 1].Read_Calibrado() + sensor_linha[pos + 1].Read_Calibrado();
 	}
-
+	Serial.print("Numerador: ");
+	Serial.println(num);
+	Serial.print("Denominador: ");
+	Serial.println(den);
 	return num / den;
 }
 
 float Seguidor::getAngle(){
-	for(int i = 3; i > 0; i++){
-		if(sensor_linha[i].Read_histerese()) return mediaPond(i);
+	int j = 4;
 
-		for(int j = 4; j <= 7; i++){
-			if(sensor_linha[j].Read_histerese()) return mediaPond(j);
-		}
+	for(int i = 3; i >= 0; i--){
+		if(sensor_linha[i].Read_histerese()) return mediaPond(i);
+		if(sensor_linha[j].Read_histerese()) return mediaPond(j);
+		j++;
 	}
 	
 	return 0;

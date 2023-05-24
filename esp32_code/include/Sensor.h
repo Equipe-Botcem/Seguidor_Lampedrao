@@ -3,7 +3,6 @@
 #define RESOLUTION 4095
 
 
-//#define READ_SENSOR
 
 #include "include.h"
 
