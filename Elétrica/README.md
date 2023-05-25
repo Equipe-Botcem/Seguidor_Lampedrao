@@ -2,7 +2,7 @@
 
 ## 1. Projeto Elétrico
 
-O projeto elétrico tem seu funcionamento separado em três parte: potência (alimentação), controle e sensores.
+O projeto elétrico tem seu funcionamento separado em três parte: potência (alimentação) e controle.
 
 ### 1.1. Potência
 
@@ -16,13 +16,13 @@ O circuito de potência é composto pelos seguintes elementos:
 - Diodo;
 - Switchs.
 
+### 1.2. Controle
+
 O circuito de controle é composto pelos seguintes elementos:
 
 - Shield ESP32;
 - Drivers IC: TB9051FTG Single Brushed;
-
-O circuito dos sensores é composto pelos seguintes elementos:
-
+- Encoders;
 - Sensores de Refletância: QRE1117;
 - Resistores: 47Kohns e 47ohns.
 
