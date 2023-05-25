@@ -97,7 +97,7 @@ void Seguidor::Init()
 	sensor_dir.Init();
 
 	// Parametros default
-	Set_parametros(0.0055,0.0125, 0, 100, 5);
+	Set_parametros(2, 0.05, 0.05, 100, 5);
 }
 
 //----------------------- Sets -----------------------//
@@ -239,6 +239,11 @@ void Seguidor::controle(){
 		samplingTime = 0;
 
 		int rot = controlador.calcPID(getAngle());
+		if(abs(rot) == 99){
+			Serial.println("Saiu da pista");
+		} 
+
+		//Serial.println(rot + VB);
 
 		// Atua nos motores conforme a pista 
 		mapeamento(rot);
@@ -322,7 +327,9 @@ bool Seguidor::Check_stop(){
 	return false;
 }		
 	
-void Seguidor::testeSensores(){
+void Seguidor::teste(){
+
+	//controle();
 
 	Serial.println(getAngle());
 
@@ -388,10 +395,6 @@ void Seguidor::testeSensores(){
 	
 }
 
-void Seguidor::testeMotores(){
-	calc_erro();
-}
-
 void Seguidor::habiliteiStop(){
 	end = true;
 	stopTime = millis();
@@ -430,6 +433,7 @@ float Seguidor::getAngle(){
 		if(sensor_linha[j].Read_histerese()) return mediaPond(j);
 		j++;
 	}
+
 	// Caso saia da pista 
 	return -99;
 }

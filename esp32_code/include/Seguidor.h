@@ -51,8 +51,7 @@ public:
 	void stopRoutine();
 	float getAngle();
 
-	void testeSensores();
-	void testeMotores();
+	void teste();
 	void habiliteiStop();
 	float mediaPond(int pos);
 	void mapeamento(int rot);
