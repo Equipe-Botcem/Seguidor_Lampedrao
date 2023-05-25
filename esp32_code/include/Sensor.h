@@ -3,7 +3,6 @@
 #define RESOLUTION 4095
 
 
-//#define READ_SENSOR
 
 #include "include.h"
 
@@ -18,26 +17,24 @@ public:
 	uint16_t Read_sensor();
 	
 	int Read_Calibrado();
+	bool Read_histerese();
 	void find_min();	
 	void find_max();	
 
 	//! Trocar quando for testar na pista
-	double Cmax = 0;
-	double Cmin = RESOLUTION;
+	double Cmax = 1200;
+	double Cmin = 0;
 	
-#if defined(DIAG_MODE)
-	uint16_t telemetria();
-#endif
-	
+	float angle;
 private:
 	unsigned char pin_sensor;
-	
+
 	enum estado{
 		Preto = 0,
 		Branco
 	};
 
-	estado ant;
+	estado ant = Preto;
 };
 
 #endif

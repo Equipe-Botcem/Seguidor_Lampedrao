@@ -50,10 +50,12 @@ public:
 	bool isEnd();
 	bool isStar();
 	void stopRoutine();
+	float getAngle();
 
 	void testeSensores();
 	void testeMotores();
 	void habiliteiStop();
+	float mediaPond(int pos);
 
 
 	String command = "";
@@ -65,7 +67,7 @@ private:
 
 	//-----------Atributos-----------//
 
-	double pesos[8] = {-5, -4, -2, -1, 1, 2, 4, 5};
+	double angulos[8] = {-42.855, -31.430, -17.571, -4.538, 4.538, 17.571, 31.430, 41.855};
 
 	int VB;
 	int VM;
@@ -102,6 +104,7 @@ private:
 
 	// Sensores 
 	unsigned char pins_sensor_linha[8] = {39,35,36,14,25,26,27,32};
+	//unsigned char pins_sensor_linha[8] = {14,25,36,26,35,27,39,32};
 	unsigned char pin_sensor_esq = 13;
 	unsigned char pin_sensor_dir = 33;
 

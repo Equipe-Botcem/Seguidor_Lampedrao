@@ -14,19 +14,23 @@ void setup()
 	Serial.begin(115200);
 	seguidor.Init();
 	seguidor.initBluetooth();
+	//analogReadResolution(10);
 }
 
 
 void loop(){
 	
+	seguidor.testeSensores();
+	delay(500);
 
-	seguidor.Behavior();
 
-	if(seguidor.isStar()){
-		seguidor.controle();
-	}
+	// seguidor.Behavior();
 
-	seguidor.stopRoutine();
+	// if(seguidor.isStar()){
+	// 	seguidor.controle();
+	// }
+
+	// seguidor.stopRoutine();
 
 	
 }
