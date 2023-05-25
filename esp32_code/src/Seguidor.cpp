@@ -417,8 +417,8 @@ bool Seguidor::isStar(){
 }
 
 float Seguidor::mediaPond(int pos){
-	int num;
-	int den;
+	float num;
+	float den;
 
 	if(pos == 0){
 		num = angulos[pos]*sensor_linha[pos].Read_Calibrado() + angulos[pos + 1]*sensor_linha[pos + 1].Read_Calibrado();
@@ -430,10 +430,6 @@ float Seguidor::mediaPond(int pos){
 		num = angulos[pos]*sensor_linha[pos].Read_Calibrado() + angulos[pos - 1]*sensor_linha[pos - 1].Read_Calibrado() + angulos[pos + 1]*sensor_linha[pos + 1].Read_Calibrado();
 		den = sensor_linha[pos].Read_Calibrado() + sensor_linha[pos - 1].Read_Calibrado() + sensor_linha[pos + 1].Read_Calibrado();
 	}
-	Serial.print("Numerador: ");
-	Serial.println(num);
-	Serial.print("Denominador: ");
-	Serial.println(den);
 	return num / den;
 }
 
@@ -445,6 +441,6 @@ float Seguidor::getAngle(){
 		if(sensor_linha[j].Read_histerese()) return mediaPond(j);
 		j++;
 	}
-	
-	return 0;
+	// Caso saia da pista 
+	return -99;
 }
