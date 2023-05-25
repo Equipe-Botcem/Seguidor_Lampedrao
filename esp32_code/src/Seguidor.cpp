@@ -238,36 +238,27 @@ void Seguidor::controle()
 	if (!samplingTime) samplingTime = millis();
 	else if(millis() - samplingTime >= controlador.getAmostragem()){
 		samplingTime = 0;
-		float erro = calc_erro();
-		int rot = controlador.calcPID(erro);
-		// O seguidor reduz quando o erro está muito alto
-		if(abs(erro) > 6000){
-			motor_dir.Set_speed(0.7*VB + rot);
-			motor_esq.Set_speed(0.7*VB - rot);
-		}else{
-			motor_dir.Set_speed(VB + rot);
-			motor_esq.Set_speed(VB - rot);
-		}
 
+		int rot = controlador.calcPID(getAngle());
+
+		// Atua nos motores conforme a pista 
+		mapeamento(rot);
 	}
 	
 }
 
-//! Não funciona
-void Seguidor::returnToLine(float erro){
-	bool sentido;
-	if(!controlador.getLastDir()){
-		SerialBT.println("Girar esquerda");
-		motor_dir.Set_speed(100);
-		motor_esq.Set_speed(0);
-	}else{
-		// direita
-		SerialBT.println("Girar direita");
-		motor_dir.Set_speed(0);
-		motor_esq.Set_speed(100);
-	}
+void Seguidor::mapeamento(int rot){
+	motor_dir.Set_speed(VB + rot);
+	motor_esq.Set_speed(VB - rot);
 
-	return;
+	// // O seguidor reduz quando o erro está muito alto
+	// if(abs(angulos) > 6000){
+	// 	motor_dir.Set_speed(0.7*VB + rot);
+	// 	motor_esq.Set_speed(0.7*VB - rot);
+	// }else{
+	// 	motor_dir.Set_speed(VB + rot);
+	// 	motor_esq.Set_speed(VB - rot);
+	// }
 }
 
 void Seguidor::stopRoutine(){

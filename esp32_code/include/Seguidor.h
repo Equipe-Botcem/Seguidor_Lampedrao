@@ -46,7 +46,6 @@ public:
 	void controle();
 	void comunica_serial();
 	bool Check_stop();
-	void returnToLine(float);
 	bool isEnd();
 	bool isStart();
 	void stopRoutine();
@@ -56,6 +55,7 @@ public:
 	void testeMotores();
 	void habiliteiStop();
 	float mediaPond(int pos);
+	void mapeamento(int rot);
 
 
 	String command = "";

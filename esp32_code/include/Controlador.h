@@ -20,19 +20,16 @@ public:
     void setKd(float kd);
     void setKi(float ki);
     float calcPID(float erro);
-    float calcTrans(float erro);
 
-    // True - direita
-    // False - esquerda
-
-    bool getLastDir();
     float getAmostragem();
 
     
 private:
 	
     float tempo_amostragem = 0.1;
-    double I, D, erro_antigo;
+    float setpoint = 0.0;
+    float I, D, erro_antigo;
+    float erro;
     float Kp;
 	float Kd;
     float Ki;

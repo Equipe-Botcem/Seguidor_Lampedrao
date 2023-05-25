@@ -23,46 +23,18 @@ void Controlador::setControlador(float kp, float kd, float ki){
     setKi(ki);
 }   
 
-float Controlador::calcPID(float erro){
-
-    // if(!outside){
-    //     I += erro * 0.1;   
-    // }else{
-    //     I = 0;
-    //     D = (erro - erro_antigo) / tempo_amostragem;
-    // } 
-
-    D = (erro - erro_antigo) / tempo_amostragem;
-
+float Controlador::calcPID(float angulo){
+    erro = setpoint - angulo;
+    //! Fazer testes com angulos diferentes 
+    if(abs(angulo) > 20){
+        I += erro * 0.1;   
+    }else{
+        I = 0;
+        D = (erro - erro_antigo) / tempo_amostragem;
+    } 
     erro_antigo = erro;
 
-
 	return Kp * erro + Ki * I + Kd * D;
-}
-
-float Controlador::calcTrans(float erro){
-
-    // if(!outside){
-    //     I += erro * 0.1;   
-    // }else{
-    //     I = 0;
-    //     D = (erro - erro_antigo) / tempo_amostragem;
-    // } 
-
-    // D = (erro - erro_antigo) / tempo_amostragem;
-
-    // erro_antigo = erro;
-
-
-	return Ki * erro;
-}
-
-
-bool Controlador::getLastDir(){
-    // Saiu pela esquerda 
-    if(erro_antigo < 0) return false;
-
-    return true;
 }
 
 float Controlador::getAmostragem(){
