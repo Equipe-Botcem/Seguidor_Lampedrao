@@ -19,17 +19,17 @@ void setup()
 
 void loop(){
 	
-	seguidor.testeSensores();
-	delay(500);
+	// seguidor.teste();
+	// delay(500);
 
 
-	// seguidor.Behavior();
+	seguidor.Behavior();
 
-	// if(seguidor.isStar()){
-	// 	seguidor.controle();
-	// }
+	if(seguidor.isStart()){
+		seguidor.controle();
+	}
 
-	// seguidor.stopRoutine();
+	seguidor.stopRoutine();
 
 	
 }

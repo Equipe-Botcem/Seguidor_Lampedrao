@@ -46,16 +46,15 @@ public:
 	void controle();
 	void comunica_serial();
 	bool Check_stop();
-	void returnToLine(float);
 	bool isEnd();
 	bool isStart();
 	void stopRoutine();
 	float getAngle();
 
-	void testeSensores();
-	void testeMotores();
+	void teste();
 	void habiliteiStop();
 	float mediaPond(int pos);
+	void mapeamento(int rot);
 
 
 	String command = "";

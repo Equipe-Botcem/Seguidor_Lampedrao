@@ -97,7 +97,7 @@ void Seguidor::Init()
 	sensor_dir.Init();
 
 	// Parametros default
-	Set_parametros(0.0055,0.0125, 0, 100, 5);
+	Set_parametros(2, 0.05, 0.05, 100, 5);
 }
 
 //----------------------- Sets -----------------------//
@@ -232,42 +232,37 @@ void Seguidor::calibration()
 
 }
 
-void Seguidor::controle()
-{	
+void Seguidor::controle(){	
 	// Taxa de amostragem 
 	if (!samplingTime) samplingTime = millis();
 	else if(millis() - samplingTime >= controlador.getAmostragem()){
 		samplingTime = 0;
-		float erro = calc_erro();
-		int rot = controlador.calcPID(erro);
-		// O seguidor reduz quando o erro está muito alto
-		if(abs(erro) > 6000){
-			motor_dir.Set_speed(0.7*VB + rot);
-			motor_esq.Set_speed(0.7*VB - rot);
-		}else{
-			motor_dir.Set_speed(VB + rot);
-			motor_esq.Set_speed(VB - rot);
-		}
 
+		int rot = controlador.calcPID(getAngle());
+		if(abs(rot) == 99){
+			Serial.println("Saiu da pista");
+		} 
+
+		//Serial.println(rot + VB);
+
+		// Atua nos motores conforme a pista 
+		mapeamento(rot);
 	}
 	
 }
 
-//! Não funciona
-void Seguidor::returnToLine(float erro){
-	bool sentido;
-	if(!controlador.getLastDir()){
-		SerialBT.println("Girar esquerda");
-		motor_dir.Set_speed(100);
-		motor_esq.Set_speed(0);
-	}else{
-		// direita
-		SerialBT.println("Girar direita");
-		motor_dir.Set_speed(0);
-		motor_esq.Set_speed(100);
-	}
+void Seguidor::mapeamento(int rot){
+	motor_dir.Set_speed(VB + rot);
+	motor_esq.Set_speed(VB - rot);
 
-	return;
+	// // O seguidor reduz quando o erro está muito alto
+	// if(abs(angulos) > 6000){
+	// 	motor_dir.Set_speed(0.7*VB + rot);
+	// 	motor_esq.Set_speed(0.7*VB - rot);
+	// }else{
+	// 	motor_dir.Set_speed(VB + rot);
+	// 	motor_esq.Set_speed(VB - rot);
+	// }
 }
 
 void Seguidor::stopRoutine(){
@@ -332,7 +327,9 @@ bool Seguidor::Check_stop(){
 	return false;
 }		
 	
-void Seguidor::testeSensores(){
+void Seguidor::teste(){
+
+	//controle();
 
 	Serial.println(getAngle());
 
@@ -398,10 +395,6 @@ void Seguidor::testeSensores(){
 	
 }
 
-void Seguidor::testeMotores(){
-	calc_erro();
-}
-
 void Seguidor::habiliteiStop(){
 	end = true;
 	stopTime = millis();
@@ -440,6 +433,7 @@ float Seguidor::getAngle(){
 		if(sensor_linha[j].Read_histerese()) return mediaPond(j);
 		j++;
 	}
+
 	// Caso saia da pista 
 	return -99;
 }
