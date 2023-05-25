@@ -239,14 +239,14 @@ void Seguidor::controle(){
 		samplingTime = 0;
 
 		int rot = controlador.calcPID(getAngle());
-		if(abs(rot) == 99){
-			Serial.println("Saiu da pista");
-		} 
 
-		//Serial.println(rot + VB);
+		Serial.print("Motor direito: ");
+		Serial.println(VB + rot);
+		Serial.print("Motor esquerdo: ");
+		Serial.println(VB - rot);
 
 		// Atua nos motores conforme a pista 
-		mapeamento(rot);
+		//mapeamento(rot);
 	}
 	
 }
@@ -329,9 +329,9 @@ bool Seguidor::Check_stop(){
 	
 void Seguidor::teste(){
 
-	//controle();
+	controle();
 
-	Serial.println(getAngle());
+	//Serial.println(getAngle());
 
 	// Serial.print("S2: ");
 	// Serial.print(sensor_linha[0].Read_histerese());
@@ -434,6 +434,8 @@ float Seguidor::getAngle(){
 		j++;
 	}
 
-	// Caso saia da pista 
-	return -99;
+	// Saiu da pista 
+	if(controlador.getLastError()) return 50;
+
+	return -50;
 }
