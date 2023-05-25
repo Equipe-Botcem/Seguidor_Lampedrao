@@ -232,8 +232,7 @@ void Seguidor::calibration()
 
 }
 
-void Seguidor::controle()
-{	
+void Seguidor::controle(){	
 	// Taxa de amostragem 
 	if (!samplingTime) samplingTime = millis();
 	else if(millis() - samplingTime >= controlador.getAmostragem()){
