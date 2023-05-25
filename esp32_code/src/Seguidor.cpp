@@ -42,9 +42,11 @@ void Seguidor::Config_encoder_dir(unsigned char pin_interrupt)
 }
 
 void Seguidor::Config_sensor_linha(unsigned char *pins)
-{
+{	
+
 	for(unsigned i = 0; i < 8; i++){
 		sensor_linha[i] = Sensor(pins[i]);
+		sensor_linha[i].setAngle(angulos[i]);
 	}
 
 }
@@ -95,7 +97,7 @@ void Seguidor::Init()
 	sensor_dir.Init();
 
 	// Parametros default
-	Set_parametros(0.0055,0.0125, 0, 100, 5);
+	Set_parametros(2, 0.05, 0.05, 100, 5);
 }
 
 //----------------------- Sets -----------------------//
@@ -192,28 +194,6 @@ void Seguidor::Disable_motors_drives()
 	motor_dir.Disable_drive();
 }
 
-float Seguidor::calc_erro()
-{
-	double erro = 0;
-	int Leituras[8];
-	
-	for(unsigned i = 0; i < 8; i++){
-		Leituras[i] = sensor_linha[i].Read_Calibrado();
-	}
-
-	for (unsigned int i = 0; i < 8; i++){
-		erro += Leituras[i] * pesos[i];
-	}
-
-	//! O erro max possível será o dos sensores mais nos extremos 
-	if(abs(erro) >= 20475){
-		if (erro > 0) erro = 20475;
-		else erro = -20475;
-	}
-
-	return erro;
-}
-
 void Seguidor::calibration()
 {	
 	unsigned long tempo;
@@ -252,42 +232,37 @@ void Seguidor::calibration()
 
 }
 
-void Seguidor::controle()
-{	
+void Seguidor::controle(){	
 	// Taxa de amostragem 
 	if (!samplingTime) samplingTime = millis();
 	else if(millis() - samplingTime >= controlador.getAmostragem()){
 		samplingTime = 0;
-		float erro = calc_erro();
-		int rot = controlador.calcPID(erro);
-		// O seguidor reduz quando o erro está muito alto
-		if(abs(erro) > 6000){
-			motor_dir.Set_speed(0.7*VB + rot);
-			motor_esq.Set_speed(0.7*VB - rot);
-		}else{
-			motor_dir.Set_speed(VB + rot);
-			motor_esq.Set_speed(VB - rot);
-		}
 
+		int rot = controlador.calcPID(getAngle());
+		if(abs(rot) == 99){
+			Serial.println("Saiu da pista");
+		} 
+
+		//Serial.println(rot + VB);
+
+		// Atua nos motores conforme a pista 
+		mapeamento(rot);
 	}
 	
 }
 
-//! Não funciona
-void Seguidor::returnToLine(float erro){
-	bool sentido;
-	if(!controlador.getLastDir()){
-		SerialBT.println("Girar esquerda");
-		motor_dir.Set_speed(100);
-		motor_esq.Set_speed(0);
-	}else{
-		// direita
-		SerialBT.println("Girar direita");
-		motor_dir.Set_speed(0);
-		motor_esq.Set_speed(100);
-	}
+void Seguidor::mapeamento(int rot){
+	motor_dir.Set_speed(VB + rot);
+	motor_esq.Set_speed(VB - rot);
 
-	return;
+	// // O seguidor reduz quando o erro está muito alto
+	// if(abs(angulos) > 6000){
+	// 	motor_dir.Set_speed(0.7*VB + rot);
+	// 	motor_esq.Set_speed(0.7*VB - rot);
+	// }else{
+	// 	motor_dir.Set_speed(VB + rot);
+	// 	motor_esq.Set_speed(VB - rot);
+	// }
 }
 
 void Seguidor::stopRoutine(){
@@ -347,19 +322,40 @@ void Seguidor::comunica_serial(){
 
 bool Seguidor::Check_stop(){
 
-	if(sensor_dir.Read_sensor() >= 2000 and sensor_esq.Read_sensor() <= 100){
-		return true;
-	}
-
+	if(sensor_dir.Read_sensor() >= RESOLUTION*0.5 and sensor_esq.Read_sensor() <= RESOLUTION*0.1) return true;
+	
 	return false;
 }		
 	
-void Seguidor::testeSensores(){
+void Seguidor::teste(){
 
-	Serial.print("SE: ");
-	Serial.println(sensor_esq.Read_sensor());
-	Serial.print("SD: ");
-	Serial.println(sensor_dir.Read_sensor());
+	//controle();
+
+	Serial.println(getAngle());
+
+	// Serial.print("S2: ");
+	// Serial.print(sensor_linha[0].Read_histerese());
+	// Serial.print("  S3: ");
+	// Serial.print(sensor_linha[1].Read_histerese());
+	// Serial.print("  S4: ");
+	// Serial.print(sensor_linha[2].Read_histerese());
+	// Serial.print("  S5: ");
+	// Serial.print(sensor_linha[3].Read_histerese());
+	// Serial.print("  S6: ");
+	// Serial.print(sensor_linha[4].Read_histerese());
+	// Serial.print("  S7: ");
+	// Serial.print(sensor_linha[5].Read_histerese());
+	// Serial.print("  S8: ");
+	// Serial.print(sensor_linha[6].Read_histerese());
+	// Serial.print("  S9: ");
+	// Serial.println(sensor_linha[7].Read_histerese());
+	 
+
+
+	// Serial.print("SE: ");
+	// Serial.println(sensor_esq.Read_sensor());
+	// Serial.print("SD: ");
+	// Serial.println(sensor_dir.Read_sensor());
 
 	
 	// Serial.print("S2: ");
@@ -378,12 +374,25 @@ void Seguidor::testeSensores(){
 	// Serial.print(sensor_linha[6].Read_Calibrado());
 	// Serial.print("  S9: ");
 	// Serial.println(sensor_linha[7].Read_Calibrado());
+
+	// Serial.print("S2: ");
+	// Serial.print(sensor_linha[0].Read_sensor());
+	// Serial.print("  S3: ");
+	// Serial.print(sensor_linha[1].Read_sensor());
+	// Serial.print("  S4: ");
+	// Serial.print(sensor_linha[2].Read_sensor());
+	// Serial.print("  S5: ");
+	// Serial.print(sensor_linha[3].Read_sensor());
+	// Serial.print("  S6: ");
+	// Serial.print(sensor_linha[4].Read_sensor());
+	// Serial.print("  S7: ");
+	// Serial.print(sensor_linha[5].Read_sensor());
+	// Serial.print("  S8: ");
+	// Serial.print(sensor_linha[6].Read_sensor());
+	// Serial.print("  S9: ");
+	// Serial.println(sensor_linha[7].Read_sensor());
 	 
 	
-}
-
-void Seguidor::testeMotores(){
-	calc_erro();
 }
 
 void Seguidor::habiliteiStop(){
@@ -395,6 +404,36 @@ bool Seguidor::isEnd(){
 	return end;
 }
 
-bool Seguidor::isStar(){
+bool Seguidor::isStart(){
 	return start;
+}
+
+float Seguidor::mediaPond(int pos){
+	float num;
+	float den;
+
+	if(pos == 0){
+		num = sensor_linha[pos].Read_CalibradoPonderado() + sensor_linha[pos + 1].Read_CalibradoPonderado();
+		den = sensor_linha[pos].Read_Calibrado() + sensor_linha[pos + 1].Read_Calibrado();
+	}else if (pos == 7){
+		num = sensor_linha[pos].Read_CalibradoPonderado() + sensor_linha[pos - 1].Read_CalibradoPonderado();
+		den = sensor_linha[pos].Read_Calibrado() + sensor_linha[pos - 1].Read_Calibrado();
+	}else{
+		num =sensor_linha[pos].Read_CalibradoPonderado() + sensor_linha[pos - 1].Read_CalibradoPonderado() + sensor_linha[pos + 1].Read_CalibradoPonderado();
+		den = sensor_linha[pos].Read_Calibrado() + sensor_linha[pos - 1].Read_Calibrado() + sensor_linha[pos + 1].Read_Calibrado();
+	}
+	return num / den;
+}
+
+float Seguidor::getAngle(){
+	int j = 4;
+
+	for(int i = 3; i >= 0; i--){
+		if(sensor_linha[i].Read_histerese()) return mediaPond(i);
+		if(sensor_linha[j].Read_histerese()) return mediaPond(j);
+		j++;
+	}
+
+	// Caso saia da pista 
+	return -99;
 }

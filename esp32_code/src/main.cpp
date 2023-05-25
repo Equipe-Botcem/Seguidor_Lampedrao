@@ -19,10 +19,13 @@ void setup()
 
 void loop(){
 	
+	// seguidor.teste();
+	// delay(500);
+
 
 	seguidor.Behavior();
 
-	if(seguidor.isStar()){
+	if(seguidor.isStart()){
 		seguidor.controle();
 	}
 
