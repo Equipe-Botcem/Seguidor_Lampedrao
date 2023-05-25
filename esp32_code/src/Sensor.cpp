@@ -69,3 +69,11 @@ bool Sensor::Read_histerese(){
 	return ant;
 	
 }
+
+void Sensor::setAngle(float angulo){
+	angle = angulo;
+}
+
+float Sensor::Read_CalibradoPonderado(){
+	return Read_Calibrado()*angle;
+}

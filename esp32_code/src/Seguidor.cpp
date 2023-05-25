@@ -46,6 +46,7 @@ void Seguidor::Config_sensor_linha(unsigned char *pins)
 
 	for(unsigned i = 0; i < 8; i++){
 		sensor_linha[i] = Sensor(pins[i]);
+		sensor_linha[i].setAngle(angulos[i]);
 	}
 
 }
@@ -326,10 +327,8 @@ void Seguidor::comunica_serial(){
 
 bool Seguidor::Check_stop(){
 
-	if(sensor_dir.Read_sensor() >= 2000 and sensor_esq.Read_sensor() <= 100){
-		return true;
-	}
-
+	if(sensor_dir.Read_sensor() >= RESOLUTION*0.5 and sensor_esq.Read_sensor() <= RESOLUTION*0.1) return true;
+	
 	return false;
 }		
 	
@@ -412,7 +411,7 @@ bool Seguidor::isEnd(){
 	return end;
 }
 
-bool Seguidor::isStar(){
+bool Seguidor::isStart(){
 	return start;
 }
 
@@ -421,13 +420,13 @@ float Seguidor::mediaPond(int pos){
 	float den;
 
 	if(pos == 0){
-		num = angulos[pos]*sensor_linha[pos].Read_Calibrado() + angulos[pos + 1]*sensor_linha[pos + 1].Read_Calibrado();
+		num = sensor_linha[pos].Read_CalibradoPonderado() + sensor_linha[pos + 1].Read_CalibradoPonderado();
 		den = sensor_linha[pos].Read_Calibrado() + sensor_linha[pos + 1].Read_Calibrado();
 	}else if (pos == 7){
-		num = angulos[pos]*sensor_linha[pos].Read_Calibrado() + angulos[pos - 1]*sensor_linha[pos - 1].Read_Calibrado();
+		num = sensor_linha[pos].Read_CalibradoPonderado() + sensor_linha[pos - 1].Read_CalibradoPonderado();
 		den = sensor_linha[pos].Read_Calibrado() + sensor_linha[pos - 1].Read_Calibrado();
 	}else{
-		num = angulos[pos]*sensor_linha[pos].Read_Calibrado() + angulos[pos - 1]*sensor_linha[pos - 1].Read_Calibrado() + angulos[pos + 1]*sensor_linha[pos + 1].Read_Calibrado();
+		num =sensor_linha[pos].Read_CalibradoPonderado() + sensor_linha[pos - 1].Read_CalibradoPonderado() + sensor_linha[pos + 1].Read_CalibradoPonderado();
 		den = sensor_linha[pos].Read_Calibrado() + sensor_linha[pos - 1].Read_Calibrado() + sensor_linha[pos + 1].Read_Calibrado();
 	}
 	return num / den;

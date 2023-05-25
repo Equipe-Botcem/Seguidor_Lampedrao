@@ -48,7 +48,7 @@ public:
 	bool Check_stop();
 	void returnToLine(float);
 	bool isEnd();
-	bool isStar();
+	bool isStart();
 	void stopRoutine();
 	float getAngle();
 
@@ -104,7 +104,6 @@ private:
 
 	// Sensores 
 	unsigned char pins_sensor_linha[8] = {39,35,36,14,25,26,27,32};
-	//unsigned char pins_sensor_linha[8] = {14,25,36,26,35,27,39,32};
 	unsigned char pin_sensor_esq = 13;
 	unsigned char pin_sensor_dir = 33;
 

@@ -18,16 +18,19 @@ public:
 	
 	int Read_Calibrado();
 	bool Read_histerese();
+	void setAngle(float angulo);
 	void find_min();	
 	void find_max();	
+	float Read_CalibradoPonderado();
 
 	//! Trocar quando for testar na pista
 	double Cmax = 1200;
 	double Cmin = 0;
 	
-	float angle;
+	
 private:
 	unsigned char pin_sensor;
+	float angle;
 
 	enum estado{
 		Preto = 0,
