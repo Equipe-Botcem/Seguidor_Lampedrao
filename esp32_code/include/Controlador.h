@@ -1,12 +1,6 @@
 #ifndef _CONTROLADOR_
 #define _CONTROLADOR_
 
-#include "motor_drive.h"
-#include "Sensor.h"
-#include "Encoder.h"
-#include "BluetoothSerial.h"
-
-
 class Controlador{
 
 public:
@@ -20,6 +14,9 @@ public:
     void setKd(float kd);
     void setKi(float ki);
     float calcPID(float erro);
+    // 1 Direita 
+    // 0 Esquerda
+    int getLastError();
 
     float getAmostragem();
 

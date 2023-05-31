@@ -1,4 +1,5 @@
 #include "Controlador.h"
+#include "Arduino.h"
 
 
 Controlador::Controlador(){
@@ -24,8 +25,8 @@ void Controlador::setControlador(float kp, float kd, float ki){
 }   
 
 float Controlador::calcPID(float angulo){
+
     erro = setpoint - angulo;
-    //! Fazer testes com angulos diferentes 
     if(abs(angulo) > 20){
         I += erro * 0.1;   
     }else{
@@ -39,4 +40,10 @@ float Controlador::calcPID(float angulo){
 
 float Controlador::getAmostragem(){
     return tempo_amostragem;
+}
+
+int Controlador::getLastError(){
+    if(erro_antigo < 0) return 1;
+
+    return 0;
 }
