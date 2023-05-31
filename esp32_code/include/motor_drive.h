@@ -1,8 +1,6 @@
 #ifndef _MOTOR_DRIVE_
 #define _MOTOR_DRIVE_
 
-#include "include.h"
-
 //#define ON
 
 class Motor_drive
