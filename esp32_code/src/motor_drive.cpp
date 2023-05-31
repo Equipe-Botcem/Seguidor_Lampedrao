@@ -1,4 +1,5 @@
 #include "motor_drive.h"
+#include "Arduino.h"
 
 #if defined(DIAG_MODE)
 void Motor_drive::set_name(String nome){

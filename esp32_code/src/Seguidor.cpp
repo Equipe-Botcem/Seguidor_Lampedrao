@@ -1,4 +1,8 @@
 #include "Seguidor.h"
+#include "Arduino.h"
+
+// ! Precisa ser otimizado a velocidade das medições (provavelmente 0.1)
+SimpleKalmanFilter angleKalmanFilter(1, 1, 0.01);
 
 //----------------------- Construtores -----------------------//
 
@@ -238,15 +242,10 @@ void Seguidor::controle(){
 	else if(millis() - samplingTime >= controlador.getAmostragem()){
 		samplingTime = 0;
 
-		int rot = controlador.calcPID(getAngle());
-
-		Serial.print("Motor direito: ");
-		Serial.println(VB + rot);
-		Serial.print("Motor esquerdo: ");
-		Serial.println(VB - rot);
+		int rot = controlador.calcPID(angleKalmanFilter.updateEstimate(getAngle()));
 
 		// Atua nos motores conforme a pista 
-		//mapeamento(rot);
+		mapeamento(rot);
 	}
 	
 }
@@ -254,21 +253,15 @@ void Seguidor::controle(){
 void Seguidor::mapeamento(int rot){
 	motor_dir.Set_speed(VB + rot);
 	motor_esq.Set_speed(VB - rot);
-
-	// // O seguidor reduz quando o erro está muito alto
-	// if(abs(angulos) > 6000){
-	// 	motor_dir.Set_speed(0.7*VB + rot);
-	// 	motor_esq.Set_speed(0.7*VB - rot);
-	// }else{
-	// 	motor_dir.Set_speed(VB + rot);
-	// 	motor_esq.Set_speed(VB - rot);
-	// }
 }
 
 void Seguidor::stopRoutine(){
 	// Para o seguidor no final da pista 
 	if(millis() - startTime > 5000){
-		if (Check_stop() and isEnd() == false) habiliteiStop();
+		if (Check_stop() and isEnd() == false){
+			end = true;
+			stopTime = millis();
+		}
 		else if (millis() - stopTime > 300) Stop();
 	}
 }
@@ -329,9 +322,14 @@ bool Seguidor::Check_stop(){
 	
 void Seguidor::teste(){
 
-	controle();
+	//controle();
 
-	//Serial.println(getAngle());
+	//Serial.print("Angle:");
+	Serial.println(getAngle());
+	// Serial.print(",");
+	// Serial.print("Kalman_filter:");
+	// Serial.println(angleKalmanFilter.updateEstimate(getAngle()));
+	
 
 	// Serial.print("S2: ");
 	// Serial.print(sensor_linha[0].Read_histerese());
@@ -393,11 +391,6 @@ void Seguidor::teste(){
 	// Serial.println(sensor_linha[7].Read_sensor());
 	 
 	
-}
-
-void Seguidor::habiliteiStop(){
-	end = true;
-	stopTime = millis();
 }
 
 bool Seguidor::isEnd(){

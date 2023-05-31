@@ -1,12 +1,6 @@
 #ifndef _CONTROLADOR_
 #define _CONTROLADOR_
 
-#include "motor_drive.h"
-#include "Sensor.h"
-#include "Encoder.h"
-#include "BluetoothSerial.h"
-
-
 class Controlador{
 
 public:

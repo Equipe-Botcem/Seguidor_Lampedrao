@@ -1,8 +1,6 @@
 #ifndef _ENCODER_
 #define _ENCODER_
 
-#include "include.h"
-
 class Encoder
 {
 private:

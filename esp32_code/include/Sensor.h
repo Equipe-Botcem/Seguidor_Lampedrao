@@ -1,8 +1,7 @@
 #ifndef _SENSOR_
 #define _SENSOR_
 #define RESOLUTION 4095
-
-#include "include.h"
+#include "Arduino.h"
 
 class Sensor
 {
