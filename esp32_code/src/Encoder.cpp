@@ -1,5 +1,4 @@
 #include "Encoder.h"
-#include "Arduino.h"
 
 volatile int Encoder::contador_a = 0;
 

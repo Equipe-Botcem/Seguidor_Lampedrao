@@ -6,7 +6,6 @@
 #include "Encoder.h"
 #include "BluetoothSerial.h"
 #include "Controlador.h"
-#include <SimpleKalmanFilter.h>
 
 
 class Seguidor{
@@ -42,6 +41,7 @@ public:
 	void Run();
 	void Enable_motors_drives();
 	void Disable_motors_drives();
+	float calc_erro();
 	void calibration();
 	void controle();
 	void comunica_serial();
@@ -52,6 +52,7 @@ public:
 	float getAngle();
 
 	void teste();
+	void habiliteiStop();
 	float mediaPond(int pos);
 	void mapeamento(int rot);
 
