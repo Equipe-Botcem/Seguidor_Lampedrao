@@ -324,11 +324,11 @@ void Seguidor::teste(){
 
 	//controle();
 
-	//Serial.print("Angle:");
+	Serial.print("Angle:");
 	Serial.println(getAngle());
-	// Serial.print(",");
-	// Serial.print("Kalman_filter:");
-	// Serial.println(angleKalmanFilter.updateEstimate(getAngle()));
+	Serial.print(",");
+	Serial.print("Kalman_filter:");
+	Serial.println(angleKalmanFilter.updateEstimate(getAngle()));
 	
 
 	// Serial.print("S2: ");
