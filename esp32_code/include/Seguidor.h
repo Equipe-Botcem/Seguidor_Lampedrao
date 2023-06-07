@@ -6,7 +6,6 @@
 #include "Encoder.h"
 #include "BluetoothSerial.h"
 #include "Controlador.h"
-#include <SimpleKalmanFilter.h>
 
 
 class Seguidor{
