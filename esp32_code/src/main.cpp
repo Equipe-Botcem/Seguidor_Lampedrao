@@ -20,8 +20,6 @@ void setup()
 void loop(){
 	
 	seguidor.teste();
-	//delay(500);
-
 
 	// seguidor.Behavior();
 

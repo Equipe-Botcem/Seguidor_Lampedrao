@@ -322,6 +322,7 @@ bool Seguidor::Check_stop(){
 	
 void Seguidor::teste(){
 
+	delay(1);
 	//controle();
 
 	Serial.print("Angle:");
