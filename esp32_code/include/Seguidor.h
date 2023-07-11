@@ -3,7 +3,6 @@
 
 #include "motor_drive.h"
 #include "Sensor.h"
-#include "Encoder.h"
 #include "BluetoothSerial.h"
 #include "Controlador.h"
 
@@ -20,8 +19,6 @@ public:
 	void Config_led_dir(unsigned char pin);
 	void Config_motor_esq(unsigned char *pins);
 	void Config_motor_dir(unsigned char *pins);
-	void Config_encoder_dir(unsigned char pin_interrupt);
-	void Config_encoder_esq(unsigned char pin_interrupt);
 	void Config_sensor_linha(unsigned char *pins);
 	void Config_sensor_esq(unsigned char pin);
 	void Config_sensor_dir(unsigned char pin);
@@ -83,8 +80,6 @@ private:
 	Sensor sensor_linha[8];
 	Sensor sensor_esq;
 	Sensor sensor_dir;
-	Encoder encoder_esq;
-	Encoder encoder_dir;
 	Controlador controlador;
 	
 

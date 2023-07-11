@@ -1,5 +1,6 @@
 #include "Seguidor.h"
 #include "Arduino.h"
+#include "SimpleKalmanFilter.h"
 
 // ! Precisa ser otimizado a velocidade das medições (provavelmente 0.1)
 SimpleKalmanFilter angleKalmanFilter(1, 1, 0.01);
@@ -35,16 +36,6 @@ void Seguidor::Config_motor_dir(unsigned char *pins)
 	motor_dir = Motor_drive(pins[0], pins[1], pins[2], pins[3]);
 }
 
-void Seguidor::Config_encoder_esq(unsigned char pin_interrupt)
-{
-	encoder_esq = Encoder(pin_interrupt);
-}
-
-void Seguidor::Config_encoder_dir(unsigned char pin_interrupt)
-{
-	encoder_dir = Encoder(pin_interrupt);
-}
-
 void Seguidor::Config_sensor_linha(unsigned char *pins)
 {	
 
@@ -72,8 +63,6 @@ void Seguidor::Config_pins()
 	Config_led_esq(led_dir);
 	Config_motor_esq(pins_motor_drive_esq);
 	Config_motor_dir(pins_motor_drive_dir);
-	Config_encoder_esq(pin_encoder_esq);
-	Config_encoder_dir(pin_encoder_dir);
 	Config_sensor_linha(pins_sensor_linha);
 	Config_sensor_esq(pin_sensor_esq);
 	Config_sensor_dir(pin_sensor_dir);
@@ -90,8 +79,6 @@ void Seguidor::Init()
 
 	motor_dir.Init();
 	motor_esq.Init();
-	encoder_esq.Init();
-	encoder_dir.Init();
 
 	for(unsigned i = 0; i < 8; i++){
 		sensor_linha[i].Init();
