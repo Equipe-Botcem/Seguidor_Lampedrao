@@ -63,6 +63,33 @@ void Sensor_linha::calibration_min(){
 
 }
 
-void Sensor_linha::testeLeituraRaw(){
+void Sensor_linha::testeLeitura(ReadType tipo){
 
+    switch (tipo)
+	{
+	case RAW:
+		for (int i = 0; i < 8; i++){
+            Serial.print("Sensor ");
+            Serial.print(String(i));
+            Serial.print(": ");
+            Serial.print(sensores[i].Read_sensor());
+        }
+		break;
+	case CALIB:
+		for (int i = 0; i < 8; i++){
+            Serial.print("Sensor ");
+            Serial.print(String(i));
+            Serial.print(": ");
+            Serial.print(sensores[i].Read_Calibrado());
+        }
+		break;
+	case HIST:
+		for (int i = 0; i < 8; i++){
+            Serial.print("Sensor ");
+            Serial.print(String(i));
+            Serial.print(": ");
+            Serial.print(sensores[i].Read_histerese());
+        }
+		break;
+	}
 }

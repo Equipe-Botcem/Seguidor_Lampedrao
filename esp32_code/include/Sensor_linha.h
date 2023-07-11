@@ -6,14 +6,17 @@
 class Sensor_linha
 {
 public:
+    enum ReadType {RAW = 0, CALIB, HIST};
+
 	Sensor_linha();
 	Sensor_linha(unsigned char* pins);
 	void Init();
 
     void calibration_max(); 
     void calibration_min(); 
-	void testeLeituraRaw();
     float getAngle();
+
+	void testeLeitura(ReadType tipo);
 	
 private:
     Sensor sensores[8];

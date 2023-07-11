@@ -285,76 +285,16 @@ bool Seguidor::Check_stop(){
 	
 void Seguidor::teste(){
 
-	// delay(1);
-	// //controle();
-
 	// Serial.print("Angle:");
 	// Serial.println(getAngle());
 	// Serial.print(",");
 	// Serial.print("Kalman_filter:");
 	// Serial.println(angleKalmanFilter.updateEstimate(getAngle()));
 	
-
-	// Serial.print("S2: ");
-	// Serial.print(sensor_linha[0].Read_histerese());
-	// Serial.print("  S3: ");
-	// Serial.print(sensor_linha[1].Read_histerese());
-	// Serial.print("  S4: ");
-	// Serial.print(sensor_linha[2].Read_histerese());
-	// Serial.print("  S5: ");
-	// Serial.print(sensor_linha[3].Read_histerese());
-	// Serial.print("  S6: ");
-	// Serial.print(sensor_linha[4].Read_histerese());
-	// Serial.print("  S7: ");
-	// Serial.print(sensor_linha[5].Read_histerese());
-	// Serial.print("  S8: ");
-	// Serial.print(sensor_linha[6].Read_histerese());
-	// Serial.print("  S9: ");
-	// Serial.println(sensor_linha[7].Read_histerese());
+	//controle();
+	//sensor_linha.testeLeitura(sensor_linha.CALIB);
 	 
-
-
-	// Serial.print("SE: ");
-	// Serial.println(sensor_esq.Read_sensor());
-	// Serial.print("SD: ");
-	// Serial.println(sensor_dir.Read_sensor());
-
-	
-	// Serial.print("S2: ");
-	// Serial.print(sensor_linha[0].Read_Calibrado());
-	// Serial.print("  S3: ");
-	// Serial.print(sensor_linha[1].Read_Calibrado());
-	// Serial.print("  S4: ");
-	// Serial.print(sensor_linha[2].Read_Calibrado());
-	// Serial.print("  S5: ");
-	// Serial.print(sensor_linha[3].Read_Calibrado());
-	// Serial.print("  S6: ");
-	// Serial.print(sensor_linha[4].Read_Calibrado());
-	// Serial.print("  S7: ");
-	// Serial.print(sensor_linha[5].Read_Calibrado());
-	// Serial.print("  S8: ");
-	// Serial.print(sensor_linha[6].Read_Calibrado());
-	// Serial.print("  S9: ");
-	// Serial.println(sensor_linha[7].Read_Calibrado());
-
-	// Serial.print("S2: ");
-	// Serial.print(sensor_linha[0].Read_sensor());
-	// Serial.print("  S3: ");
-	// Serial.print(sensor_linha[1].Read_sensor());
-	// Serial.print("  S4: ");
-	// Serial.print(sensor_linha[2].Read_sensor());
-	// Serial.print("  S5: ");
-	// Serial.print(sensor_linha[3].Read_sensor());
-	// Serial.print("  S6: ");
-	// Serial.print(sensor_linha[4].Read_sensor());
-	// Serial.print("  S7: ");
-	// Serial.print(sensor_linha[5].Read_sensor());
-	// Serial.print("  S8: ");
-	// Serial.print(sensor_linha[6].Read_sensor());
-	// Serial.print("  S9: ");
-	// Serial.println(sensor_linha[7].Read_sensor());
-	 
-	
+	delay(1);
 }
 
 bool Seguidor::isEnd(){
