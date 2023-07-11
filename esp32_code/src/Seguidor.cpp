@@ -38,12 +38,7 @@ void Seguidor::Config_motor_dir(unsigned char *pins)
 
 void Seguidor::Config_sensor_linha(unsigned char *pins)
 {	
-
-	for(unsigned i = 0; i < 8; i++){
-		sensor_linha[i] = Sensor(pins[i]);
-		sensor_linha[i].setAngle(angulos[i]);
-	}
-
+	sensor_linha = Sensor_linha(pins);
 }
 
 void Seguidor::Config_sensor_esq(unsigned char pin)
@@ -79,11 +74,7 @@ void Seguidor::Init()
 
 	motor_dir.Init();
 	motor_esq.Init();
-
-	for(unsigned i = 0; i < 8; i++){
-		sensor_linha[i].Init();
-	}
-	
+	sensor_linha.Init();
 	sensor_esq.Init();
 	sensor_dir.Init();
 
@@ -98,20 +89,15 @@ void Seguidor::Set_VB(int vb){
 	VB = vb;
 }
 
-void Seguidor::Set_VM(int vmin){
-	VM = vmin;
-}
-
 void Seguidor::Set_parametros(float kp, float kd, float ki, float vb, int vmin)
 {
 	Set_VB(vb);
-	Set_VM(vmin);
 	controlador.setControlador(kp, kd, ki);
 }
 
 void Seguidor::set_handler()
 {
-	String VB = "", KI_str = "", KP_str = "", KD_str = "", VM_str = "", lixo_str = "";
+	String VB = "", KI_str = "", KP_str = "", KD_str = "", lixo_str = "";
 	int pos = command.indexOf(',', 2);
 	Serial.println(command);
 	for (int i = 4; i < pos; i++)
@@ -131,10 +117,6 @@ void Seguidor::set_handler()
 
 	pos = command.indexOf(',', pos2 + 1);
 	for (int i = pos2 + 3; i < pos; i++)
-		VM_str += command[i];
-
-	pos2 = command.indexOf(',', pos + 1);
-	for (int i = pos + 3; i < pos2; i++)
 		lixo_str += command[i];
 
 	
@@ -143,7 +125,6 @@ void Seguidor::set_handler()
 	controlador.setKp(KP_str.toDouble() / 10000);
 	controlador.setKd(KD_str.toDouble() / 10000);
 	controlador.setKi(KI_str.toDouble() / 10000);
-	Set_VM(VM_str.toInt());
 
 
 	// Bluetooth check
@@ -164,12 +145,7 @@ void Seguidor::set_handler()
 	SerialBT.print(KD_str);
 	SerialBT.print(" ");
 
-	SerialBT.print("VMIN:");
-	SerialBT.print(VM);
-	SerialBT.print(" ");
-
 }
-
 
 //----------------------- Other Functions -----------------------//
 
@@ -198,7 +174,7 @@ void Seguidor::calibration()
 		motor_dir.Set_speed(-80);
 		motor_esq.Set_speed(-80);
 
-		for(unsigned i = 0; i < 8; i++) sensor_linha[i].find_max();
+		sensor_linha.calibration_max();
 
 		sensor_esq.find_max();
 		sensor_dir.find_max();
@@ -212,7 +188,7 @@ void Seguidor::calibration()
 		motor_dir.Set_speed(80);
 		motor_esq.Set_speed(80);
 
-		for(unsigned i = 0; i < 8; i++) sensor_linha[i].find_min();
+		sensor_linha.calibration_min();
 
 		sensor_esq.find_min();
 		sensor_dir.find_min();
@@ -229,7 +205,7 @@ void Seguidor::controle(){
 	else if(millis() - samplingTime >= controlador.getAmostragem()){
 		samplingTime = 0;
 
-		int rot = controlador.calcPID(angleKalmanFilter.updateEstimate(getAngle()));
+		int rot = controlador.calcPID(angleKalmanFilter.updateEstimate(sensor_linha.getAngle()));
 
 		// Atua nos motores conforme a pista 
 		mapeamento(rot);
@@ -309,14 +285,14 @@ bool Seguidor::Check_stop(){
 	
 void Seguidor::teste(){
 
-	delay(1);
-	//controle();
+	// delay(1);
+	// //controle();
 
-	Serial.print("Angle:");
-	Serial.println(getAngle());
-	Serial.print(",");
-	Serial.print("Kalman_filter:");
-	Serial.println(angleKalmanFilter.updateEstimate(getAngle()));
+	// Serial.print("Angle:");
+	// Serial.println(getAngle());
+	// Serial.print(",");
+	// Serial.print("Kalman_filter:");
+	// Serial.println(angleKalmanFilter.updateEstimate(getAngle()));
 	
 
 	// Serial.print("S2: ");
@@ -389,34 +365,3 @@ bool Seguidor::isStart(){
 	return start;
 }
 
-float Seguidor::mediaPond(int pos){
-	float num;
-	float den;
-
-	if(pos == 0){
-		num = sensor_linha[pos].Read_CalibradoPonderado() + sensor_linha[pos + 1].Read_CalibradoPonderado();
-		den = sensor_linha[pos].Read_Calibrado() + sensor_linha[pos + 1].Read_Calibrado();
-	}else if (pos == 7){
-		num = sensor_linha[pos].Read_CalibradoPonderado() + sensor_linha[pos - 1].Read_CalibradoPonderado();
-		den = sensor_linha[pos].Read_Calibrado() + sensor_linha[pos - 1].Read_Calibrado();
-	}else{
-		num =sensor_linha[pos].Read_CalibradoPonderado() + sensor_linha[pos - 1].Read_CalibradoPonderado() + sensor_linha[pos + 1].Read_CalibradoPonderado();
-		den = sensor_linha[pos].Read_Calibrado() + sensor_linha[pos - 1].Read_Calibrado() + sensor_linha[pos + 1].Read_Calibrado();
-	}
-	return num / den;
-}
-
-float Seguidor::getAngle(){
-	int j = 4;
-
-	for(int i = 3; i >= 0; i--){
-		if(sensor_linha[i].Read_histerese()) return mediaPond(i);
-		if(sensor_linha[j].Read_histerese()) return mediaPond(j);
-		j++;
-	}
-
-	// Saiu da pista 
-	if(controlador.getLastError()) return 50;
-
-	return -50;
-}

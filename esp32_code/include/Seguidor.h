@@ -5,6 +5,7 @@
 #include "Sensor.h"
 #include "BluetoothSerial.h"
 #include "Controlador.h"
+#include "Sensor_linha.h"
 
 
 class Seguidor{
@@ -28,7 +29,6 @@ public:
 
 	// Sets parametros
 	void Set_VB(int vb);
-	void Set_VM(int vmin);
 	void set_handler();
 	void Set_parametros(float kp, float kd, float ki, float vb, int vmin);
 
@@ -45,10 +45,9 @@ public:
 	bool isEnd();
 	bool isStart();
 	void stopRoutine();
-	float getAngle();
+
 
 	void teste();
-	float mediaPond(int pos);
 	void mapeamento(int rot);
 
 
@@ -61,10 +60,7 @@ private:
 
 	//-----------Atributos-----------//
 
-	double angulos[8] = {-42.855, -31.430, -17.571, -4.538, 4.538, 17.571, 31.430, 41.855};
-
 	int VB;
-	int VM;
 	bool end = false;
 	bool start = false;
 
@@ -77,7 +73,7 @@ private:
 	//-----------Objetos-----------//
 	Motor_drive motor_esq;
 	Motor_drive motor_dir;
-	Sensor sensor_linha[8];
+	Sensor_linha sensor_linha;
 	Sensor sensor_esq;
 	Sensor sensor_dir;
 	Controlador controlador;
@@ -86,12 +82,10 @@ private:
 	//-----------Pinos-----------//
 	// Motor 2
 	unsigned char pins_motor_drive_esq[4] = {2,15,18,21};
-	unsigned char pin_encoder_esq = 16;
 	unsigned char led_dir = 12;
 
 	// Motor 1
 	unsigned char pins_motor_drive_dir[4] = {22,5,4,19};
-	unsigned char pin_encoder_dir = 17;
 	unsigned char led_esq = 23;
 
 	// Sensores 
