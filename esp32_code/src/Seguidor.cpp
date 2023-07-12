@@ -3,7 +3,7 @@
 #include "SimpleKalmanFilter.h"
 
 // ! Precisa ser otimizado a velocidade das medições (provavelmente 0.1)
-SimpleKalmanFilter angleKalmanFilter(1, 1, 0.01);
+SimpleKalmanFilter angleKalmanFilter(0.01, 0.01, 0.005);
 
 //----------------------- Construtores -----------------------//
 
@@ -285,14 +285,14 @@ bool Seguidor::Check_stop(){
 	
 void Seguidor::teste(){
 
-	// Serial.print("Angle:");
-	// Serial.println(getAngle());
-	// Serial.print(",");
-	// Serial.print("Kalman_filter:");
-	// Serial.println(angleKalmanFilter.updateEstimate(getAngle()));
+	Serial.print("Angle:");
+	Serial.println(sensor_linha.getAngle());
+	Serial.print(",");
+	Serial.print("Kalman_filter:");
+	Serial.println(angleKalmanFilter.updateEstimate(sensor_linha.getAngle()));
 	
 	//controle();
-	//sensor_linha.testeLeitura(sensor_linha.CALIB);
+	//sensor_linha.testeLeitura(sensor_linha.HIST);
 	 
 	delay(1);
 }

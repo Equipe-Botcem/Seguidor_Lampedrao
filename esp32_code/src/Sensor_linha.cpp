@@ -69,27 +69,33 @@ void Sensor_linha::testeLeitura(ReadType tipo){
 	{
 	case RAW:
 		for (int i = 0; i < 8; i++){
-            Serial.print("Sensor ");
+            Serial.print("S");
             Serial.print(String(i));
             Serial.print(": ");
             Serial.print(sensores[i].Read_sensor());
+			Serial.print("       ");
         }
+		Serial.println();
 		break;
 	case CALIB:
 		for (int i = 0; i < 8; i++){
-            Serial.print("Sensor ");
+            Serial.print("S");
             Serial.print(String(i));
             Serial.print(": ");
             Serial.print(sensores[i].Read_Calibrado());
+			Serial.print("       ");
         }
+		Serial.println();
 		break;
 	case HIST:
 		for (int i = 0; i < 8; i++){
-            Serial.print("Sensor ");
+            Serial.print("S");
             Serial.print(String(i));
             Serial.print(": ");
             Serial.print(sensores[i].Read_histerese());
+			Serial.print("       ");
         }
+		Serial.println();
 		break;
 	}
 }
