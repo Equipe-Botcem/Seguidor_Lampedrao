@@ -1,9 +1,6 @@
 #include "Seguidor.h"
 #include "Arduino.h"
-#include "SimpleKalmanFilter.h"
 
-// ! Precisa ser otimizado a velocidade das medições (provavelmente 0.1)
-SimpleKalmanFilter angleKalmanFilter(0.01, 0.01, 0.005);
 
 //----------------------- Construtores -----------------------//
 
@@ -200,7 +197,7 @@ void Seguidor::controle(){
 	else if(millis() - samplingTime >= controlador.getAmostragem()){
 		samplingTime = 0;
 
-		int rot = controlador.calcPID(angleKalmanFilter.updateEstimate(sensor_linha.getAngle()));
+		int rot = controlador.calcPID(sensor_linha.getAngle());
 
 		// Atua nos motores conforme a pista 
 		mapeamento(rot);
@@ -280,9 +277,9 @@ bool Seguidor::Check_stop(){
 }		
 	
 void Seguidor::teste(){
-	// Serial.print(controlador.calcPID(angleKalmanFilter.updateEstimate(sensor_linha.getAngle())));
+	//Serial.print(controlador.calcPID();
 	// Serial.print("        ");
-	// Serial.println(sensor_linha.getAngle());
+	Serial.println(sensor_linha.getAngle());
 
 	// Serial.print("Angle:");
 	// Serial.println(sensor_linha.getAngle());

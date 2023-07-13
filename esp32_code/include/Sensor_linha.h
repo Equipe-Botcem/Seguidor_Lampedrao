@@ -3,6 +3,7 @@
 #include "Arduino.h"
 #include "Sensor.h"
 
+
 class Sensor_linha
 {
 public:
@@ -14,6 +15,7 @@ public:
 
     void calibration_max(); 
     void calibration_min(); 
+    float getAngleRaw();
     float getAngle();
 
 	void testeLeitura(ReadType tipo);

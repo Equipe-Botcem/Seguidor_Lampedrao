@@ -1,4 +1,7 @@
 #include "Sensor_linha.h"
+#include "SimpleKalmanFilter.h"
+
+SimpleKalmanFilter angleKalmanFilter(0.01, 0.01, 0.005);
 
 Sensor_linha::Sensor_linha(){}
 
@@ -16,7 +19,7 @@ void Sensor_linha::Init(){
 	}
 }
 
-float Sensor_linha::getAngle(){
+float Sensor_linha::getAngleRaw(){
     int j = 4;
 
 	for(int i = 3; i >= 0; i--){
@@ -35,6 +38,10 @@ float Sensor_linha::getAngle(){
 	if(last_read < 0) return -50;
 
 	return 50;
+}
+
+float Sensor_linha::getAngle(){
+	return angleKalmanFilter.updateEstimate(getAngleRaw());
 }
 
 float Sensor_linha::mediaPond(int pos){
