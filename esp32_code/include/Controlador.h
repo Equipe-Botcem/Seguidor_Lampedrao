@@ -14,22 +14,17 @@ public:
     void setKd(float kd);
     void setKi(float ki);
     float calcPID(float erro);
-    // 1 Direita 
-    // 0 Esquerda
-    int getLastError();
-
     float getAmostragem();
+    void resetConditions();
+    void teste();
 
     
 private:
 	
     float tempo_amostragem = 0.1;
-    float setpoint = 0.0;
-    float I, D, erro_antigo;
-    float erro;
-    float Kp;
-	float Kd;
-    float Ki;
+    float atuation_k1;
+    float erro, erro_k1, erro_k2;
+    float Kp, Kd, Ki;
 
 
 };

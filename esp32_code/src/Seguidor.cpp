@@ -78,8 +78,8 @@ void Seguidor::Init()
 	sensor_esq.Init();
 	sensor_dir.Init();
 
-	// Parametros default
-	Set_parametros(2, 0.05, 0.05, 100, 5);
+	controlador.setControlador(1, 0, 0.1);
+	controlador.resetConditions();
 }
 
 //----------------------- Sets -----------------------//
@@ -89,11 +89,6 @@ void Seguidor::Set_VB(int vb){
 	VB = vb;
 }
 
-void Seguidor::Set_parametros(float kp, float kd, float ki, float vb, int vmin)
-{
-	Set_VB(vb);
-	controlador.setControlador(kp, kd, ki);
-}
 
 void Seguidor::set_handler()
 {
@@ -232,9 +227,10 @@ void Seguidor::stopRoutine(){
 void Seguidor::Run()
 {
 	Enable_motors_drives();
-	start= true;
+	start = true;
 	stopTime = millis();
 	bool fimPista = false;
+	controlador.resetConditions();
 }
 
 void Seguidor::Stop(){
@@ -284,12 +280,15 @@ bool Seguidor::Check_stop(){
 }		
 	
 void Seguidor::teste(){
+	// Serial.print(controlador.calcPID(angleKalmanFilter.updateEstimate(sensor_linha.getAngle())));
+	// Serial.print("        ");
+	// Serial.println(sensor_linha.getAngle());
 
-	Serial.print("Angle:");
-	Serial.println(sensor_linha.getAngle());
-	Serial.print(",");
-	Serial.print("Kalman_filter:");
-	Serial.println(angleKalmanFilter.updateEstimate(sensor_linha.getAngle()));
+	// Serial.print("Angle:");
+	// Serial.println(sensor_linha.getAngle());
+	// Serial.print(",");
+	// Serial.print("Kalman_filter:");
+	// Serial.println(angleKalmanFilter.updateEstimate(sensor_linha.getAngle()));
 	
 	//controle();
 	//sensor_linha.testeLeitura(sensor_linha.HIST);
