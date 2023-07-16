@@ -1,42 +1,6 @@
 #include "motor_drive.h"
 #include "Arduino.h"
 
-#if defined(DIAG_MODE)
-void Motor_drive::set_name(String nome){
-	name = nome;
-}
-
-void Motor_drive::telemetria()
-{
-	Serial.println("|===============TELEMETRIA DO MOTOR DO ROBO===============|");
-	Serial.print("\tMOTOR VERIFICADO: ");
-	Serial.println(name);
-	Serial.print("\tTIME: ");
-	Serial.print((millis() - timer_exec) / 1000);
-	Serial.println(" sec");
-	Serial.println("---------------------------------------------------------------");
-	Serial.print("MOTOR DIRECTION: ");
-	if (motor_direction)
-	{
-		Serial.println("FRENTE");
-		analogWrite(pin_PWM_1, motor_speed);
-		analogWrite(pin_PWM_2, LOW);
-
-	}
-	else
-	{
-		Serial.println("TRAS");
-		analogWrite(pin_PWM_1, LOW);
-		analogWrite(pin_PWM_2, motor_speed);
-	}
-	Serial.print("MOTOR SPEED: ");
-	Serial.println(motor_speed);
-	Serial.print("MOTOR CURRENT: ");
-	Serial.println(Get_current_milliamps());
-	Serial.println("|==============================================================|");
-}
-#endif
-
 Motor_drive::Motor_drive()
 {
 }

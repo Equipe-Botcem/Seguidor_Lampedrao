@@ -7,7 +7,7 @@
 class Sensor_linha
 {
 public:
-    enum ReadType {RAW = 0, CALIB, HIST};
+    enum ReadType {RAW = 0, CALIB, HIST, KALMAN};
 
 	Sensor_linha();
 	Sensor_linha(unsigned char* pins);

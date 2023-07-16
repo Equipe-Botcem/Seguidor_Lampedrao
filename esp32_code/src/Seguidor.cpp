@@ -23,14 +23,9 @@ void Seguidor::Config_led_dir(unsigned char pin)
 	digitalWrite(pin, LOW);
 }
 
-void Seguidor::Config_motor_esq(unsigned char *pins)
+void Seguidor::Config_motors(unsigned char *pins_dir, unsigned char *pins_esq)
 {
-	motor_esq = Motor_drive(pins[0], pins[1], pins[2], pins[3]);
-}
-
-void Seguidor::Config_motor_dir(unsigned char *pins)
-{
-	motor_dir = Motor_drive(pins[0], pins[1], pins[2], pins[3]);
+	driver = Driver(pins_dir, pins_esq);
 }
 
 void Seguidor::Config_sensor_linha(unsigned char *pins)
@@ -53,8 +48,7 @@ void Seguidor::Config_pins()
 
 	Config_led_esq(led_esq);
 	Config_led_esq(led_dir);
-	Config_motor_esq(pins_motor_drive_esq);
-	Config_motor_dir(pins_motor_drive_dir);
+	Config_motors(pins_motor_drive_dir, pins_motor_drive_esq);
 	Config_sensor_linha(pins_sensor_linha);
 	Config_sensor_esq(pin_sensor_esq);
 	Config_sensor_dir(pin_sensor_dir);
@@ -69,8 +63,7 @@ void Seguidor::Init()
 {
 	Config_pins();
 
-	motor_dir.Init();
-	motor_esq.Init();
+	driver.Init();
 	sensor_linha.Init();
 	sensor_esq.Init();
 	sensor_dir.Init();
@@ -78,14 +71,6 @@ void Seguidor::Init()
 	controlador.setControlador(1, 0, 0.1);
 	controlador.resetConditions();
 }
-
-//----------------------- Sets -----------------------//
-
-
-void Seguidor::Set_VB(int vb){
-	VB = vb;
-}
-
 
 void Seguidor::set_handler()
 {
@@ -113,7 +98,7 @@ void Seguidor::set_handler()
 
 	
 	// Configura osf parâmetros do controlador  
-	Set_VB(VB.toInt());
+	driver.setVB_reta(VB.toInt());
 	controlador.setKp(KP_str.toDouble() / 10000);
 	controlador.setKd(KD_str.toDouble() / 10000);
 	controlador.setKi(KI_str.toDouble() / 10000);
@@ -140,19 +125,6 @@ void Seguidor::set_handler()
 }
 
 //----------------------- Other Functions -----------------------//
-
-void Seguidor::Enable_motors_drives()
-{
-	motor_esq.Enable_drive();
-	motor_dir.Enable_drive();
-}
-
-void Seguidor::Disable_motors_drives()
-{
-	motor_esq.Disable_drive();
-	motor_dir.Disable_drive();
-}
-
 void Seguidor::calibration()
 {	
 	unsigned long tempo;
@@ -161,24 +133,21 @@ void Seguidor::calibration()
 
 	while(millis() - tempo < 300){
 
-		Enable_motors_drives();
-
-		motor_dir.Set_speed(-80);
-		motor_esq.Set_speed(-80);
+		driver.Enable_motors_drives();
+		driver.Set_speedTrans(-80);
 
 		sensor_linha.calibration_max();
 
 		sensor_esq.find_max();
 		sensor_dir.find_max();
 	}
-	Disable_motors_drives();
+	driver.Disable_motors_drives();
 
 	tempo = millis();
 	while(millis() - tempo < 300){
-		Enable_motors_drives();
+		driver.Enable_motors_drives();
 
-		motor_dir.Set_speed(80);
-		motor_esq.Set_speed(80);
+		driver.Set_speedTrans(80);
 
 		sensor_linha.calibration_min();
 
@@ -186,7 +155,7 @@ void Seguidor::calibration()
 		sensor_dir.find_min();
 	}
 
-	Disable_motors_drives();
+	driver.Disable_motors_drives();
 
 
 }
@@ -197,17 +166,24 @@ void Seguidor::controle(){
 	else if(millis() - samplingTime >= controlador.getAmostragem()){
 		samplingTime = 0;
 
-		int rot = controlador.calcPID(sensor_linha.getAngle());
+		float erro = sensor_linha.getAngle();
+
+		int rot = controlador.calcPID(erro);
 
 		// Atua nos motores conforme a pista 
-		mapeamento(rot);
+		driver.Set_speedTrans(rot);
 	}
 	
 }
 
-void Seguidor::mapeamento(int rot){
-	motor_dir.Set_speed(VB + rot);
-	motor_esq.Set_speed(VB - rot);
+void Seguidor::mapeamento(){
+	if(Check_latEsq){
+		if(millis() - latEsqTime > 3000){
+			latEsqTime = millis();
+			driver.setVB_reta(60);
+		}	
+	}
+	
 }
 
 void Seguidor::stopRoutine(){
@@ -223,7 +199,7 @@ void Seguidor::stopRoutine(){
 
 void Seguidor::Run()
 {
-	Enable_motors_drives();
+	driver.Enable_motors_drives();
 	start = true;
 	stopTime = millis();
 	bool fimPista = false;
@@ -231,7 +207,7 @@ void Seguidor::Run()
 }
 
 void Seguidor::Stop(){
-	Disable_motors_drives();
+	driver.Disable_motors_drives();
 	start = false;
 }
 
@@ -275,21 +251,31 @@ bool Seguidor::Check_stop(){
 	
 	return false;
 }		
+
+bool Seguidor::Check_latEsq(){
+
+	if(sensor_esq.Read_sensor() >= RESOLUTION*0.5 and sensor_dir.Read_sensor() <= RESOLUTION*0.1) return true;
+	
+	return false;
+}
 	
 void Seguidor::teste(){
 	//Serial.print(controlador.calcPID();
 	// Serial.print("        ");
-	Serial.println(sensor_linha.getAngle());
-
-	// Serial.print("Angle:");
-	// Serial.println(sensor_linha.getAngle());
-	// Serial.print(",");
-	// Serial.print("Kalman_filter:");
-	// Serial.println(angleKalmanFilter.updateEstimate(sensor_linha.getAngle()));
+	//Serial.println(sensor_linha.getAngle());
 	
 	//controle();
 	//sensor_linha.testeLeitura(sensor_linha.HIST);
-	 
+	// float erro = sensor_linha.getAngle() - 2*rot_k1;
+
+	// int rot = controlador.calcPID(erro);
+
+	// rot_k1 = rot;
+
+	// Serial.print(erro);
+	// Serial.print("  ");
+	// Serial.println(rot);
+
 	delay(1);
 }
 

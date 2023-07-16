@@ -104,5 +104,14 @@ void Sensor_linha::testeLeitura(ReadType tipo){
         }
 		Serial.println();
 		break;
+
+		case KALMAN:
+			Serial.print("Angle:");
+			Serial.println(getAngleRaw());
+			Serial.print(",");
+			Serial.print("Kalman_filter:");
+			Serial.println(getAngle());
+		break;
 	}
 }
+

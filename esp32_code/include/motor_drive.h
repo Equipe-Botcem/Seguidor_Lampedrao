@@ -18,11 +18,6 @@ public:
  
 	void Set_speed(int speed);
 
-	#if defined(DIAG_MODE)
-		String name;
-		void set_name(String nome);
-		void telemetria();
-	#endif
 private:
 
 	unsigned char pin_PWM_1;

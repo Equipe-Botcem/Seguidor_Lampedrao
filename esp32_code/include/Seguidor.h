@@ -1,6 +1,7 @@
 #ifndef _SEGUIDOR_
 #define _SEGUIDOR_
 
+#include "Driver.h"
 #include "motor_drive.h"
 #include "Sensor.h"
 #include "BluetoothSerial.h"
@@ -18,8 +19,7 @@ public:
 	// Configs e inits
 	void Config_led_esq(unsigned char pin);
 	void Config_led_dir(unsigned char pin);
-	void Config_motor_esq(unsigned char *pins);
-	void Config_motor_dir(unsigned char *pins);
+	void Config_motors(unsigned char *pins_dir, unsigned char *pins_esq);
 	void Config_sensor_linha(unsigned char *pins);
 	void Config_sensor_esq(unsigned char pin);
 	void Config_sensor_dir(unsigned char pin);
@@ -28,7 +28,6 @@ public:
 	void Init();
 
 	// Sets parametros
-	void Set_VB(int vb);
 	void set_handler();
 
 	// Other functions 
@@ -41,13 +40,14 @@ public:
 	void controle();
 	void comunica_serial();
 	bool Check_stop();
+	bool Check_latEsq();
 	bool isEnd();
 	bool isStart();
 	void stopRoutine();
 
 
 	void teste();
-	void mapeamento(int rot);
+	void mapeamento();
 
 
 	String command = "";
@@ -59,7 +59,6 @@ private:
 
 	//-----------Atributos-----------//
 
-	int VB;
 	bool end = false;
 	bool start = false;
 
@@ -67,11 +66,11 @@ private:
 	unsigned long startTime = 0;
 	unsigned long stopTime = 0;
 	unsigned long samplingTime = 0;
+	unsigned long latEsqTime = 0;
 
 
 	//-----------Objetos-----------//
-	Motor_drive motor_esq;
-	Motor_drive motor_dir;
+	Driver driver;
 	Sensor_linha sensor_linha;
 	Sensor sensor_esq;
 	Sensor sensor_dir;
