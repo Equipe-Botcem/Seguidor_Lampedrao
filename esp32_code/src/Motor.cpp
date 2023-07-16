@@ -1,11 +1,11 @@
-#include "motor_drive.h"
+#include "Motor.h"
 #include "Arduino.h"
 
-Motor_drive::Motor_drive()
+Motor::Motor()
 {
 }
 
-Motor_drive::Motor_drive(unsigned char PWM_1, unsigned char PWM_2, unsigned char EN, unsigned char OCM)
+Motor::Motor(unsigned char PWM_1, unsigned char PWM_2, unsigned char EN, unsigned char OCM)
 {
 
 	pin_PWM_1 = PWM_1;
@@ -14,7 +14,7 @@ Motor_drive::Motor_drive(unsigned char PWM_1, unsigned char PWM_2, unsigned char
 	pin_OCM = OCM;
 }
 
-void Motor_drive::Init()
+void Motor::Init()
 {
 	pinMode(pin_PWM_1, OUTPUT);
 	pinMode(pin_PWM_2, OUTPUT);
@@ -22,19 +22,19 @@ void Motor_drive::Init()
 	pinMode(pin_OCM, INPUT);
 }
 
-void Motor_drive::Enable_drive()
+void Motor::Enable_drive()
 {
 	digitalWrite(pin_EN, HIGH);
 
 }
 
-void Motor_drive::Disable_drive()
+void Motor::Disable_drive()
 {
 	Set_speed(0);
 	digitalWrite(pin_EN, LOW);
 }
 
-void Motor_drive::Set_speed(int speed)
+void Motor::Set_speed(int speed)
 {
 
 	// Checa se a velocidade está entre os valores permitidos

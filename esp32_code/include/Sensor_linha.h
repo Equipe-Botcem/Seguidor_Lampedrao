@@ -17,6 +17,7 @@ public:
     void calibration_min(); 
     float getAngleRaw();
     float getAngle();
+    void calibation_manual(int* c_max, int* _cmin);
 
 	void testeLeitura(ReadType tipo);
 	

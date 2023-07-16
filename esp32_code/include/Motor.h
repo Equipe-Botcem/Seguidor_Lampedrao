@@ -1,16 +1,16 @@
-#ifndef _MOTOR_DRIVE_
-#define _MOTOR_DRIVE_
+#ifndef _MOTOR_
+#define _MOTOR_
 
 //#define ON
 
-class Motor_drive
+class Motor
 {
 
 public:
 
 	//arrumar pinos iniciais;
-	Motor_drive();
-	Motor_drive(unsigned char PWM_1, unsigned char PWM_2, unsigned char EN, unsigned char OCM);
+	Motor();
+	Motor(unsigned char PWM_1, unsigned char PWM_2, unsigned char EN, unsigned char OCM);
 
 	void Init();
 	void Enable_drive();

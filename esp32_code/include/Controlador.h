@@ -16,14 +16,14 @@ public:
     float calcPID(float erro);
     float getAmostragem();
     void resetConditions();
-    void teste();
+    void teste(float erro);
 
     
 private:
 	
     float tempo_amostragem = 0.1;
     float atuation_k1;
-    float erro, erro_k1, erro_k2;
+    float erro_k1, erro_k2;
     float Kp, Kd, Ki;
 
 

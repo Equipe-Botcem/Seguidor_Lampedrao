@@ -20,9 +20,9 @@ public:
 	void find_max();	
 	float Read_CalibradoPonderado();
 
-	//! Trocar quando for testar na pista
-	double Cmax = 1200;
-	double Cmin = 0;
+
+	double Cmax = 0;
+	double Cmin = 4095;
 	
 	
 private:

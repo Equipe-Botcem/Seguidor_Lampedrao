@@ -1,8 +1,6 @@
 #include "Controlador.h"
 #include "Arduino.h"
 
-
-
 Controlador::Controlador(){
 
 }
@@ -46,4 +44,9 @@ void Controlador::resetConditions(){
     erro_k1 = 0;
     erro_k2 = 0;
     atuation_k1 = 0;
+}
+
+void Controlador::teste(float erro){
+    Serial.print("PID: ");
+    Serial.println(calcPID(erro));
 }

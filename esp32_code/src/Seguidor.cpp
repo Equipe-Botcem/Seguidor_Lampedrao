@@ -10,7 +10,6 @@ Seguidor::Seguidor()
 
 //----------------------- Configs e inits -----------------------//
 
-
 void Seguidor::Config_led_esq(unsigned char pin)
 {
 	pinMode(pin, OUTPUT);
@@ -97,8 +96,8 @@ void Seguidor::set_handler()
 		lixo_str += command[i];
 
 	
-	// Configura osf parâmetros do controlador  
-	driver.setVB_reta(VB.toInt());
+	// Configura os parâmetros do controlador  
+	driver.setVB(VB.toInt());
 	controlador.setKp(KP_str.toDouble() / 10000);
 	controlador.setKd(KD_str.toDouble() / 10000);
 	controlador.setKi(KI_str.toDouble() / 10000);
@@ -134,7 +133,7 @@ void Seguidor::calibration()
 	while(millis() - tempo < 300){
 
 		driver.Enable_motors_drives();
-		driver.Set_speedTrans(-80);
+		driver.setMotors(-80, -80);
 
 		sensor_linha.calibration_max();
 
@@ -147,7 +146,7 @@ void Seguidor::calibration()
 	while(millis() - tempo < 300){
 		driver.Enable_motors_drives();
 
-		driver.Set_speedTrans(80);
+		driver.setMotors(80, 80);
 
 		sensor_linha.calibration_min();
 
@@ -162,25 +161,35 @@ void Seguidor::calibration()
 
 void Seguidor::controle(){	
 	// Taxa de amostragem 
-	if (!samplingTime) samplingTime = millis();
-	else if(millis() - samplingTime >= controlador.getAmostragem()){
-		samplingTime = 0;
+	if(millis() - execTime >= samplingTime){
+		execTime = millis();
 
 		float erro = sensor_linha.getAngle();
 
 		int rot = controlador.calcPID(erro);
 
-		// Atua nos motores conforme a pista 
-		driver.Set_speedTrans(rot);
+		driver.Set_speedRot(rot);
 	}
 	
 }
 
 void Seguidor::mapeamento(){
-	if(Check_latEsq){
+	if(Check_latEsq()){
 		if(millis() - latEsqTime > 3000){
 			latEsqTime = millis();
-			driver.setVB_reta(60);
+
+			// Configura a velodidade base a depender da pista
+			if(isReta){
+				// Entrou em curva
+				SerialBT.println("Curva");
+				driver.setVB(60);
+				isReta = false;
+			}else{
+				// Entrou em reta
+				SerialBT.println("Reta");
+				driver.setVB(100);
+				isReta = true;
+			}
 		}	
 	}
 	
@@ -189,11 +198,10 @@ void Seguidor::mapeamento(){
 void Seguidor::stopRoutine(){
 	// Para o seguidor no final da pista 
 	if(millis() - startTime > 5000){
-		if (Check_stop() and isEnd() == false){
+		if (Check_stop() and end == false){
 			end = true;
 			stopTime = millis();
-		}
-		else if (millis() - stopTime > 300) Stop();
+		}else if (millis() - stopTime > 300 and end == true) Stop();
 	}
 }
 
@@ -202,7 +210,7 @@ void Seguidor::Run()
 	driver.Enable_motors_drives();
 	start = true;
 	stopTime = millis();
-	bool fimPista = false;
+	end = false;
 	controlador.resetConditions();
 }
 
@@ -260,27 +268,11 @@ bool Seguidor::Check_latEsq(){
 }
 	
 void Seguidor::teste(){
-	//Serial.print(controlador.calcPID();
-	// Serial.print("        ");
-	//Serial.println(sensor_linha.getAngle());
 	
-	//controle();
 	//sensor_linha.testeLeitura(sensor_linha.HIST);
-	// float erro = sensor_linha.getAngle() - 2*rot_k1;
-
-	// int rot = controlador.calcPID(erro);
-
-	// rot_k1 = rot;
-
-	// Serial.print(erro);
-	// Serial.print("  ");
-	// Serial.println(rot);
+	controlador.teste(sensor_linha.getAngle());
 
 	delay(1);
-}
-
-bool Seguidor::isEnd(){
-	return end;
 }
 
 bool Seguidor::isStart(){

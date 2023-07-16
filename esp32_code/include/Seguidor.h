@@ -2,7 +2,6 @@
 #define _SEGUIDOR_
 
 #include "Driver.h"
-#include "motor_drive.h"
 #include "Sensor.h"
 #include "BluetoothSerial.h"
 #include "Controlador.h"
@@ -34,14 +33,11 @@ public:
 	void Behavior();
 	void Stop();
 	void Run();
-	void Enable_motors_drives();
-	void Disable_motors_drives();
 	void calibration();
 	void controle();
 	void comunica_serial();
 	bool Check_stop();
 	bool Check_latEsq();
-	bool isEnd();
 	bool isStart();
 	void stopRoutine();
 
@@ -57,15 +53,16 @@ private:
 
 	enum Comando {SET = 0, STOP, RUN, CALIBRACAO};
 
-	//-----------Atributos-----------//
-
+	//-----------Variaveis-----------//
 	bool end = false;
 	bool start = false;
+	bool isReta = true;
 
-	// Timers 
+	//-----------Timers-----------//
+	unsigned long samplingTime = 1;
 	unsigned long startTime = 0;
 	unsigned long stopTime = 0;
-	unsigned long samplingTime = 0;
+	unsigned long execTime = 0;
 	unsigned long latEsqTime = 0;
 
 
