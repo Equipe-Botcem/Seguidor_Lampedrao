@@ -13,6 +13,11 @@ public:
 
 	void Init();
 
+	void Break();
+
+	//! Implementar depois (pesquisar melhor)
+	void FullBreak();
+
 	void Enable_motors_drives();
 	void Disable_motors_drives();
 	
@@ -22,7 +27,7 @@ public:
 
 private:
 
-	int VB;
+	int VB, Rot;
     Motor motor_esq;
 	Motor motor_dir;
 

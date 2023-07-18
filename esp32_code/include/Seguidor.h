@@ -59,7 +59,7 @@ private:
 	bool isReta = true;
 
 	//-----------Timers-----------//
-	unsigned long samplingTime = 1;
+	unsigned long samplingTime = 2;
 	unsigned long startTime = 0;
 	unsigned long stopTime = 0;
 	unsigned long execTime = 0;
@@ -80,7 +80,7 @@ private:
 	unsigned char led_dir = 12;
 
 	// Motor 1
-	unsigned char pins_motor_drive_dir[4] = {22,5,4,19};
+	unsigned char pins_motor_drive_dir[4] = {5,22,4,19};
 	unsigned char led_esq = 23;
 
 	// Sensores 

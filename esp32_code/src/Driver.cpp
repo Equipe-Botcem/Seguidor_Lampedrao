@@ -20,8 +20,8 @@ void Driver::setVB(int vb){
 }
 
 void Driver::setMotors(int speed_esq, int speed_dir){
-    motor_dir.Set_speed(speed_dir);
     motor_esq.Set_speed(speed_esq);
+    motor_dir.Set_speed(speed_dir);
 }
 
 void Driver::Enable_motors_drives()
@@ -36,8 +36,14 @@ void Driver::Disable_motors_drives()
 	motor_dir.Disable_drive();
 }
 
+void Driver::Break(){
+    motor_dir.Set_speed(0);
+    motor_esq.Set_speed(0);
+}
+
 void Driver::Set_speedRot(int rot)
 {
+    Rot = rot;
 	motor_dir.Set_speed(VB + rot);
     motor_esq.Set_speed(VB - rot);
 }

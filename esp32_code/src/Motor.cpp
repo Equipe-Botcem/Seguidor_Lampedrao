@@ -50,8 +50,8 @@ void Motor::Set_speed(int speed)
 	else
 	{
 		speed = -1*speed;
-		analogWrite(pin_PWM_1, LOW);
 		analogWrite(pin_PWM_2, speed);
+		analogWrite(pin_PWM_1, LOW);
 	}
 
 }

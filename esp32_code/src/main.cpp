@@ -19,7 +19,7 @@ void setup()
 
 void loop(){
 	
-	// seguidor.teste();
+	//seguidor.teste();
 
 	seguidor.Behavior();
 
@@ -27,7 +27,7 @@ void loop(){
 		seguidor.controle();
 
 		// Rotina de mapeamento
-		seguidor.mapeamento();
+		//seguidor.mapeamento();
 
 		//Rotina de parada 
 		seguidor.stopRoutine();

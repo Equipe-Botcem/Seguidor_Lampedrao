@@ -69,6 +69,36 @@ void Seguidor::Init()
 
 	controlador.setControlador(1, 0, 0.1);
 	controlador.resetConditions();
+
+	driver.Enable_motors_drives();
+
+
+	int c_max[8];
+	c_max[0] = 1300;
+	c_max[1] = 1230; 
+	c_max[2] = 1500;
+	c_max[3] = 1460;
+	c_max[4] = 980;
+	c_max[5] = 1400;
+	c_max[6] = 1500;
+	c_max[7] = 1400;
+
+	int c_min[8];
+	c_min[0] = 0;
+	c_min[1] = 0; 
+	c_min[2] = 0;
+	c_min[3] = 0;
+	c_min[4] = 0;
+	c_min[5] = 0;
+	c_min[6] = 0;
+	c_min[7] = 0;
+
+
+	sensor_linha.calibation_manual(c_max, c_min);
+	sensor_esq.Cmax = 1220;
+	sensor_esq.Cmin = 0;
+	sensor_dir.Cmax = 800;
+	sensor_dir.Cmin = 0;
 }
 
 void Seguidor::set_handler()
@@ -98,9 +128,9 @@ void Seguidor::set_handler()
 	
 	// Configura os parâmetros do controlador  
 	driver.setVB(VB.toInt());
-	controlador.setKp(KP_str.toDouble() / 10000);
-	controlador.setKd(KD_str.toDouble() / 10000);
-	controlador.setKi(KI_str.toDouble() / 10000);
+	controlador.setKp(KP_str.toDouble() / 100);
+	controlador.setKd(KD_str.toDouble() / 100);
+	controlador.setKi(KI_str.toDouble() / 100);
 
 
 	// Bluetooth check
@@ -110,15 +140,15 @@ void Seguidor::set_handler()
 	SerialBT.print(" ");
 
 	SerialBT.print("KI:");
-	SerialBT.print(KI_str);
+	SerialBT.print(KI_str.toDouble() / 100);
 	SerialBT.print(" ");
 
 	SerialBT.print("KP:");
-	SerialBT.print(KP_str);
+	SerialBT.print(KP_str.toDouble() / 100);
 	SerialBT.print(" ");
 
 	SerialBT.print("KD:");
-	SerialBT.print(KD_str);
+	SerialBT.print(KD_str.toDouble() / 100);
 	SerialBT.print(" ");
 
 }
@@ -131,8 +161,6 @@ void Seguidor::calibration()
 	tempo = millis();
 
 	while(millis() - tempo < 300){
-
-		driver.Enable_motors_drives();
 		driver.setMotors(-80, -80);
 
 		sensor_linha.calibration_max();
@@ -140,12 +168,10 @@ void Seguidor::calibration()
 		sensor_esq.find_max();
 		sensor_dir.find_max();
 	}
-	driver.Disable_motors_drives();
+	driver.Break();
 
 	tempo = millis();
 	while(millis() - tempo < 300){
-		driver.Enable_motors_drives();
-
 		driver.setMotors(80, 80);
 
 		sensor_linha.calibration_min();
@@ -153,10 +179,7 @@ void Seguidor::calibration()
 		sensor_esq.find_min();
 		sensor_dir.find_min();
 	}
-
-	driver.Disable_motors_drives();
-
-
+	driver.Break();
 }
 
 void Seguidor::controle(){	
@@ -207,15 +230,14 @@ void Seguidor::stopRoutine(){
 
 void Seguidor::Run()
 {
-	driver.Enable_motors_drives();
 	start = true;
-	stopTime = millis();
 	end = false;
+	stopTime = millis();
 	controlador.resetConditions();
 }
 
 void Seguidor::Stop(){
-	driver.Disable_motors_drives();
+	driver.Break();
 	start = false;
 }
 
@@ -267,15 +289,24 @@ bool Seguidor::Check_latEsq(){
 	return false;
 }
 	
-void Seguidor::teste(){
-	
-	//sensor_linha.testeLeitura(sensor_linha.HIST);
-	controlador.teste(sensor_linha.getAngle());
-
-	delay(1);
-}
-
 bool Seguidor::isStart(){
 	return start;
 }
+
+void Seguidor::teste(){
+	
+	//sensor_linha.testeLeitura(sensor_linha.CALIB);
+	// Serial.print("Sensor Dir: ");
+	// Serial.print(sensor_dir.Read_Calibrado());
+	// Serial.print("   ");
+	// Serial.print("Sensor Esq: ");
+	// Serial.println(sensor_esq.Read_Calibrado());
+	//controlador.teste(sensor_linha.getAngle());
+	driver.setMotors(100, 100);
+	
+
+	delay(100);
+}
+
+
 
