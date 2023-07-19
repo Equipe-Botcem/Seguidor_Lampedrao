@@ -40,6 +40,9 @@ public:
 	bool Check_latEsq();
 	bool isStart();
 	void stopRoutine();
+	void bateryCheck();
+	void CheckLed();
+	void LigaLed();
 
 
 	void teste();
@@ -57,6 +60,8 @@ private:
 	bool end = false;
 	bool start = false;
 	bool isReta = true;
+	bool isCalibrado = false;
+	bool is_led_on = false;
 
 	//-----------Timers-----------//
 	unsigned long samplingTime = 2;
@@ -64,6 +69,7 @@ private:
 	unsigned long stopTime = 0;
 	unsigned long execTime = 0;
 	unsigned long latEsqTime = 0;
+	unsigned long ledTimer = 0;
 
 
 	//-----------Objetos-----------//
@@ -77,11 +83,11 @@ private:
 	//-----------Pinos-----------//
 	// Motor 2
 	unsigned char pins_motor_drive_esq[4] = {2,15,18,21};
-	unsigned char led_dir = 12;
+	unsigned char led_dir_pin = 12;
 
 	// Motor 1
 	unsigned char pins_motor_drive_dir[4] = {5,22,4,19};
-	unsigned char led_esq = 23;
+	unsigned char led_esq_pin = 23;
 
 	// Sensores 
 	unsigned char pins_sensor_linha[8] = {39,35,36,14,25,26,27,32};
@@ -90,10 +96,9 @@ private:
 
 	// Outros
 	unsigned char bateria = 34;
-	unsigned char led1 = 23;
-	unsigned char led2 = 12;
 
-	
+	// Estrutura do led
+
 
 };
 

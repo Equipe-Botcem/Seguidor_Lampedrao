@@ -15,15 +15,13 @@ public:
 
 	void Break();
 
-	//! Implementar depois (pesquisar melhor)
-	void FullBreak();
-
 	void Enable_motors_drives();
 	void Disable_motors_drives();
 	
 	void setMotors(int speed_esq, int speed_dir);
 	void setVB(int vb);
 	void Set_speedRot(int rot);
+	void teste();
 
 private:
 

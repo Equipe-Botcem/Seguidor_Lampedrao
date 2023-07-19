@@ -70,7 +70,7 @@ void Sensor_linha::calibration_min(){
 
 }
 
-void Sensor_linha::calibation_manual(int* c_max, int* c_min){
+void Sensor_linha::calibation_manual(){
 	for(unsigned i = 0; i < 8; i++){
 		sensores[i].Cmax = c_max[i];
 		sensores[i].Cmin = c_min[i];

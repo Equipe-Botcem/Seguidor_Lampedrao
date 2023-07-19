@@ -45,8 +45,8 @@ void Seguidor::Config_sensor_dir(unsigned char pin)
 void Seguidor::Config_pins()
 {
 
-	Config_led_esq(led_esq);
-	Config_led_esq(led_dir);
+	Config_led_esq(led_esq_pin);
+	Config_led_dir(led_dir_pin);
 	Config_motors(pins_motor_drive_dir, pins_motor_drive_esq);
 	Config_sensor_linha(pins_sensor_linha);
 	Config_sensor_esq(pin_sensor_esq);
@@ -71,34 +71,6 @@ void Seguidor::Init()
 	controlador.resetConditions();
 
 	driver.Enable_motors_drives();
-
-
-	int c_max[8];
-	c_max[0] = 1300;
-	c_max[1] = 1230; 
-	c_max[2] = 1500;
-	c_max[3] = 1460;
-	c_max[4] = 980;
-	c_max[5] = 1400;
-	c_max[6] = 1500;
-	c_max[7] = 1400;
-
-	int c_min[8];
-	c_min[0] = 0;
-	c_min[1] = 0; 
-	c_min[2] = 0;
-	c_min[3] = 0;
-	c_min[4] = 0;
-	c_min[5] = 0;
-	c_min[6] = 0;
-	c_min[7] = 0;
-
-
-	sensor_linha.calibation_manual(c_max, c_min);
-	sensor_esq.Cmax = 1220;
-	sensor_esq.Cmin = 0;
-	sensor_dir.Cmax = 800;
-	sensor_dir.Cmin = 0;
 }
 
 void Seguidor::set_handler()
@@ -156,11 +128,13 @@ void Seguidor::set_handler()
 //----------------------- Other Functions -----------------------//
 void Seguidor::calibration()
 {	
-	unsigned long tempo;
+	unsigned long tempo;	
+	isCalibrado = true;
 
 	tempo = millis();
 
 	while(millis() - tempo < 300){
+		SerialBT.println("Para tras");
 		driver.setMotors(-80, -80);
 
 		sensor_linha.calibration_max();
@@ -169,9 +143,12 @@ void Seguidor::calibration()
 		sensor_dir.find_max();
 	}
 	driver.Break();
+	delay(500);
 
 	tempo = millis();
 	while(millis() - tempo < 300){
+		LigaLed();
+		SerialBT.println("Para frente");
 		driver.setMotors(80, 80);
 
 		sensor_linha.calibration_min();
@@ -234,6 +211,16 @@ void Seguidor::Run()
 	end = false;
 	stopTime = millis();
 	controlador.resetConditions();
+
+	if(isCalibrado == false){
+		sensor_linha.calibation_manual();
+
+		sensor_esq.Cmax = 1220;
+		sensor_esq.Cmin = 0;
+		sensor_dir.Cmax = 800;
+		sensor_dir.Cmin = 0;
+	}
+		
 }
 
 void Seguidor::Stop(){
@@ -263,6 +250,10 @@ void Seguidor::Behavior()
 		calibration();
 		command = "";
 		break;
+	case 'B':
+		bateryCheck();
+		command = "";
+		break;	
 	default:
 		command = "";
 		break;
@@ -302,10 +293,60 @@ void Seguidor::teste(){
 	// Serial.print("Sensor Esq: ");
 	// Serial.println(sensor_esq.Read_Calibrado());
 	//controlador.teste(sensor_linha.getAngle());
-	driver.setMotors(100, 100);
-	
+	//driver.teste();
 
-	delay(100);
+	// SerialBT.println("Motor para frente");
+    // driver.setMotors(100, 100);
+    // delay(5000);
+    // SerialBT.println("Motor para tras");
+    // driver.setMotors(-100,-100);
+    // delay(5000);
+    // SerialBT.println("Motor parado");
+    // driver.Break();
+    // delay(5000);
+	
+	LigaLed();
+	//delay(100);
+}
+
+/*
+* @brief Checa o nível da bateria
+* @return 0 - descarregada, 1 - carregada
+*/
+void Seguidor::bateryCheck(){
+	float volt = analogRead(bateria);
+	//float y = 100/(3722.73-2854.09)*volt -(100*2854.09)/(3722.73-2854.09);
+	//float y = 0.11512249*volt -328.569948425;
+	float bat_level = ((3.3/4095)*volt);
+	float y = 142.857*(bat_level)-(142.857*2.3);
+	
+	if(y <= 0){
+		SerialBT.println("Bateria Descarregada");
+	}else{
+		SerialBT.println("Bateria Carregada");
+	}
+
+	SerialBT.println(bat_level);
+	SerialBT.print(y);
+	SerialBT.println("%");
+}
+
+void Seguidor::CheckLed(){
+	if(is_led_on == true and millis() - ledTimer > 200){
+		is_led_on = false;
+		// Desliga os leds
+		digitalWrite(23, LOW);
+		digitalWrite(12, LOW);
+	}
+}
+
+void Seguidor::LigaLed(){
+	// Acende os leds
+	digitalWrite(23, HIGH);
+	digitalWrite(12, HIGH);
+
+	ledTimer = millis();
+	is_led_on = true;
 }
 
 

@@ -1,4 +1,5 @@
 #include "Driver.h"
+#include "Arduino.h"
 
 Driver::Driver(){}
 
@@ -48,3 +49,14 @@ void Driver::Set_speedRot(int rot)
     motor_esq.Set_speed(VB - rot);
 }
 
+void Driver::teste(){
+    // SerialBT.println("Motor para frente");
+    // setMotors(100, 100);
+    // delay(5000);
+    // Serial.println("Motor para tras");
+    // setMotors(-100,-100);
+    // delay(5000);
+    // Serial.println("Motor parado");
+    // Break();
+    // delay(5000);
+}

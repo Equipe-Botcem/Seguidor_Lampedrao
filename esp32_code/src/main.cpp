@@ -27,7 +27,9 @@ void loop(){
 		seguidor.controle();
 
 		// Rotina de mapeamento
-		//seguidor.mapeamento();
+		//seguidor.mapeamento();	
+
+		seguidor.CheckLed();
 
 		//Rotina de parada 
 		seguidor.stopRoutine();
