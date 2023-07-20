@@ -82,7 +82,7 @@ private:
 
 	//-----------Pinos-----------//
 	// Motor 2
-	unsigned char pins_motor_drive_esq[4] = {2,15,18,21};
+	unsigned char pins_motor_drive_esq[4] = {15,2,18,21};
 	unsigned char led_dir_pin = 12;
 
 	// Motor 1

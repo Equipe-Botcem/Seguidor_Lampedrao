@@ -71,6 +71,11 @@ void Seguidor::Init()
 	controlador.resetConditions();
 
 	driver.Enable_motors_drives();
+
+	sensor_esq.Cmax = 1440;
+	sensor_esq.Cmin = 0;
+	sensor_dir.Cmax = 815;
+	sensor_dir.Cmin = 0;
 }
 
 void Seguidor::set_handler()
@@ -144,8 +149,8 @@ void Seguidor::calibration()
 	}
 	driver.Break();
 	delay(500);
-
 	tempo = millis();
+
 	while(millis() - tempo < 300){
 		LigaLed();
 		SerialBT.println("Para frente");
@@ -268,7 +273,13 @@ void Seguidor::comunica_serial(){
 
 bool Seguidor::Check_stop(){
 
-	if(sensor_dir.Read_sensor() >= RESOLUTION*0.5 and sensor_esq.Read_sensor() <= RESOLUTION*0.1) return true;
+	Serial.println(sensor_dir.Read_histerese());
+	if(sensor_dir.Read_histerese() == HIGH and sensor_esq.Read_histerese() <= LOW) {
+		Serial.println(sensor_dir.Read_histerese());
+		LigaLed();
+		return true;
+	}
+	
 	
 	return false;
 }		
@@ -295,6 +306,8 @@ void Seguidor::teste(){
 	//controlador.teste(sensor_linha.getAngle());
 	//driver.teste();
 
+	Check_stop();
+
 	// SerialBT.println("Motor para frente");
     // driver.setMotors(100, 100);
     // delay(5000);
@@ -304,8 +317,6 @@ void Seguidor::teste(){
     // SerialBT.println("Motor parado");
     // driver.Break();
     // delay(5000);
-	
-	LigaLed();
 	//delay(100);
 }
 
@@ -314,9 +325,9 @@ void Seguidor::teste(){
 * @return 0 - descarregada, 1 - carregada
 */
 void Seguidor::bateryCheck(){
+
+	// TODO: Checar valor da bateria no ADC em 6.5V
 	float volt = analogRead(bateria);
-	//float y = 100/(3722.73-2854.09)*volt -(100*2854.09)/(3722.73-2854.09);
-	//float y = 0.11512249*volt -328.569948425;
 	float bat_level = ((3.3/4095)*volt);
 	float y = 142.857*(bat_level)-(142.857*2.3);
 	
@@ -332,7 +343,7 @@ void Seguidor::bateryCheck(){
 }
 
 void Seguidor::CheckLed(){
-	if(is_led_on == true and millis() - ledTimer > 200){
+	if(is_led_on == true and millis() - ledTimer > 500){
 		is_led_on = false;
 		// Desliga os leds
 		digitalWrite(23, LOW);

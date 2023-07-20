@@ -19,22 +19,22 @@ void setup()
 
 void loop(){
 	
-	//seguidor.teste();
+	seguidor.teste();
 
-	seguidor.Behavior();
+	// seguidor.Behavior();
 
-	if(seguidor.isStart()){
-		seguidor.controle();
+	// seguidor.CheckLed();
 
-		// Rotina de mapeamento
-		//seguidor.mapeamento();	
+	// if(seguidor.isStart()){
+	// 	seguidor.controle();
 
-		seguidor.CheckLed();
+	// 	//Rotina de parada 
+	// 	seguidor.stopRoutine();
 
-		//Rotina de parada 
-		seguidor.stopRoutine();
+	// 	// Rotina de mapeamento
+	// 	//seguidor.mapeamento();	
 
-	}
+	// }
 
 
 	
