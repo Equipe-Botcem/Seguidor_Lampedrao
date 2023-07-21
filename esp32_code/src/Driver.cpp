@@ -44,7 +44,6 @@ void Driver::Break(){
 
 void Driver::Set_speedRot(int rot)
 {
-    Rot = rot;
 	motor_dir.Set_speed(VB + rot);
     motor_esq.Set_speed(VB - rot);
 }

@@ -80,11 +80,11 @@ void Seguidor::Init()
 
 void Seguidor::set_handler()
 {
-	String VB = "", KI_str = "", KP_str = "", KD_str = "", lixo_str = "";
+	String VBc_str = "", VBr_str = "", KI_str = "", KP_str = "", KD_str = "", K_str = "", lixo_str = "";
 	int pos = command.indexOf(',', 2);
 	Serial.println(command);
 	for (int i = 4; i < pos; i++)
-		VB += command[i];
+		KP_str += command[i];
 
 	int pos2 = command.indexOf(',', pos + 1);
 	for (int i = pos + 3; i < pos2; i++)
@@ -92,19 +92,30 @@ void Seguidor::set_handler()
 
 	pos = command.indexOf(',', pos2 + 1);
 	for (int i = pos2 + 3; i < pos; i++)
-		KP_str += command[i];
+		KD_str += command[i];
 
 	pos2 = command.indexOf(',', pos + 1);
 	for (int i = pos + 3; i < pos2; i++)
-		KD_str += command[i];
+		K_str += command[i];
 
 	pos = command.indexOf(',', pos2 + 1);
 	for (int i = pos2 + 3; i < pos; i++)
+		VBc_str += command[i];
+
+  pos2 = command.indexOf(',', pos + 1);
+	for (int i = pos + 3; i < pos2; i++)
+		VBr_str += command[i];
+
+  pos = command.indexOf(',', pos2 + 1);
+	for (int i = pos2 + 3; i < pos; i++)
 		lixo_str += command[i];
 
+  
 	
 	// Configura os parâmetros do controlador  
-	driver.setVB(VB.toInt());
+	Vbr = VBr_str.toInt();
+  Vbc = VBc_str.toInt();
+  driver.k = K_str.toInt();
 	controlador.setKp(KP_str.toDouble() / 100);
 	controlador.setKd(KD_str.toDouble() / 100);
 	controlador.setKi(KI_str.toDouble() / 100);
@@ -112,20 +123,28 @@ void Seguidor::set_handler()
 
 	// Bluetooth check
 
-	SerialBT.print("VB:");
-	SerialBT.print(VB);
+	SerialBT.print("KP:");
+	SerialBT.print(KP_str.toDouble() / 100);
 	SerialBT.print(" ");
 
 	SerialBT.print("KI:");
 	SerialBT.print(KI_str.toDouble() / 100);
 	SerialBT.print(" ");
 
-	SerialBT.print("KP:");
-	SerialBT.print(KP_str.toDouble() / 100);
-	SerialBT.print(" ");
-
 	SerialBT.print("KD:");
 	SerialBT.print(KD_str.toDouble() / 100);
+	SerialBT.print(" ");
+
+  SerialBT.print("K:");
+	SerialBT.print(K_str.toDouble() / 100);
+	SerialBT.print(" ");
+
+	SerialBT.print("VBr:");
+	SerialBT.print(Vbr);
+	SerialBT.print(" ");
+
+  SerialBT.print("VBc:");
+	SerialBT.print(Vbc);
 	SerialBT.print(" ");
 
 }
@@ -179,7 +198,7 @@ void Seguidor::controle(){
 }
 
 void Seguidor::mapeamento(){
-	if(Check_latEsq()){
+	if(CheckLateralEsq()){
 		if(millis() - latEsqTime > 3000){
 			latEsqTime = millis();
 
@@ -187,12 +206,12 @@ void Seguidor::mapeamento(){
 			if(isReta){
 				// Entrou em curva
 				SerialBT.println("Curva");
-				driver.setVB(60);
+				driver.setVB(Vbc);
 				isReta = false;
 			}else{
 				// Entrou em reta
 				SerialBT.println("Reta");
-				driver.setVB(100);
+				driver.setVB(Vbr);
 				isReta = true;
 			}
 		}	
@@ -200,21 +219,11 @@ void Seguidor::mapeamento(){
 	
 }
 
-void Seguidor::stopRoutine(){
-	// Para o seguidor no final da pista 
-	if(millis() - startTime > 5000){
-		if (Check_stop() and end == false){
-			end = true;
-			stopTime = millis();
-		}else if (millis() - stopTime > 300 and end == true) Stop();
-	}
-}
-
 void Seguidor::Run()
 {
 	start = true;
 	end = false;
-	stopTime = millis();
+	startTime = millis();
 	controlador.resetConditions();
 
 	if(isCalibrado == false){
@@ -229,6 +238,8 @@ void Seguidor::Run()
 }
 
 void Seguidor::Stop(){
+  LigaLed();
+  SerialBT.println("Parado");
 	driver.Break();
 	start = false;
 }
@@ -271,20 +282,41 @@ void Seguidor::comunica_serial(){
 	}
 }
 
-bool Seguidor::Check_stop(){
-
-	Serial.println(sensor_dir.Read_histerese());
-	if(sensor_dir.Read_histerese() == HIGH and sensor_esq.Read_histerese() <= LOW) {
-		Serial.println(sensor_dir.Read_histerese());
-		LigaLed();
-		return true;
+void Seguidor::stopRoutine(){
+	// Para o seguidor no final da pista 
+	if(millis() - startTime > 3000){
+		if (CheckLateralDir() and end == false){
+			end = true;
+			stopTime = millis();
+		}else if (millis() - stopTime > 300 and end == true) Stop();
 	}
-	
-	
+}
+
+//TODO Refatorar função
+bool Seguidor::CheckLateralDir(){
+	if(sensor_dir.Read_histerese() == HIGH and checking_encruzilhada_dir == false and gate_sensor == false) {
+    gate_sensor = true;
+		checking_encruzilhada_dir = true;
+		encruzilhada_timer = millis();
+
+  }else if(millis() - encruzilhada_timer < 50){
+    if(sensor_esq.Read_histerese() == HIGH){
+      checking_encruzilhada_dir = false;
+      return false;
+    }
+
+  }else if(checking_encruzilhada_dir == true){
+    checking_encruzilhada_dir = false;
+    LigaLed();
+    return true;
+  }
+
+  if(millis() - encruzilhada_timer > 200)  gate_sensor = false;
+
 	return false;
 }		
 
-bool Seguidor::Check_latEsq(){
+bool Seguidor::CheckLateralEsq(){
 
 	if(sensor_esq.Read_sensor() >= RESOLUTION*0.5 and sensor_dir.Read_sensor() <= RESOLUTION*0.1) return true;
 	
@@ -306,7 +338,9 @@ void Seguidor::teste(){
 	//controlador.teste(sensor_linha.getAngle());
 	//driver.teste();
 
-	Check_stop();
+	// Check_stop();
+
+	//CheckLateralDir();
 
 	// SerialBT.println("Motor para frente");
     // driver.setMotors(100, 100);
@@ -359,6 +393,5 @@ void Seguidor::LigaLed(){
 	ledTimer = millis();
 	is_led_on = true;
 }
-
 
 

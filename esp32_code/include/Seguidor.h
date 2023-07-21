@@ -36,8 +36,8 @@ public:
 	void calibration();
 	void controle();
 	void comunica_serial();
-	bool Check_stop();
-	bool Check_latEsq();
+	bool CheckLateralDir();
+	bool CheckLateralEsq();
 	bool isStart();
 	void stopRoutine();
 	void bateryCheck();
@@ -56,13 +56,18 @@ private:
 
 	enum Comando {SET = 0, STOP, RUN, CALIBRACAO};
 
-	//-----------Variaveis-----------//
+	//-----------Condicionais-----------//
 	bool end = false;
 	bool start = false;
 	bool isReta = true;
 	bool isCalibrado = false;
 	bool is_led_on = false;
+	bool checking_encruzilhada_dir = false;
+	bool gate_sensor = false;
 
+	//-----------Variaveis-----------//
+	int Vbc = 60;
+	int Vbr = 100;
 	//-----------Timers-----------//
 	unsigned long samplingTime = 2;
 	unsigned long startTime = 0;
@@ -70,6 +75,7 @@ private:
 	unsigned long execTime = 0;
 	unsigned long latEsqTime = 0;
 	unsigned long ledTimer = 0;
+	unsigned long encruzilhada_timer = 0;
 
 
 	//-----------Objetos-----------//
