@@ -43,10 +43,11 @@ public:
 	void bateryCheck();
 	void CheckLed();
 	void LigaLed();
-
-
-	void teste();
 	void mapeamento();
+
+	// Funções de teste
+	void teste();
+	void TesteSensoresLat();
 
 
 	String command = "";
@@ -68,6 +69,7 @@ private:
 	//-----------Variaveis-----------//
 	int Vbc = 60;
 	int Vbr = 100;
+	int k = 1;
 	//-----------Timers-----------//
 	unsigned long samplingTime = 2;
 	unsigned long startTime = 0;

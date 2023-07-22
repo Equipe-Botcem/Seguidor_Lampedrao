@@ -22,11 +22,10 @@ public:
 	void setVB(int vb);
 	void Set_speedRot(int rot);
 	void teste();
-	int k = 1;
 
 private:
 
-	int VB;
+	int VB = 100;
 	
     Motor motor_esq;
 	Motor motor_dir;

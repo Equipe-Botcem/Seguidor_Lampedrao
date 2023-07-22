@@ -71,11 +71,6 @@ void Seguidor::Init()
 	controlador.resetConditions();
 
 	driver.Enable_motors_drives();
-
-	sensor_esq.Cmax = 1440;
-	sensor_esq.Cmin = 0;
-	sensor_dir.Cmax = 815;
-	sensor_dir.Cmin = 0;
 }
 
 void Seguidor::set_handler()
@@ -114,8 +109,8 @@ void Seguidor::set_handler()
 	
 	// Configura os parâmetros do controlador  
 	Vbr = VBr_str.toInt();
-  Vbc = VBc_str.toInt();
-  driver.k = K_str.toInt();
+  	Vbc = VBc_str.toInt();
+  	k = K_str.toInt();
 	controlador.setKp(KP_str.toDouble() / 100);
 	controlador.setKd(KD_str.toDouble() / 100);
 	controlador.setKi(KI_str.toDouble() / 100);
@@ -150,6 +145,7 @@ void Seguidor::set_handler()
 }
 
 //----------------------- Other Functions -----------------------//
+// TODO: Checar necessidade da calibração mínima
 void Seguidor::calibration()
 {	
 	unsigned long tempo;	
@@ -183,6 +179,7 @@ void Seguidor::calibration()
 	driver.Break();
 }
 
+// TODO: Implementar controle do translacional
 void Seguidor::controle(){	
 	// Taxa de amostragem 
 	if(millis() - execTime >= samplingTime){
@@ -197,6 +194,7 @@ void Seguidor::controle(){
 	
 }
 
+// TODO: Implementar e testar mapeamento
 void Seguidor::mapeamento(){
 	if(CheckLateralEsq()){
 		if(millis() - latEsqTime > 3000){
@@ -238,7 +236,6 @@ void Seguidor::Run()
 }
 
 void Seguidor::Stop(){
-  LigaLed();
   SerialBT.println("Parado");
 	driver.Break();
 	start = false;
@@ -316,6 +313,7 @@ bool Seguidor::CheckLateralDir(){
 	return false;
 }		
 
+// TODO Refatorar função
 bool Seguidor::CheckLateralEsq(){
 
 	if(sensor_esq.Read_sensor() >= RESOLUTION*0.5 and sensor_dir.Read_sensor() <= RESOLUTION*0.1) return true;
@@ -325,33 +323,6 @@ bool Seguidor::CheckLateralEsq(){
 	
 bool Seguidor::isStart(){
 	return start;
-}
-
-void Seguidor::teste(){
-	
-	//sensor_linha.testeLeitura(sensor_linha.CALIB);
-	// Serial.print("Sensor Dir: ");
-	// Serial.print(sensor_dir.Read_Calibrado());
-	// Serial.print("   ");
-	// Serial.print("Sensor Esq: ");
-	// Serial.println(sensor_esq.Read_Calibrado());
-	//controlador.teste(sensor_linha.getAngle());
-	//driver.teste();
-
-	// Check_stop();
-
-	//CheckLateralDir();
-
-	// SerialBT.println("Motor para frente");
-    // driver.setMotors(100, 100);
-    // delay(5000);
-    // SerialBT.println("Motor para tras");
-    // driver.setMotors(-100,-100);
-    // delay(5000);
-    // SerialBT.println("Motor parado");
-    // driver.Break();
-    // delay(5000);
-	//delay(100);
 }
 
 /*
@@ -393,5 +364,32 @@ void Seguidor::LigaLed(){
 	ledTimer = millis();
 	is_led_on = true;
 }
+
+void Seguidor::teste(){
+	
+	//sensor_linha.testeLeitura(sensor_linha.CALIB);
+  //TesteSensoresLat();
+	//controlador.teste(sensor_linha.getAngle());
+	//driver.teste();
+	//delay(100);
+}
+
+void Seguidor::TesteSensoresLat() {
+
+  // Calibração dos sensores laterais 
+	sensor_esq.Cmax = 1440;
+	sensor_esq.Cmin = 0;
+	sensor_dir.Cmax = 815;
+	sensor_dir.Cmin = 0;
+
+  Serial.print("Sensor Dir: ");
+	Serial.print(sensor_dir.Read_Calibrado());
+	Serial.print("   ");
+	Serial.print("Sensor Esq: ");
+	Serial.println(sensor_esq.Read_Calibrado());
+}
+
+
+
 
 

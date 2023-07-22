@@ -12,8 +12,6 @@ Driver::Driver(unsigned char *pins_dir, unsigned char *pins_esq){
 void Driver::Init(){
     motor_dir.Init();
     motor_esq.Init();
-
-    VB = 100;
 }
 
 void Driver::setVB(int vb){
@@ -49,13 +47,10 @@ void Driver::Set_speedRot(int rot)
 }
 
 void Driver::teste(){
-    // SerialBT.println("Motor para frente");
-    // setMotors(100, 100);
-    // delay(5000);
-    // Serial.println("Motor para tras");
-    // setMotors(-100,-100);
-    // delay(5000);
-    // Serial.println("Motor parado");
-    // Break();
-    // delay(5000);
+    setMotors(100, 100);
+    delay(5000);
+    setMotors(-100,-100);
+    delay(5000);
+    Break();
+    delay(5000);
 }
