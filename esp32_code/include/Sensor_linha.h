@@ -14,10 +14,10 @@ public:
 	void Init();
 
     void calibration_max(); 
-    void calibration_min(); 
     float getAngleRaw();
     float getAngle();
     void calibation_manual();
+    bool CheckCalibration();
 
 	void testeLeitura(ReadType tipo);
 	
@@ -27,8 +27,6 @@ private:
     float last_read;
 
     int c_max[8] = {1300, 1230, 1500, 1460, 980, 1400, 1500, 1400};
-    int c_min[8] = {0, 0, 0, 0, 0, 0, 0, 0};
-
 
     // Métodos auxiliares
     float mediaPond(int pos);

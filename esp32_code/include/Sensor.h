@@ -16,13 +16,13 @@ public:
 	bool Read_histerese();
 
 	void setAngle(float angulo);
-	void find_min();	
 	void find_max();	
 	float Read_CalibradoPonderado();
+	float GetMax();
 
 
-	double Cmax = 0;
-	double Cmin = 4095;
+	float Cmax = 0;
+	float Cmin = 0;
 	
 	
 private:

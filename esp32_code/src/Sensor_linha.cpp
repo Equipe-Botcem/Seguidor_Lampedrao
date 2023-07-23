@@ -62,58 +62,53 @@ float Sensor_linha::mediaPond(int pos){
 }
 
 void Sensor_linha::calibration_max(){
-    for(unsigned i = 0; i < 8; i++) sensores[i].find_max();
-}
-
-void Sensor_linha::calibration_min(){
-    for(unsigned i = 0; i < 8; i++) sensores[i].find_min();
-
+	for(unsigned i = 0; i < 8; i++) sensores[i].find_max();
 }
 
 void Sensor_linha::calibation_manual(){
 	for(unsigned i = 0; i < 8; i++){
 		sensores[i].Cmax = c_max[i];
-		sensores[i].Cmin = c_min[i];
 	}
 }
 
-
 void Sensor_linha::testeLeitura(ReadType tipo){
 
-    switch (tipo)
-	{
+	switch (tipo){
 	case RAW:
 		for (int i = 0; i < 8; i++){
-            Serial.print("S");
-            Serial.print(String(i));
-            Serial.print(": ");
-            Serial.print(sensores[i].Read_sensor());
+			Serial.print("S");
+			Serial.print(String(i));
+			Serial.print(": ");
+			Serial.print(sensores[i].Read_sensor());
 			Serial.print("       ");
-        }
+    }
 		Serial.println();
 		break;
 	case CALIB:
+		calibation_manual();
 		for (int i = 0; i < 8; i++){
-            Serial.print("S");
-            Serial.print(String(i));
-            Serial.print(": ");
-            Serial.print(sensores[i].Read_Calibrado());
+			Serial.print("S");
+			Serial.print(String(i));
+			Serial.print(": ");
+			Serial.print(sensores[i].Read_Calibrado());
 			Serial.print("       ");
-        }
+		}
 		Serial.println();
 		break;
 	case HIST:
+		calibation_manual();
 		for (int i = 0; i < 8; i++){
-            Serial.print("S");
-            Serial.print(String(i));
-            Serial.print(": ");
-            Serial.print(sensores[i].Read_histerese());
+			Serial.print("S");
+			Serial.print(String(i));
+			Serial.print(": ");
+			Serial.print(sensores[i].Read_histerese());
 			Serial.print("       ");
-        }
+    }
 		Serial.println();
 		break;
 
 		case KALMAN:
+			calibation_manual();
 			Serial.print("Angle:");
 			Serial.println(getAngleRaw());
 			Serial.print(",");
@@ -123,3 +118,9 @@ void Sensor_linha::testeLeitura(ReadType tipo){
 	}
 }
 
+bool Sensor_linha::CheckCalibration(){
+	for(unsigned i = 0; i < 8; i++){
+		if(sensores[i].GetMax() == 0) return false;
+	}
+	return true;
+}

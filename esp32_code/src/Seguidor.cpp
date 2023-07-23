@@ -158,7 +158,6 @@ void Seguidor::set_handler()
 }
 
 //----------------------- Other Functions -----------------------//
-// TODO: Checar necessidade da calibração mínima
 void Seguidor::calibration()
 {	
 	unsigned long tempo;	
@@ -184,15 +183,22 @@ void Seguidor::calibration()
 		SerialBT.println("Para frente");
 		driver.setMotors(80, 80);
 
-		sensor_linha.calibration_min();
+		sensor_linha.calibration_max();
 
-		sensor_esq.find_min();
-		sensor_dir.find_min();
+		sensor_esq.find_max();
+		sensor_dir.find_max();
 	}
 	driver.Break();
+
+  // Caso a calibração tenha sido bem sucedida
+  if (sensor_linha.CheckCalibration()){
+    if(sensor_esq.GetMax() != 0 and sensor_dir.GetMax() != 0){
+      PiscaLed(5);
+      
+    }
+  }
 }
 
-// TODO: Implementar controle do translacional
 void Seguidor::controle(){	
 	// Taxa de amostragem 
 	if(millis() - execTime >= samplingTime){
@@ -214,7 +220,6 @@ void Seguidor::controle(){
 	}
 	
 }
-
 
 bool Seguidor::IsOut(){
   if(abs(erro) > out) return true;
@@ -256,9 +261,7 @@ void Seguidor::Run()
 		sensor_linha.calibation_manual();
 
 		sensor_esq.Cmax = 1220;
-		sensor_esq.Cmin = 0;
 		sensor_dir.Cmax = 800;
-		sensor_dir.Cmin = 0;
 	}
 		
 }
@@ -377,29 +380,42 @@ void Seguidor::bateryCheck(){
 
 void Seguidor::CheckLed(){
 	if(is_led_on == true and millis() - ledTimer > 300){
-		is_led_on = false;
-		// Desliga os leds
-		digitalWrite(23, LOW);
-		digitalWrite(12, LOW);
+		DesligaLed();
 	}
 }
 
 void Seguidor::LigaLed(){
 	// Acende os leds
-	digitalWrite(23, HIGH);
-	digitalWrite(12, HIGH);
+	digitalWrite(led_esq_pin, HIGH);
+	digitalWrite(led_dir_pin, HIGH);
 
 	ledTimer = millis();
 	is_led_on = true;
 }
 
+void Seguidor::DesligaLed(){
+  is_led_on = false;
+  // Desliga os leds
+  digitalWrite(led_esq_pin, LOW);
+  digitalWrite(led_dir_pin, LOW);
+}
+
+void Seguidor::PiscaLed(int num_piscadas){
+  for(unsigned i = 0; i < num_piscadas; i++){
+    LigaLed();
+    delay(200);
+    DesligaLed();
+    delay(200);
+  }
+}
+
 void Seguidor::teste(){
 	
-	//sensor_linha.testeLeitura(sensor_linha.CALIB);
+	sensor_linha.testeLeitura(sensor_linha.RAW);
   //TesteSensoresLat();
 	//controlador.teste(sensor_linha.getAngle());
 	//driver.teste();
-	//delay(100);
+  delay(10);
 }
 
 void Seguidor::TesteSensoresLat() {

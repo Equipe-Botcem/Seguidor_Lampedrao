@@ -1,29 +1,23 @@
 #include "Sensor.h"
 
-Sensor::Sensor()
-{
-}
+Sensor::Sensor(){}
 
-Sensor::Sensor(unsigned char pin)
-{
+Sensor::Sensor(unsigned char pin){
 	pin_sensor = pin;
 	Serial.print(pin);
 }
 
-void Sensor::Init()
-{
+void Sensor::Init(){
 	pinMode(pin_sensor, INPUT);
 }
 
-uint16_t Sensor::Read_sensor()
-{
+uint16_t Sensor::Read_sensor(){
 	uint16_t leitura = RESOLUTION - analogRead(pin_sensor);
 
 	return leitura;
 }
 
-int Sensor::Read_Calibrado()
-{
+int Sensor::Read_Calibrado(){
 	uint16_t valor_descalibrado = Read_sensor();
 	int c;
 	c = (valor_descalibrado - Cmin) * (RESOLUTION / (Cmax - Cmin));
@@ -33,15 +27,6 @@ int Sensor::Read_Calibrado()
 	if (c < 0) c = 0;
 
 	return c;
-}
-
-void Sensor::find_min()
-{
-	int v_lido = 0;
-
-	v_lido = Read_sensor();
-
-	if (v_lido < Cmin) Cmin = v_lido;
 }
 
 void Sensor::find_max()
@@ -76,4 +61,8 @@ void Sensor::setAngle(float angulo){
 
 float Sensor::Read_CalibradoPonderado(){
 	return Read_Calibrado()*angle;
+}
+
+float Sensor::GetMax(){
+	return Cmax;
 }

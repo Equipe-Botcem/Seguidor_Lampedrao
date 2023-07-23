@@ -41,10 +41,12 @@ public:
 	bool isStart();
 	void stopRoutine();
 	void bateryCheck();
-	void CheckLed();
-	void LigaLed();
 	void mapeamento();
 	bool IsOut();
+	void CheckLed();
+	void LigaLed();
+	void DesligaLed();
+	void PiscaLed(int num_piscadas);
 
 
 	// Funções de teste
