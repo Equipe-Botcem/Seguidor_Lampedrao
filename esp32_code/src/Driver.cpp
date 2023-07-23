@@ -47,10 +47,14 @@ void Driver::Set_speedRot(int rot)
 }
 
 void Driver::teste(){
+    // Move o motor para frente
     setMotors(100, 100);
     delay(5000);
+    // Move o motor para trás
     setMotors(-100,-100);
     delay(5000);
+
+    // Para o motor
     Break();
     delay(5000);
 }

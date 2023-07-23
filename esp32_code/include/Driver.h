@@ -27,7 +27,7 @@ private:
 
 	int VB = 100;
 	
-    Motor motor_esq;
+	Motor motor_esq;
 	Motor motor_dir;
 
 

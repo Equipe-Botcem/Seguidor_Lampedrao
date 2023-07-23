@@ -109,8 +109,10 @@ void Seguidor::set_handler()
 	
 	// Configura os parâmetros do controlador  
 	Vbr = VBr_str.toInt();
-  	Vbc = VBc_str.toInt();
-  	k = K_str.toInt();
+  driver.setVB(Vbr);
+
+	Vbc = VBc_str.toInt();
+	k = K_str.toInt();
 	controlador.setKp(KP_str.toDouble() / 100);
 	controlador.setKd(KD_str.toDouble() / 100);
 	controlador.setKi(KI_str.toDouble() / 100);
@@ -187,9 +189,12 @@ void Seguidor::controle(){
 
 		float erro = sensor_linha.getAngle();
 
+		// Cálculo do redutor de velocidade translacional
+		float trans = abs(erro)*k;
+
 		int rot = controlador.calcPID(erro);
 
-		driver.Set_speedRot(rot);
+		driver.Set_speedRot(rot - trans);
 	}
 	
 }
