@@ -166,7 +166,6 @@ void Seguidor::calibration()
 	tempo = millis();
 
 	while(millis() - tempo < 300){
-		SerialBT.println("Para tras");
 		driver.setMotors(-80, -80);
 
 		sensor_linha.calibration_max();
@@ -179,8 +178,6 @@ void Seguidor::calibration()
 	tempo = millis();
 
 	while(millis() - tempo < 300){
-		LigaLed();
-		SerialBT.println("Para frente");
 		driver.setMotors(80, 80);
 
 		sensor_linha.calibration_max();
@@ -422,9 +419,7 @@ void Seguidor::TesteSensoresLat() {
 
   // Calibração dos sensores laterais 
 	sensor_esq.Cmax = 1440;
-	sensor_esq.Cmin = 0;
 	sensor_dir.Cmax = 815;
-	sensor_dir.Cmin = 0;
 
   Serial.print("Sensor Dir: ");
 	Serial.print(sensor_dir.Read_Calibrado());
