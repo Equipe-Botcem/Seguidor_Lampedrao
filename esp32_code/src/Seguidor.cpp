@@ -76,41 +76,52 @@ void Seguidor::Init()
 void Seguidor::set_handler()
 {
 	String VBc_str = "", VBr_str = "", KI_str = "", KP_str = "", KD_str = "", K_str = "", lixo_str = "";
-	int pos = command.indexOf(',', 2);
 	Serial.println(command);
-	for (int i = 4; i < pos; i++)
-		KP_str += command[i];
-
-	int pos2 = command.indexOf(',', pos + 1);
-	for (int i = pos + 3; i < pos2; i++)
-		KI_str += command[i];
-
-	pos = command.indexOf(',', pos2 + 1);
-	for (int i = pos2 + 3; i < pos; i++)
-		KD_str += command[i];
-
-	pos2 = command.indexOf(',', pos + 1);
-	for (int i = pos + 3; i < pos2; i++)
-		K_str += command[i];
-
-	pos = command.indexOf(',', pos2 + 1);
-	for (int i = pos2 + 3; i < pos; i++)
-		VBc_str += command[i];
-
-  pos2 = command.indexOf(',', pos + 1);
-	for (int i = pos + 3; i < pos2; i++)
-		VBr_str += command[i];
-
-  pos = command.indexOf(',', pos2 + 1);
-	for (int i = pos2 + 3; i < pos; i++)
-		lixo_str += command[i];
-
-  
+	int pos_inicial = 4;
+  int pos = command.indexOf(',', 2);
+	for (int i = pos_inicial; i < pos; i++){
+    KP_str += command[i];
+  }
 	
+  pos_inicial = pos + 3;
+	pos = command.indexOf(',', pos + 1);
+	for (int i = pos_inicial; i < pos; i++){
+    KI_str += command[i];
+  }
+		
+  pos_inicial = pos + 3;
+	pos = command.indexOf(',', pos + 1);
+	for (int i = pos_inicial; i < pos; i++){
+    KD_str += command[i];
+  }
+	
+  pos_inicial = pos + 3;
+	pos = command.indexOf(',', pos + 1);
+	for (int i = pos_inicial; i < pos; i++){
+    K_str += command[i];
+  }
+
+  pos_inicial = pos + 3;
+	pos = command.indexOf(',', pos + 1);
+	for (int i = pos_inicial; i < pos; i++){
+    VBc_str += command[i];
+  }
+		
+  pos_inicial = pos + 3;
+  pos = command.indexOf(',', pos + 1);
+	for (int i = pos_inicial; i < pos; i++){
+    VBr_str += command[i];
+  }
+	
+  pos_inicial = pos + 3;
+  pos = command.indexOf(',', pos + 1);
+	for (int i = pos_inicial; i < pos; i++){
+    lixo_str += command[i];
+  }
+		
 	// Configura os parâmetros do controlador  
 	Vbr = VBr_str.toInt();
   driver.setVB(Vbr);
-
 	Vbc = VBc_str.toInt();
 	k = K_str.toInt();
 	controlador.setKp(KP_str.toDouble() / 100);
@@ -125,7 +136,7 @@ void Seguidor::set_handler()
 	SerialBT.print(" ");
 
 	SerialBT.print("KI:");
-	SerialBT.print(KI_str.toDouble() / 100);
+	SerialBT.print(KI_str.toDouble() / 100, 5);
 	SerialBT.print(" ");
 
 	SerialBT.print("KD:");
