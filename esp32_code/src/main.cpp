@@ -28,14 +28,9 @@ void loop(){
 	if(seguidor.isStart()){
 		seguidor.controle();
 
-		//Rotina de parada 
-		seguidor.stopRoutine();
-
-		// Rotina de mapeamento
-		//seguidor.mapeamento();	
-
+		if(!seguidor.IsOut()){
+			//seguidor.stopRoutine();
+			//seguidor.mapeamento();	
+		}
 	}
-
-
-	
 }

@@ -44,6 +44,8 @@ public:
 	void CheckLed();
 	void LigaLed();
 	void mapeamento();
+	bool IsOut();
+
 
 	// Funções de teste
 	void teste();
@@ -57,7 +59,7 @@ private:
 
 	enum Comando {SET = 0, STOP, RUN, CALIBRACAO};
 
-	//-----------Condicionais-----------//
+//-----------Condicões iniciais-----------//
 	bool end = false;
 	bool start = false;
 	bool isReta = true;
@@ -66,10 +68,14 @@ private:
 	bool checking_encruzilhada_dir = false;
 	bool gate_sensor = false;
 
-	//-----------Variaveis-----------//
+	//-----------Variáveis-----------//
 	int Vbc = 60;
 	int Vbr = 100;
 	int k = 1;
+	int out = 40;
+	float erro = 0;
+	float trans = 0;
+	int rot = 0;
 	//-----------Timers-----------//
 	unsigned long samplingTime = 2;
 	unsigned long startTime = 0;
@@ -104,8 +110,6 @@ private:
 
 	// Outros
 	unsigned char bateria = 34;
-
-	// Estrutura do led
 
 
 };

@@ -123,10 +123,10 @@ void Seguidor::set_handler()
 	Vbr = VBr_str.toInt();
   driver.setVB(Vbr);
 	Vbc = VBc_str.toInt();
-	k = K_str.toInt();
+	k = K_str.toInt()/100;
 	controlador.setKp(KP_str.toDouble() / 100);
 	controlador.setKd(KD_str.toDouble() / 100);
-	controlador.setKi(KI_str.toDouble() / 100);
+	controlador.setKi(KI_str.toDouble() / 100000);
 
 
 	// Bluetooth check
@@ -136,7 +136,7 @@ void Seguidor::set_handler()
 	SerialBT.print(" ");
 
 	SerialBT.print("KI:");
-	SerialBT.print(KI_str.toDouble() / 100, 5);
+	SerialBT.print(KI_str.toDouble() / 100000, 5);
 	SerialBT.print(" ");
 
 	SerialBT.print("KD:");
@@ -144,7 +144,7 @@ void Seguidor::set_handler()
 	SerialBT.print(" ");
 
   SerialBT.print("K:");
-	SerialBT.print(K_str.toDouble() / 100);
+	SerialBT.print(K_str.toDouble()/100);
 	SerialBT.print(" ");
 
 	SerialBT.print("VBr:");
@@ -198,16 +198,28 @@ void Seguidor::controle(){
 	if(millis() - execTime >= samplingTime){
 		execTime = millis();
 
-		float erro = sensor_linha.getAngle();
+		erro = sensor_linha.getAngle();
 
 		// Cálculo do redutor de velocidade translacional
-		float trans = abs(erro)*k;
+    if(abs(erro) > out){
+      trans = abs(erro)*k;
+      LigaLed();
+    } else{
+      trans = 0;
+    }
 
-		int rot = controlador.calcPID(erro);
+		rot = controlador.calcPID(erro);
 
 		driver.Set_speedRot(rot - trans);
 	}
 	
+}
+
+
+bool Seguidor::IsOut(){
+  if(abs(erro) > out) return true;
+
+  return false;
 }
 
 // TODO: Implementar e testar mapeamento
@@ -364,7 +376,7 @@ void Seguidor::bateryCheck(){
 }
 
 void Seguidor::CheckLed(){
-	if(is_led_on == true and millis() - ledTimer > 500){
+	if(is_led_on == true and millis() - ledTimer > 300){
 		is_led_on = false;
 		// Desliga os leds
 		digitalWrite(23, LOW);
