@@ -227,9 +227,6 @@ bool Seguidor::IsOut(){
 // TODO: Implementar e testar mapeamento
 void Seguidor::mapeamento(){
 	if(CheckLateralEsq()){
-		if(millis() - latEsqTime > 3000){
-			latEsqTime = millis();
-
 			// Configura a velodidade base a depender da pista
 			if(isReta){
 				// Entrou em curva
@@ -242,7 +239,6 @@ void Seguidor::mapeamento(){
 				driver.setVB(Vbr);
 				isReta = true;
 			}
-		}	
 	}
 	
 }
@@ -324,7 +320,7 @@ bool Seguidor::CheckLateralDir(){
 		checking_encruzilhada_dir = true;
 		encruzilhada_timer = millis();
 
-  }else if(millis() - encruzilhada_timer < 50){
+  }else if(millis() - encruzilhada_timer < 160){
     if(sensor_esq.Read_histerese() == HIGH){
       checking_encruzilhada_dir = false;
       return false;
@@ -332,20 +328,35 @@ bool Seguidor::CheckLateralDir(){
 
   }else if(checking_encruzilhada_dir == true){
     checking_encruzilhada_dir = false;
-    LigaLed();
     return true;
   }
 
-  if(millis() - encruzilhada_timer > 200)  gate_sensor = false;
+  if(millis() - encruzilhada_timer > 180)  gate_sensor = false;
 
 	return false;
 }		
 
 // TODO Refatorar função
 bool Seguidor::CheckLateralEsq(){
+	if(sensor_esq.Read_histerese() == HIGH and checking_encruzilhada_esq == false and gate_sensor_esq == false) {
+    gate_sensor_esq = true;
+		checking_encruzilhada_esq = true;
+		encruzilhada_timer_esq = millis();
 
-	if(sensor_esq.Read_sensor() >= RESOLUTION*0.5 and sensor_dir.Read_sensor() <= RESOLUTION*0.1) return true;
-	
+  }else if(millis() - encruzilhada_timer_esq < 100){
+    if(sensor_dir.Read_histerese() == HIGH){
+      checking_encruzilhada_esq = false;
+      return false;
+    }
+
+  }else if(checking_encruzilhada_esq == true){
+    checking_encruzilhada_esq = false;
+    LigaLed();
+    return true;
+  }
+
+  if(millis() - encruzilhada_timer_esq > 200)  gate_sensor_esq = false;
+
 	return false;
 }
 	

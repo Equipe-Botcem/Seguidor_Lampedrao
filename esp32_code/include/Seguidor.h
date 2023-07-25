@@ -68,7 +68,9 @@ private:
 	bool isCalibrado = false;
 	bool is_led_on = false;
 	bool checking_encruzilhada_dir = false;
+	bool checking_encruzilhada_esq = false;
 	bool gate_sensor = false;
+	bool gate_sensor_esq = false;
 
 	//-----------Variáveis-----------//
 	int Vbc = 60;
@@ -86,6 +88,7 @@ private:
 	unsigned long latEsqTime = 0;
 	unsigned long ledTimer = 0;
 	unsigned long encruzilhada_timer = 0;
+	unsigned long encruzilhada_timer_esq = 0;
 
 
 	//-----------Objetos-----------//
