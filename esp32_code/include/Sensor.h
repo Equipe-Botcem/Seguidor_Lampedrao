@@ -12,17 +12,17 @@ public:
 	void Init();
 
 	uint16_t Read_sensor();
-	
 	int Read_Calibrado();
 	bool Read_histerese();
+
 	void setAngle(float angulo);
-	void find_min();	
 	void find_max();	
 	float Read_CalibradoPonderado();
+	float GetMax();
 
-	//! Trocar quando for testar na pista
-	double Cmax = 1200;
-	double Cmin = 0;
+
+	float Cmax = 0;
+	float Cmin = 0;
 	
 	
 private:

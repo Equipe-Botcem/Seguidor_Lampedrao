@@ -1,12 +1,11 @@
 #ifndef _SEGUIDOR_
 #define _SEGUIDOR_
 
-#include "motor_drive.h"
+#include "Driver.h"
 #include "Sensor.h"
-#include "Encoder.h"
 #include "BluetoothSerial.h"
 #include "Controlador.h"
-#include <SimpleKalmanFilter.h>
+#include "Sensor_linha.h"
 
 
 class Seguidor{
@@ -19,10 +18,7 @@ public:
 	// Configs e inits
 	void Config_led_esq(unsigned char pin);
 	void Config_led_dir(unsigned char pin);
-	void Config_motor_esq(unsigned char *pins);
-	void Config_motor_dir(unsigned char *pins);
-	void Config_encoder_dir(unsigned char pin_interrupt);
-	void Config_encoder_esq(unsigned char pin_interrupt);
+	void Config_motors(unsigned char *pins_dir, unsigned char *pins_esq);
 	void Config_sensor_linha(unsigned char *pins);
 	void Config_sensor_esq(unsigned char pin);
 	void Config_sensor_dir(unsigned char pin);
@@ -31,29 +27,31 @@ public:
 	void Init();
 
 	// Sets parametros
-	void Set_VB(int vb);
-	void Set_VM(int vmin);
 	void set_handler();
-	void Set_parametros(float kp, float kd, float ki, float vb, int vmin);
 
 	// Other functions 
 	void Behavior();
 	void Stop();
 	void Run();
-	void Enable_motors_drives();
-	void Disable_motors_drives();
 	void calibration();
 	void controle();
 	void comunica_serial();
-	bool Check_stop();
-	bool isEnd();
+	bool CheckLateralDir();
+	bool CheckLateralEsq();
 	bool isStart();
 	void stopRoutine();
-	float getAngle();
+	void bateryCheck();
+	void mapeamento();
+	bool IsOut();
+	void CheckLed();
+	void LigaLed();
+	void DesligaLed();
+	void PiscaLed(int num_piscadas);
 
+
+	// Funções de teste
 	void teste();
-	float mediaPond(int pos);
-	void mapeamento(int rot);
+	void TesteSensoresLat();
 
 
 	String command = "";
@@ -63,42 +61,52 @@ private:
 
 	enum Comando {SET = 0, STOP, RUN, CALIBRACAO};
 
-	//-----------Atributos-----------//
-
-	double angulos[8] = {-42.855, -31.430, -17.571, -4.538, 4.538, 17.571, 31.430, 41.855};
-
-	int VB;
-	int VM;
+//-----------Condicões iniciais-----------//
 	bool end = false;
 	bool start = false;
+	bool isReta = true;
+	bool isCalibrado = false;
+	bool is_led_on = false;
+	bool checking_encruzilhada_dir = false;
+	bool checking_encruzilhada_esq = false;
+	bool gate_sensor = false;
+	bool gate_sensor_esq = false;
 
-	// Timers 
+	//-----------Variáveis-----------//
+	int Vbc = 60;
+	int Vbr = 100;
+	int k = 1;
+	int out = 40;
+	float erro = 0;
+	float trans = 0;
+	int rot = 0;
+	//-----------Timers-----------//
+	unsigned long samplingTime = 2;
 	unsigned long startTime = 0;
 	unsigned long stopTime = 0;
-	unsigned long samplingTime = 0;
+	unsigned long execTime = 0;
+	unsigned long latEsqTime = 0;
+	unsigned long ledTimer = 0;
+	unsigned long encruzilhada_timer = 0;
+	unsigned long encruzilhada_timer_esq = 0;
 
 
 	//-----------Objetos-----------//
-	Motor_drive motor_esq;
-	Motor_drive motor_dir;
-	Sensor sensor_linha[8];
+	Driver driver;
+	Sensor_linha sensor_linha;
 	Sensor sensor_esq;
 	Sensor sensor_dir;
-	Encoder encoder_esq;
-	Encoder encoder_dir;
 	Controlador controlador;
 	
 
 	//-----------Pinos-----------//
 	// Motor 2
-	unsigned char pins_motor_drive_esq[4] = {2,15,18,21};
-	unsigned char pin_encoder_esq = 16;
-	unsigned char led_dir = 12;
+	unsigned char pins_motor_drive_esq[4] = {15,2,18,21};
+	unsigned char led_dir_pin = 12;
 
 	// Motor 1
-	unsigned char pins_motor_drive_dir[4] = {22,5,4,19};
-	unsigned char pin_encoder_dir = 17;
-	unsigned char led_esq = 23;
+	unsigned char pins_motor_drive_dir[4] = {5,22,4,19};
+	unsigned char led_esq_pin = 23;
 
 	// Sensores 
 	unsigned char pins_sensor_linha[8] = {39,35,36,14,25,26,27,32};
@@ -107,10 +115,7 @@ private:
 
 	// Outros
 	unsigned char bateria = 34;
-	unsigned char led1 = 23;
-	unsigned char led2 = 12;
 
-	
 
 };
 

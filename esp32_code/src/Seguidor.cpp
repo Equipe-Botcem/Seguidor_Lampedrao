@@ -1,8 +1,6 @@
 #include "Seguidor.h"
 #include "Arduino.h"
 
-// ! Precisa ser otimizado a velocidade das medições (provavelmente 0.1)
-SimpleKalmanFilter angleKalmanFilter(1, 1, 0.01);
 
 //----------------------- Construtores -----------------------//
 
@@ -11,7 +9,6 @@ Seguidor::Seguidor()
 }
 
 //----------------------- Configs e inits -----------------------//
-
 
 void Seguidor::Config_led_esq(unsigned char pin)
 {
@@ -25,34 +22,14 @@ void Seguidor::Config_led_dir(unsigned char pin)
 	digitalWrite(pin, LOW);
 }
 
-void Seguidor::Config_motor_esq(unsigned char *pins)
+void Seguidor::Config_motors(unsigned char *pins_dir, unsigned char *pins_esq)
 {
-	motor_esq = Motor_drive(pins[0], pins[1], pins[2], pins[3]);
-}
-
-void Seguidor::Config_motor_dir(unsigned char *pins)
-{
-	motor_dir = Motor_drive(pins[0], pins[1], pins[2], pins[3]);
-}
-
-void Seguidor::Config_encoder_esq(unsigned char pin_interrupt)
-{
-	encoder_esq = Encoder(pin_interrupt);
-}
-
-void Seguidor::Config_encoder_dir(unsigned char pin_interrupt)
-{
-	encoder_dir = Encoder(pin_interrupt);
+	driver = Driver(pins_dir, pins_esq);
 }
 
 void Seguidor::Config_sensor_linha(unsigned char *pins)
 {	
-
-	for(unsigned i = 0; i < 8; i++){
-		sensor_linha[i] = Sensor(pins[i]);
-		sensor_linha[i].setAngle(angulos[i]);
-	}
-
+	sensor_linha = Sensor_linha(pins);
 }
 
 void Seguidor::Config_sensor_esq(unsigned char pin)
@@ -68,12 +45,9 @@ void Seguidor::Config_sensor_dir(unsigned char pin)
 void Seguidor::Config_pins()
 {
 
-	Config_led_esq(led_esq);
-	Config_led_esq(led_dir);
-	Config_motor_esq(pins_motor_drive_esq);
-	Config_motor_dir(pins_motor_drive_dir);
-	Config_encoder_esq(pin_encoder_esq);
-	Config_encoder_dir(pin_encoder_dir);
+	Config_led_esq(led_esq_pin);
+	Config_led_dir(led_dir_pin);
+	Config_motors(pins_motor_drive_dir, pins_motor_drive_esq);
 	Config_sensor_linha(pins_sensor_linha);
 	Config_sensor_esq(pin_sensor_esq);
 	Config_sensor_dir(pin_sensor_dir);
@@ -88,194 +62,206 @@ void Seguidor::Init()
 {
 	Config_pins();
 
-	motor_dir.Init();
-	motor_esq.Init();
-	encoder_esq.Init();
-	encoder_dir.Init();
-
-	for(unsigned i = 0; i < 8; i++){
-		sensor_linha[i].Init();
-	}
-	
+	driver.Init();
+	sensor_linha.Init();
 	sensor_esq.Init();
 	sensor_dir.Init();
 
-	// Parametros default
-	Set_parametros(2, 0.05, 0.05, 100, 5);
-}
+	controlador.setControlador(1, 0, 0.1);
+	controlador.resetConditions();
 
-//----------------------- Sets -----------------------//
-
-
-void Seguidor::Set_VB(int vb){
-	VB = vb;
-}
-
-void Seguidor::Set_VM(int vmin){
-	VM = vmin;
-}
-
-void Seguidor::Set_parametros(float kp, float kd, float ki, float vb, int vmin)
-{
-	Set_VB(vb);
-	Set_VM(vmin);
-	controlador.setControlador(kp, kd, ki);
+	driver.Enable_motors_drives();
 }
 
 void Seguidor::set_handler()
 {
-	String VB = "", KI_str = "", KP_str = "", KD_str = "", VM_str = "", lixo_str = "";
-	int pos = command.indexOf(',', 2);
+	String VBc_str = "", VBr_str = "", KI_str = "", KP_str = "", KD_str = "", K_str = "", lixo_str = "";
 	Serial.println(command);
-	for (int i = 4; i < pos; i++)
-		VB += command[i];
-
-	int pos2 = command.indexOf(',', pos + 1);
-	for (int i = pos + 3; i < pos2; i++)
-		KI_str += command[i];
-
-	pos = command.indexOf(',', pos2 + 1);
-	for (int i = pos2 + 3; i < pos; i++)
-		KP_str += command[i];
-
-	pos2 = command.indexOf(',', pos + 1);
-	for (int i = pos + 3; i < pos2; i++)
-		KD_str += command[i];
-
-	pos = command.indexOf(',', pos2 + 1);
-	for (int i = pos2 + 3; i < pos; i++)
-		VM_str += command[i];
-
-	pos2 = command.indexOf(',', pos + 1);
-	for (int i = pos + 3; i < pos2; i++)
-		lixo_str += command[i];
-
+	int pos_inicial = 4;
+  int pos = command.indexOf(',', 2);
+	for (int i = pos_inicial; i < pos; i++){
+    KP_str += command[i];
+  }
 	
-	// Configura osf parâmetros do controlador  
-	Set_VB(VB.toInt());
-	controlador.setKp(KP_str.toDouble() / 10000);
-	controlador.setKd(KD_str.toDouble() / 10000);
-	controlador.setKi(KI_str.toDouble() / 10000);
-	Set_VM(VM_str.toInt());
+  pos_inicial = pos + 3;
+	pos = command.indexOf(',', pos + 1);
+	for (int i = pos_inicial; i < pos; i++){
+    KI_str += command[i];
+  }
+		
+  pos_inicial = pos + 3;
+	pos = command.indexOf(',', pos + 1);
+	for (int i = pos_inicial; i < pos; i++){
+    KD_str += command[i];
+  }
+	
+  pos_inicial = pos + 3;
+	pos = command.indexOf(',', pos + 1);
+	for (int i = pos_inicial; i < pos; i++){
+    K_str += command[i];
+  }
+
+  pos_inicial = pos + 3;
+	pos = command.indexOf(',', pos + 1);
+	for (int i = pos_inicial; i < pos; i++){
+    VBc_str += command[i];
+  }
+		
+  pos_inicial = pos + 3;
+  pos = command.indexOf(',', pos + 1);
+	for (int i = pos_inicial; i < pos; i++){
+    VBr_str += command[i];
+  }
+	
+  pos_inicial = pos + 3;
+  pos = command.indexOf(',', pos + 1);
+	for (int i = pos_inicial; i < pos; i++){
+    lixo_str += command[i];
+  }
+		
+	// Configura os parâmetros do controlador  
+	Vbr = VBr_str.toInt();
+  driver.setVB(Vbr);
+	Vbc = VBc_str.toInt();
+	k = K_str.toInt()/100;
+	controlador.setKp(KP_str.toDouble() / 100);
+	controlador.setKd(KD_str.toDouble() / 100);
+	controlador.setKi(KI_str.toDouble() / 100000);
 
 
 	// Bluetooth check
 
-	SerialBT.print("VB:");
-	SerialBT.print(VB);
+	SerialBT.print("KP:");
+	SerialBT.print(KP_str.toDouble() / 100);
 	SerialBT.print(" ");
 
 	SerialBT.print("KI:");
-	SerialBT.print(KI_str);
-	SerialBT.print(" ");
-
-	SerialBT.print("KP:");
-	SerialBT.print(KP_str);
+	SerialBT.print(KI_str.toDouble() / 100000, 5);
 	SerialBT.print(" ");
 
 	SerialBT.print("KD:");
-	SerialBT.print(KD_str);
+	SerialBT.print(KD_str.toDouble() / 100);
 	SerialBT.print(" ");
 
-	SerialBT.print("VMIN:");
-	SerialBT.print(VM);
+  SerialBT.print("K:");
+	SerialBT.print(K_str.toDouble()/100);
+	SerialBT.print(" ");
+
+	SerialBT.print("VBr:");
+	SerialBT.print(Vbr);
+	SerialBT.print(" ");
+
+  SerialBT.print("VBc:");
+	SerialBT.print(Vbc);
 	SerialBT.print(" ");
 
 }
-
 
 //----------------------- Other Functions -----------------------//
-
-void Seguidor::Enable_motors_drives()
-{
-	motor_esq.Enable_drive();
-	motor_dir.Enable_drive();
-}
-
-void Seguidor::Disable_motors_drives()
-{
-	motor_esq.Disable_drive();
-	motor_dir.Disable_drive();
-}
-
 void Seguidor::calibration()
 {	
-	unsigned long tempo;
+	unsigned long tempo;	
+	isCalibrado = true;
 
 	tempo = millis();
 
 	while(millis() - tempo < 300){
+		driver.setMotors(-80, -80);
 
-		Enable_motors_drives();
-
-		motor_dir.Set_speed(-80);
-		motor_esq.Set_speed(-80);
-
-		for(unsigned i = 0; i < 8; i++) sensor_linha[i].find_max();
+		sensor_linha.calibration_max();
 
 		sensor_esq.find_max();
 		sensor_dir.find_max();
 	}
-	Disable_motors_drives();
-
+	driver.Break();
+	delay(500);
 	tempo = millis();
+
 	while(millis() - tempo < 300){
-		Enable_motors_drives();
+		driver.setMotors(80, 80);
 
-		motor_dir.Set_speed(80);
-		motor_esq.Set_speed(80);
+		sensor_linha.calibration_max();
 
-		for(unsigned i = 0; i < 8; i++) sensor_linha[i].find_min();
-
-		sensor_esq.find_min();
-		sensor_dir.find_min();
+		sensor_esq.find_max();
+		sensor_dir.find_max();
 	}
+	driver.Break();
 
-	Disable_motors_drives();
-
-
+  // Caso a calibração tenha sido bem sucedida
+  if (sensor_linha.CheckCalibration()){
+    if(sensor_esq.GetMax() != 0 and sensor_dir.GetMax() != 0){
+      PiscaLed(5);
+      
+    }
+  }
 }
 
 void Seguidor::controle(){	
 	// Taxa de amostragem 
-	if (!samplingTime) samplingTime = millis();
-	else if(millis() - samplingTime >= controlador.getAmostragem()){
-		samplingTime = 0;
+	if(millis() - execTime >= samplingTime){
+		execTime = millis();
 
-		int rot = controlador.calcPID(angleKalmanFilter.updateEstimate(getAngle()));
+		erro = sensor_linha.getAngle();
 
-		// Atua nos motores conforme a pista 
-		mapeamento(rot);
+		// Cálculo do redutor de velocidade translacional
+    if(abs(erro) > out){
+      trans = abs(erro)*k;
+      LigaLed();
+    } else{
+      trans = 0;
+    }
+
+		rot = controlador.calcPID(erro);
+
+		driver.Set_speedRot(rot - trans);
 	}
 	
 }
 
-void Seguidor::mapeamento(int rot){
-	motor_dir.Set_speed(VB + rot);
-	motor_esq.Set_speed(VB - rot);
+bool Seguidor::IsOut(){
+  if(abs(erro) > out) return true;
+
+  return false;
 }
 
-void Seguidor::stopRoutine(){
-	// Para o seguidor no final da pista 
-	if(millis() - startTime > 5000){
-		if (Check_stop() and isEnd() == false){
-			end = true;
-			stopTime = millis();
-		}
-		else if (millis() - stopTime > 300) Stop();
+// TODO: Implementar e testar mapeamento
+void Seguidor::mapeamento(){
+	if(CheckLateralEsq()){
+			// Configura a velodidade base a depender da pista
+			if(isReta){
+				// Entrou em curva
+				SerialBT.println("Curva");
+				driver.setVB(Vbc);
+				isReta = false;
+			}else{
+				// Entrou em reta
+				SerialBT.println("Reta");
+				driver.setVB(Vbr);
+				isReta = true;
+			}
 	}
+	
 }
 
 void Seguidor::Run()
 {
-	Enable_motors_drives();
-	start= true;
-	stopTime = millis();
-	bool fimPista = false;
+	start = true;
+	end = false;
+	startTime = millis();
+	controlador.resetConditions();
+
+	if(isCalibrado == false){
+		sensor_linha.calibation_manual();
+
+		sensor_esq.Cmax = 1220;
+		sensor_dir.Cmax = 800;
+	}
+		
 }
 
 void Seguidor::Stop(){
-	Disable_motors_drives();
+  SerialBT.println("Parado");
+	driver.Break();
 	start = false;
 }
 
@@ -301,6 +287,10 @@ void Seguidor::Behavior()
 		calibration();
 		command = "";
 		break;
+	case 'B':
+		bateryCheck();
+		command = "";
+		break;	
 	default:
 		command = "";
 		break;
@@ -313,122 +303,143 @@ void Seguidor::comunica_serial(){
 	}
 }
 
-bool Seguidor::Check_stop(){
+void Seguidor::stopRoutine(){
+	// Para o seguidor no final da pista 
+	if(millis() - startTime > 3000){
+		if (CheckLateralDir() and end == false){
+			end = true;
+			stopTime = millis();
+		}else if (millis() - stopTime > 300 and end == true) Stop();
+	}
+}
 
-	if(sensor_dir.Read_sensor() >= RESOLUTION*0.5 and sensor_esq.Read_sensor() <= RESOLUTION*0.1) return true;
-	
+//TODO Refatorar função
+bool Seguidor::CheckLateralDir(){
+	if(sensor_dir.Read_histerese() == HIGH and checking_encruzilhada_dir == false and gate_sensor == false) {
+    gate_sensor = true;
+		checking_encruzilhada_dir = true;
+		encruzilhada_timer = millis();
+
+  }else if(millis() - encruzilhada_timer < 160){
+    if(sensor_esq.Read_histerese() == HIGH){
+      checking_encruzilhada_dir = false;
+      return false;
+    }
+
+  }else if(checking_encruzilhada_dir == true){
+    checking_encruzilhada_dir = false;
+    return true;
+  }
+
+  if(millis() - encruzilhada_timer > 180)  gate_sensor = false;
+
 	return false;
 }		
-	
-void Seguidor::teste(){
 
-	//controle();
+// TODO Refatorar função
+bool Seguidor::CheckLateralEsq(){
+	if(sensor_esq.Read_histerese() == HIGH and checking_encruzilhada_esq == false and gate_sensor_esq == false) {
+    gate_sensor_esq = true;
+		checking_encruzilhada_esq = true;
+		encruzilhada_timer_esq = millis();
 
-	//Serial.print("Angle:");
-	Serial.println(getAngle());
-	// Serial.print(",");
-	// Serial.print("Kalman_filter:");
-	// Serial.println(angleKalmanFilter.updateEstimate(getAngle()));
-	
+  }else if(millis() - encruzilhada_timer_esq < 100){
+    if(sensor_dir.Read_histerese() == HIGH){
+      checking_encruzilhada_esq = false;
+      return false;
+    }
 
-	// Serial.print("S2: ");
-	// Serial.print(sensor_linha[0].Read_histerese());
-	// Serial.print("  S3: ");
-	// Serial.print(sensor_linha[1].Read_histerese());
-	// Serial.print("  S4: ");
-	// Serial.print(sensor_linha[2].Read_histerese());
-	// Serial.print("  S5: ");
-	// Serial.print(sensor_linha[3].Read_histerese());
-	// Serial.print("  S6: ");
-	// Serial.print(sensor_linha[4].Read_histerese());
-	// Serial.print("  S7: ");
-	// Serial.print(sensor_linha[5].Read_histerese());
-	// Serial.print("  S8: ");
-	// Serial.print(sensor_linha[6].Read_histerese());
-	// Serial.print("  S9: ");
-	// Serial.println(sensor_linha[7].Read_histerese());
-	 
+  }else if(checking_encruzilhada_esq == true){
+    checking_encruzilhada_esq = false;
+    LigaLed();
+    return true;
+  }
 
+  if(millis() - encruzilhada_timer_esq > 200)  gate_sensor_esq = false;
 
-	// Serial.print("SE: ");
-	// Serial.println(sensor_esq.Read_sensor());
-	// Serial.print("SD: ");
-	// Serial.println(sensor_dir.Read_sensor());
-
-	
-	// Serial.print("S2: ");
-	// Serial.print(sensor_linha[0].Read_Calibrado());
-	// Serial.print("  S3: ");
-	// Serial.print(sensor_linha[1].Read_Calibrado());
-	// Serial.print("  S4: ");
-	// Serial.print(sensor_linha[2].Read_Calibrado());
-	// Serial.print("  S5: ");
-	// Serial.print(sensor_linha[3].Read_Calibrado());
-	// Serial.print("  S6: ");
-	// Serial.print(sensor_linha[4].Read_Calibrado());
-	// Serial.print("  S7: ");
-	// Serial.print(sensor_linha[5].Read_Calibrado());
-	// Serial.print("  S8: ");
-	// Serial.print(sensor_linha[6].Read_Calibrado());
-	// Serial.print("  S9: ");
-	// Serial.println(sensor_linha[7].Read_Calibrado());
-
-	// Serial.print("S2: ");
-	// Serial.print(sensor_linha[0].Read_sensor());
-	// Serial.print("  S3: ");
-	// Serial.print(sensor_linha[1].Read_sensor());
-	// Serial.print("  S4: ");
-	// Serial.print(sensor_linha[2].Read_sensor());
-	// Serial.print("  S5: ");
-	// Serial.print(sensor_linha[3].Read_sensor());
-	// Serial.print("  S6: ");
-	// Serial.print(sensor_linha[4].Read_sensor());
-	// Serial.print("  S7: ");
-	// Serial.print(sensor_linha[5].Read_sensor());
-	// Serial.print("  S8: ");
-	// Serial.print(sensor_linha[6].Read_sensor());
-	// Serial.print("  S9: ");
-	// Serial.println(sensor_linha[7].Read_sensor());
-	 
-	
+	return false;
 }
-
-bool Seguidor::isEnd(){
-	return end;
-}
-
+	
 bool Seguidor::isStart(){
 	return start;
 }
 
-float Seguidor::mediaPond(int pos){
-	float num;
-	float den;
+/*
+* @brief Checa o nível da bateria
+* @return 0 - descarregada, 1 - carregada
+*/
+void Seguidor::bateryCheck(){
 
-	if(pos == 0){
-		num = sensor_linha[pos].Read_CalibradoPonderado() + sensor_linha[pos + 1].Read_CalibradoPonderado();
-		den = sensor_linha[pos].Read_Calibrado() + sensor_linha[pos + 1].Read_Calibrado();
-	}else if (pos == 7){
-		num = sensor_linha[pos].Read_CalibradoPonderado() + sensor_linha[pos - 1].Read_CalibradoPonderado();
-		den = sensor_linha[pos].Read_Calibrado() + sensor_linha[pos - 1].Read_Calibrado();
+	// TODO: Checar valor da bateria no ADC em 6.5V
+	float volt = analogRead(bateria);
+	float bat_level = ((3.3/4095)*volt);
+	float y = 142.857*(bat_level)-(142.857*2.3);
+	
+	if(y <= 0){
+		SerialBT.println("Bateria Descarregada");
 	}else{
-		num =sensor_linha[pos].Read_CalibradoPonderado() + sensor_linha[pos - 1].Read_CalibradoPonderado() + sensor_linha[pos + 1].Read_CalibradoPonderado();
-		den = sensor_linha[pos].Read_Calibrado() + sensor_linha[pos - 1].Read_Calibrado() + sensor_linha[pos + 1].Read_Calibrado();
-	}
-	return num / den;
-}
-
-float Seguidor::getAngle(){
-	int j = 4;
-
-	for(int i = 3; i >= 0; i--){
-		if(sensor_linha[i].Read_histerese()) return mediaPond(i);
-		if(sensor_linha[j].Read_histerese()) return mediaPond(j);
-		j++;
+		SerialBT.println("Bateria Carregada");
 	}
 
-	// Saiu da pista 
-	if(controlador.getLastError()) return 50;
-
-	return -50;
+	SerialBT.println(bat_level);
+	SerialBT.print(y);
+	SerialBT.println("%");
 }
+
+void Seguidor::CheckLed(){
+	if(is_led_on == true and millis() - ledTimer > 300){
+		DesligaLed();
+	}
+}
+
+void Seguidor::LigaLed(){
+	// Acende os leds
+	digitalWrite(led_esq_pin, HIGH);
+	digitalWrite(led_dir_pin, HIGH);
+
+	ledTimer = millis();
+	is_led_on = true;
+}
+
+void Seguidor::DesligaLed(){
+  is_led_on = false;
+  // Desliga os leds
+  digitalWrite(led_esq_pin, LOW);
+  digitalWrite(led_dir_pin, LOW);
+}
+
+void Seguidor::PiscaLed(int num_piscadas){
+  for(unsigned i = 0; i < num_piscadas; i++){
+    LigaLed();
+    delay(200);
+    DesligaLed();
+    delay(200);
+  }
+}
+
+void Seguidor::teste(){
+	
+	sensor_linha.testeLeitura(sensor_linha.RAW);
+  //TesteSensoresLat();
+	//controlador.teste(sensor_linha.getAngle());
+	//driver.teste();
+  delay(10);
+}
+
+void Seguidor::TesteSensoresLat() {
+
+  // Calibração dos sensores laterais 
+	sensor_esq.Cmax = 1440;
+	sensor_dir.Cmax = 815;
+
+  Serial.print("Sensor Dir: ");
+	Serial.print(sensor_dir.Read_Calibrado());
+	Serial.print("   ");
+	Serial.print("Sensor Esq: ");
+	Serial.println(sensor_esq.Read_Calibrado());
+}
+
+
+
+
+

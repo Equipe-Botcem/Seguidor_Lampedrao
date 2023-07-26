@@ -1,7 +1,6 @@
 #include "Controlador.h"
 #include "Arduino.h"
 
-
 Controlador::Controlador(){
 
 }
@@ -24,26 +23,30 @@ void Controlador::setControlador(float kp, float kd, float ki){
     setKi(ki);
 }   
 
-float Controlador::calcPID(float angulo){
+float Controlador::calcPID(float erro){
 
-    erro = setpoint - angulo;
-    if(abs(angulo) > 20){
-        I += erro * 0.1;   
-    }else{
-        I = 0;
-        D = (erro - erro_antigo) / tempo_amostragem;
-    } 
-    erro_antigo = erro;
+    float temp = atuation_k1 + (Kp + Ki + Kd)*erro + (Ki - Kp - 2*Kd)*erro_k1 + Kd*erro_k2;
 
-	return Kp * erro + Ki * I + Kd * D;
+    atuation_k1 = temp;
+
+    erro_k2 = erro_k1;
+    erro_k1 = erro;
+
+    return temp;
 }
 
 float Controlador::getAmostragem(){
     return tempo_amostragem;
 }
 
-int Controlador::getLastError(){
-    if(erro_antigo < 0) return 1;
 
-    return 0;
+void Controlador::resetConditions(){
+    erro_k1 = 0;
+    erro_k2 = 0;
+    atuation_k1 = 0;
+}
+
+void Controlador::teste(float erro){
+    Serial.print("PID: ");
+    Serial.println(calcPID(erro));
 }
