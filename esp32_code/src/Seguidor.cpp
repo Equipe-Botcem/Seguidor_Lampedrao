@@ -204,15 +204,13 @@ void Seguidor::controle(){
 		erro = sensor_linha.getAngle();
 
 		// Cálculo do redutor de velocidade translacional
-    if(abs(erro) > out){
-      trans = abs(erro)*k;
-      LigaLed();
-    } else{
-      trans = 0;
-    }
+    //if(abs(erro) > out){
+      //trans = abs(erro)*k;
+    //} else{
+      //trans = 0;
+    //}
 
 		rot = controlador.calcPID(erro);
-
 		driver.Set_speedRot(rot - trans);
 	}
 	
@@ -224,7 +222,6 @@ bool Seguidor::IsOut(){
   return false;
 }
 
-// TODO: Implementar e testar mapeamento
 void Seguidor::mapeamento(){
 	if(CheckLateralEsq()){
 			// Configura a velodidade base a depender da pista
@@ -287,10 +284,6 @@ void Seguidor::Behavior()
 		calibration();
 		command = "";
 		break;
-	case 'B':
-		bateryCheck();
-		command = "";
-		break;	
 	default:
 		command = "";
 		break;
@@ -307,55 +300,61 @@ void Seguidor::stopRoutine(){
 	// Para o seguidor no final da pista 
 	if(millis() - startTime > 3000){
 		if (CheckLateralDir() and end == false){
+			Serial.println("Parado");
 			end = true;
 			stopTime = millis();
 		}else if (millis() - stopTime > 300 and end == true) Stop();
 	}
 }
 
-//TODO Refatorar função
 bool Seguidor::CheckLateralDir(){
-	if(sensor_dir.Read_histerese() == HIGH and checking_encruzilhada_dir == false and gate_sensor == false) {
-    gate_sensor = true;
+	if(sensor_dir.Read_histerese() == HIGH and gate_sensor_dir == false) {
+    gate_sensor_dir = true;
 		checking_encruzilhada_dir = true;
-		encruzilhada_timer = millis();
+		encruzilhada_timer_dir = millis();
 
-  }else if(millis() - encruzilhada_timer < 160){
+  }else if(millis() - encruzilhada_timer_dir < debouce_sensor){
     if(sensor_esq.Read_histerese() == HIGH){
+			LigaLed();
       checking_encruzilhada_dir = false;
       return false;
     }
 
   }else if(checking_encruzilhada_dir == true){
     checking_encruzilhada_dir = false;
+		digitalWrite(led_dir_pin, HIGH);
+		is_led_on = true;
+		ledTimer = millis();
     return true;
   }
 
-  if(millis() - encruzilhada_timer > 180)  gate_sensor = false;
+	if(millis() - encruzilhada_timer_dir > debouce_sensor) gate_sensor_dir = false;
 
 	return false;
 }		
 
-// TODO Refatorar função
 bool Seguidor::CheckLateralEsq(){
-	if(sensor_esq.Read_histerese() == HIGH and checking_encruzilhada_esq == false and gate_sensor_esq == false) {
+	if(sensor_esq.Read_histerese() == HIGH and gate_sensor_esq == false) {
     gate_sensor_esq = true;
 		checking_encruzilhada_esq = true;
 		encruzilhada_timer_esq = millis();
 
-  }else if(millis() - encruzilhada_timer_esq < 100){
+  }else if(millis() - encruzilhada_timer_esq < debouce_sensor){
     if(sensor_dir.Read_histerese() == HIGH){
+			LigaLed();
       checking_encruzilhada_esq = false;
       return false;
     }
 
   }else if(checking_encruzilhada_esq == true){
     checking_encruzilhada_esq = false;
-    LigaLed();
+    digitalWrite(led_esq_pin, HIGH);
+		is_led_on = true;
+		ledTimer = millis();
     return true;
   }
 
-  if(millis() - encruzilhada_timer_esq > 200)  gate_sensor_esq = false;
+	if(millis() - encruzilhada_timer_esq > debouce_sensor) gate_sensor_esq = false;
 
 	return false;
 }
@@ -364,30 +363,8 @@ bool Seguidor::isStart(){
 	return start;
 }
 
-/*
-* @brief Checa o nível da bateria
-* @return 0 - descarregada, 1 - carregada
-*/
-void Seguidor::bateryCheck(){
-
-	// TODO: Checar valor da bateria no ADC em 6.5V
-	float volt = analogRead(bateria);
-	float bat_level = ((3.3/4095)*volt);
-	float y = 142.857*(bat_level)-(142.857*2.3);
-	
-	if(y <= 0){
-		SerialBT.println("Bateria Descarregada");
-	}else{
-		SerialBT.println("Bateria Carregada");
-	}
-
-	SerialBT.println(bat_level);
-	SerialBT.print(y);
-	SerialBT.println("%");
-}
-
 void Seguidor::CheckLed(){
-	if(is_led_on == true and millis() - ledTimer > 300){
+	if(is_led_on == true and millis() - ledTimer > debouce_sensor){
 		DesligaLed();
 	}
 }
@@ -418,12 +395,17 @@ void Seguidor::PiscaLed(int num_piscadas){
 }
 
 void Seguidor::teste(){
-	
-	sensor_linha.testeLeitura(sensor_linha.RAW);
-  //TesteSensoresLat();
-	//controlador.teste(sensor_linha.getAngle());
-	//driver.teste();
-  delay(10);
+
+	sensor_linha.calibation_manual();
+	// if(sensor_linha.CheckBuraco()) LigaLed();
+	//sensor_linha.calibation_manual();
+	//LigaLed();
+	Serial.println(sensor_linha.getAngle());
+	//sensor_linha.testeLeitura(sensor_linha.RAW);
+ // TesteSensoresLat();
+	// controlador.teste(sensor_linha.getAngle());
+	// driver.teste();
+  delay(1);
 }
 
 void Seguidor::TesteSensoresLat() {
@@ -433,13 +415,11 @@ void Seguidor::TesteSensoresLat() {
 	sensor_dir.Cmax = 815;
 
   Serial.print("Sensor Dir: ");
-	Serial.print(sensor_dir.Read_Calibrado());
+	Serial.print(sensor_dir.Read_histerese());
 	Serial.print("   ");
 	Serial.print("Sensor Esq: ");
-	Serial.println(sensor_esq.Read_Calibrado());
+	Serial.println(sensor_esq.Read_histerese());
 }
-
-
 
 
 

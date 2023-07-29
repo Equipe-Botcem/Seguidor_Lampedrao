@@ -21,17 +21,12 @@ void loop(){
 	
 	//seguidor.teste();
 
-	seguidor.Behavior();
-
+	if(!seguidor.isStart())	seguidor.Behavior();
 	seguidor.CheckLed();
 
 	if(seguidor.isStart()){
 		seguidor.controle();
-
-		if(!seguidor.IsOut()){
-			seguidor.stopRoutine();
-		}
-
+		seguidor.stopRoutine();
 		seguidor.mapeamento();	
 	}
 }

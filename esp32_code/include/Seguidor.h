@@ -40,7 +40,6 @@ public:
 	bool CheckLateralEsq();
 	bool isStart();
 	void stopRoutine();
-	void bateryCheck();
 	void mapeamento();
 	bool IsOut();
 	void CheckLed();
@@ -69,28 +68,26 @@ private:
 	bool is_led_on = false;
 	bool checking_encruzilhada_dir = false;
 	bool checking_encruzilhada_esq = false;
-	bool gate_sensor = false;
 	bool gate_sensor_esq = false;
-
+	bool gate_sensor_dir = false;
 	//-----------Variáveis-----------//
 	int Vbc = 60;
 	int Vbr = 100;
 	int k = 1;
-	int out = 40;
+	int out = 30;
 	float erro = 0;
 	float trans = 0;
 	int rot = 0;
+	int debouce_sensor = 150;
 	//-----------Timers-----------//
-	unsigned long samplingTime = 2;
+	unsigned long samplingTime = 1;
 	unsigned long startTime = 0;
 	unsigned long stopTime = 0;
 	unsigned long execTime = 0;
 	unsigned long latEsqTime = 0;
 	unsigned long ledTimer = 0;
-	unsigned long encruzilhada_timer = 0;
-	unsigned long encruzilhada_timer_esq = 0;
-
-
+	unsigned long encruzilhada_timer_esq = 0;	
+	unsigned long encruzilhada_timer_dir = 0;	
 	//-----------Objetos-----------//
 	Driver driver;
 	Sensor_linha sensor_linha;
@@ -102,14 +99,14 @@ private:
 	//-----------Pinos-----------//
 	// Motor 2
 	unsigned char pins_motor_drive_esq[4] = {15,2,18,21};
-	unsigned char led_dir_pin = 12;
+	unsigned char led_dir_pin = 23;
 
 	// Motor 1
 	unsigned char pins_motor_drive_dir[4] = {5,22,4,19};
-	unsigned char led_esq_pin = 23;
+	unsigned char led_esq_pin = 12;
 
 	// Sensores 
-	unsigned char pins_sensor_linha[8] = {39,35,36,14,25,26,27,32};
+	unsigned char pins_sensor_linha[8] = {35,36,14,25,26,27};
 	unsigned char pin_sensor_esq = 13;
 	unsigned char pin_sensor_dir = 33;
 
