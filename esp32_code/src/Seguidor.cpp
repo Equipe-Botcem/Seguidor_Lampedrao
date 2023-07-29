@@ -401,7 +401,7 @@ void Seguidor::teste(){
 	//sensor_linha.calibation_manual();
 	//LigaLed();
 	Serial.println(sensor_linha.getAngle());
-	//sensor_linha.testeLeitura(sensor_linha.RAW);
+	//sensor_linha.testeLeitura(sensor_linha.CALIB);
  // TesteSensoresLat();
 	// controlador.teste(sensor_linha.getAngle());
 	// driver.teste();

@@ -6,7 +6,7 @@ SimpleKalmanFilter angleKalmanFilter(0.01, 0.01, 0.005);
 Sensor_linha::Sensor_linha(){}
 
 Sensor_linha::Sensor_linha(unsigned char* pins){
-    for(unsigned i = 0; i < 6; i++){
+    for(unsigned i = 0; i < 4; i++){
 		sensores[i] = Sensor(pins[i]);
 		sensores[i].setAngle(angulos[i]);
 	}
@@ -20,33 +20,38 @@ void Sensor_linha::Init(){
 }
 
 float Sensor_linha::getAngleRaw(){
-  int j = 3;
+  int j = 2;
 
-  if(CheckBuraco()){
-    for(int i = 1; i < tam_sensores; i++){
-      if(sensores[i].Read_histerese()){
-        last_read = mediaPond(i);
-        return last_read;
-      } 
-	  }
-  }
+	in = false;
 
-	for(int i = 2; i >= 0; i--){
+	for(int i = 1; i >= 0; i--){
     if(sensores[j].Read_histerese()){
-      last_read = mediaPond(j);
-      return last_read;
+      read = mediaPond(j);
+			in = true;
+      break;
     } 
 		if(sensores[i].Read_histerese()){
-      last_read = mediaPond(i);
-      return last_read;  
+      read = mediaPond(i);
+			in = true;
+      break;  
     } 
 		j++;
 	}
 
 	// Saiu da pista 
-	if(last_read < 0) return -40;
+	if(read < 0 and in == false){
+		read = -23;
+	}else if(in == false)	read = 23;
 
-	return 40;
+	int variacao = read - last_read;
+
+	if(abs(variacao) > 7){
+		read = last_read;
+	}else{
+		last_read = read;
+	}
+
+	return read;
 }
 
 float Sensor_linha::getAngle(){
@@ -57,10 +62,16 @@ float Sensor_linha::mediaPond(int pos){
 	float num;
 	float den;
 
+	if(sensores[1].Read_histerese() == HIGH and sensores[2].Read_histerese() == HIGH){
+		num = sensores[1].Read_CalibradoPonderado() + sensores[2].Read_CalibradoPonderado();
+		den = sensores[1].Read_Calibrado() + sensores[2].Read_Calibrado();
+		return num / den;
+	}
+
 	if(pos == 0){
 		num = sensores[pos].Read_CalibradoPonderado() + sensores[pos + 1].Read_CalibradoPonderado();
 		den = sensores[pos].Read_Calibrado() + sensores[pos + 1].Read_Calibrado();
-	}else if (pos == tam_sensores){
+	}else if (pos == tam_sensores-1){
 		num = sensores[pos].Read_CalibradoPonderado() + sensores[pos - 1].Read_CalibradoPonderado();
 		den = sensores[pos].Read_Calibrado() + sensores[pos - 1].Read_Calibrado();
 	}else{
