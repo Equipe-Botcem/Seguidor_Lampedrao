@@ -396,12 +396,12 @@ void Seguidor::PiscaLed(int num_piscadas){
 
 void Seguidor::teste(){
 
-	sensor_linha.calibation_manual();
+	//sensor_linha.calibation_manual();
 	// if(sensor_linha.CheckBuraco()) LigaLed();
 	//sensor_linha.calibation_manual();
 	//LigaLed();
-	Serial.println(sensor_linha.getAngle());
-	//sensor_linha.testeLeitura(sensor_linha.CALIB);
+	//Serial.println(sensor_linha.getAngle());
+	sensor_linha.testeLeitura(sensor_linha.HIST);
  // TesteSensoresLat();
 	// controlador.teste(sensor_linha.getAngle());
 	// driver.teste();
