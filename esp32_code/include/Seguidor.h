@@ -74,7 +74,7 @@ private:
 	int Vbc = 60;
 	int Vbr = 100;
 	int k = 1;
-	int out = 30;
+	int out = 5;
 	float erro = 0;
 	float trans = 0;
 	int rot = 0;
@@ -106,7 +106,7 @@ private:
 	unsigned char led_esq_pin = 12;
 
 	// Sensores 
-	unsigned char pins_sensor_linha[8] = {35,36,14,25,26,27};
+	unsigned char pins_sensor_linha[8] = {36,14,25,26};
 	unsigned char pin_sensor_esq = 13;
 	unsigned char pin_sensor_dir = 33;
 

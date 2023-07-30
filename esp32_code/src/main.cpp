@@ -26,7 +26,9 @@ void loop(){
 
 	if(seguidor.isStart()){
 		seguidor.controle();
-		seguidor.stopRoutine();
+
+		if(!seguidor.IsOut())seguidor.stopRoutine();
+
 		seguidor.mapeamento();	
 	}
 }
