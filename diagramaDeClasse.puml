@@ -1,0 +1,95 @@
+@startuml
+' Define classes
+
+class Motor {
+  -pin_PWM_1
+  -pin_PWM_2
+  -pin_EN
+  -pin_OCM
+  +Motor()
+  +Motor(unsigned char, unsigned char, unsigned char, unsigned char)
+  +Init()
+  +Enable_drive()
+  +Disable_drive()
+  +Set_speed(int)
+}
+
+class Driver {
+  -motor_esq: Motor
+  -motor_dir: Motor
+  -VB
+  +Driver()
+  +Driver(unsigned char*, unsigned char*)
+  +Init()
+  +setVB(int)
+  +setMotors(int, int)
+  +Enable_motors_drives()
+  +Disable_motors_drives()
+  +Break()
+  +Set_speedRot(int)
+  +teste()
+}
+
+class Controlador {
+  -Kp
+  -Kd
+  -Ki
+  -erro_k1
+  -erro_k2
+  -atuation_k1
+  -tempo_amostragem
+  +Controlador()
+  +setKp(float)
+  +setKd(float)
+  +setKi(float)
+  +setControlador(float, float, float)
+  +calcPID(float)
+  +getAmostragem()
+  +resetConditions()
+  +teste(float)
+}
+
+class Seguidor {
+  -driver: Driver
+  -sensor_linha
+  -sensor_esq
+  -sensor_dir
+  -controlador: Controlador
+  +Seguidor()
+  +Config_led_esq(unsigned char)
+  +Config_led_dir(unsigned char)
+  +Config_motors(unsigned char*, unsigned char*)
+  +Config_sensor_linha(unsigned char*)
+  +Config_sensor_esq(unsigned char)
+  +Config_sensor_dir(unsigned char)
+  +Config_pins()
+  +initBluetooth()
+  +Init()
+  +set_handler()
+  +calibration()
+  +controle()
+  +IsOut()
+  +mapeamento()
+  +Run()
+  +Stop()
+  +Behavior()
+  +comunica_serial()
+  +stopRoutine()
+  +CheckLateralDir()
+  +CheckLateralEsq()
+  +isStart()
+  +bateryCheck()
+  +CheckLed()
+  +LigaLed()
+  +DesligaLed()
+  +PiscaLed(int)
+  +teste()
+  +TesteSensoresLat()
+}
+
+' Define relationships
+
+Driver *-- Motor : contains
+Seguidor *-- Driver : contains
+Seguidor *-- Controlador : contains
+@enduml
