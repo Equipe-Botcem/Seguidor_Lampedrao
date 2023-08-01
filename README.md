@@ -147,3 +147,7 @@ Essa classe é o principal controlador do robô seguidor de linha.
 - `void CheckLed()`, `void LigaLed()`, `void DesligaLed()`, `void PiscaLed(int num_piscadas)`: Funções para controlar os LEDs do robô.
 
 - `void teste()`, `void TesteSensoresLat()`: Funções de teste para o robô.
+
+### Diagrama de classes 
+
+![Diagrama de classes](Diagrama-de-classes-seguidor-alpha.png)
