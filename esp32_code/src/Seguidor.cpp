@@ -75,7 +75,7 @@ void Seguidor::Init()
 
 void Seguidor::set_handler()
 {
-	String VBc_str = "", VBr_str = "", KI_str = "", KP_str = "", KD_str = "", K_str = "", lixo_str = "";
+	String VBc_str = "", VBr_str = "", KI_str = "", KP_str = "", KD_str = "", K_str = "", Nf_str = "", lixo_str = "";
 	Serial.println(command);
 	int pos_inicial = 4;
   int pos = command.indexOf(',', 2);
@@ -112,6 +112,12 @@ void Seguidor::set_handler()
 	for (int i = pos_inicial; i < pos; i++){
     VBr_str += command[i];
   }
+
+	pos_inicial = pos + 3;
+  pos = command.indexOf(',', pos + 1);
+	for (int i = pos_inicial; i < pos; i++){
+    Nf_str += command[i];
+  }
 	
   pos_inicial = pos + 3;
   pos = command.indexOf(',', pos + 1);
@@ -120,6 +126,7 @@ void Seguidor::set_handler()
   }
 		
 	// Configura os parâmetros do controlador  
+	Nf = Nf_str.toInt();
 	Vbr = VBr_str.toInt();
   driver.setVB(Vbr);
 	Vbc = VBc_str.toInt();
@@ -136,7 +143,7 @@ void Seguidor::set_handler()
 	SerialBT.print(" ");
 
 	SerialBT.print("KI:");
-	SerialBT.print(KI_str.toDouble() / 100000, 5);
+	SerialBT.print(KI_str.toDouble() / 100000, 3);
 	SerialBT.print(" ");
 
 	SerialBT.print("KD:");
@@ -154,6 +161,9 @@ void Seguidor::set_handler()
   SerialBT.print("VBc:");
 	SerialBT.print(Vbc);
 	SerialBT.print(" ");
+
+	SerialBT.print("Nf:");
+	SerialBT.print(Nf);
 
 }
 
@@ -224,18 +234,12 @@ bool Seguidor::IsOut(){
 
 void Seguidor::mapeamento(){
 	if(CheckLateralEsq()){
-			// Configura a velodidade base a depender da pista
-			if(isReta){
-				// Entrou em curva
-				SerialBT.println("Curva");
-				driver.setVB(Vbc);
-				isReta = false;
-			}else{
-				// Entrou em reta
-				SerialBT.println("Reta");
-				driver.setVB(Vbr);
-				isReta = true;
-			}
+		fitas++;
+		if(fitas >= Nf and bost == false){
+			driver.setVB(Vbc);
+			bost = true;
+			SerialBT.println("Bost"); 
+		} 
 	}
 	
 }
@@ -246,6 +250,8 @@ void Seguidor::Run()
 	end = false;
 	startTime = millis();
 	controlador.resetConditions();
+	fitas = 0;
+	bost = false;
 
 	if(isCalibrado == false){
 		sensor_linha.calibation_manual();
@@ -257,7 +263,8 @@ void Seguidor::Run()
 }
 
 void Seguidor::Stop(){
-  SerialBT.println("Parado");
+	SerialBT.print("Fitas: ");
+  SerialBT.println(fitas);
 	driver.Break();
 	start = false;
 }
@@ -298,9 +305,10 @@ void Seguidor::comunica_serial(){
 
 void Seguidor::stopRoutine(){
 	// Para o seguidor no final da pista 
-	if(millis() - startTime > 3000){
+	if(millis() - startTime > 35000){
 		if (CheckLateralDir() and end == false){
-			Serial.println("Parado");
+			SerialBT.print("Fitas: ");
+  		SerialBT.println(fitas);
 			end = true;
 			stopTime = millis();
 		}else if (millis() - stopTime > 300 and end == true) Stop();
@@ -396,12 +404,12 @@ void Seguidor::PiscaLed(int num_piscadas){
 
 void Seguidor::teste(){
 
-	//sensor_linha.calibation_manual();
+	sensor_linha.calibation_manual();
 	// if(sensor_linha.CheckBuraco()) LigaLed();
 	//sensor_linha.calibation_manual();
 	//LigaLed();
-	//Serial.println(sensor_linha.getAngle());
-	sensor_linha.testeLeitura(sensor_linha.HIST);
+	Serial.println(sensor_linha.getAngle());
+	//sensor_linha.testeLeitura(sensor_linha.CALIB);
  // TesteSensoresLat();
 	// controlador.teste(sensor_linha.getAngle());
 	// driver.teste();
