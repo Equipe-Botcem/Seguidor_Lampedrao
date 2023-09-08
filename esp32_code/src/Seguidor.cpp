@@ -54,7 +54,7 @@ void Seguidor::Config_pins()
 }
 
 void Seguidor::initBluetooth(){
-    SerialBT.begin("ESP32");
+    SerialBT.begin("Lampedrao");
   	Serial.println("O dispositivo já pode ser pareado ou conectado!");
 }
 
