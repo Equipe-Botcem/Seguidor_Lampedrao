@@ -79,6 +79,9 @@ private:
 	float trans = 0;
 	int rot = 0;
 	int debouce_sensor = 150;
+	int fitas = 0;
+	bool bost = false;
+	int Nf = 200;
 	//-----------Timers-----------//
 	unsigned long samplingTime = 1;
 	unsigned long startTime = 0;
@@ -106,7 +109,7 @@ private:
 	unsigned char led_esq_pin = 12;
 
 	// Sensores 
-	unsigned char pins_sensor_linha[8] = {36,14,25,26};
+	unsigned char pins_sensor_linha[8] = {39, 35, 36, 14, 25, 26, 27, 32};
 	unsigned char pin_sensor_esq = 13;
 	unsigned char pin_sensor_dir = 33;
 

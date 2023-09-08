@@ -6,7 +6,7 @@ SimpleKalmanFilter angleKalmanFilter(0.01, 0.01, 0.005);
 Sensor_linha::Sensor_linha(){}
 
 Sensor_linha::Sensor_linha(unsigned char* pins){
-    for(unsigned i = 0; i < 4; i++){
+    for(unsigned i = 0; i < 8; i++){
 		sensores[i] = Sensor(pins[i]);
 		sensores[i].setAngle(angulos[i]);
 	}
@@ -20,11 +20,11 @@ void Sensor_linha::Init(){
 }
 
 float Sensor_linha::getAngleRaw(){
-  int j = 2;
+  int j = 4;
 
 	in = false;
 
-	for(int i = 1; i >= 0; i--){
+	for(int i = 3; i >= 0; i--){
     if(sensores[j].Read_histerese()){
       read = mediaPond(j);
 			in = true;
@@ -40,8 +40,8 @@ float Sensor_linha::getAngleRaw(){
 
 	// Saiu da pista 
 	if(read < 0 and in == false){
-		read = -23;
-	}else if(in == false)	read = 23;
+		read = -45;
+	}else if(in == false)	read = 45;
 
 	int variacao = read - last_read;
 
@@ -62,9 +62,9 @@ float Sensor_linha::mediaPond(int pos){
 	float num;
 	float den;
 
-	if(sensores[1].Read_histerese() == HIGH and sensores[2].Read_histerese() == HIGH){
-		num = sensores[1].Read_CalibradoPonderado() + sensores[2].Read_CalibradoPonderado();
-		den = sensores[1].Read_Calibrado() + sensores[2].Read_Calibrado();
+	if(sensores[3].Read_histerese() == HIGH and sensores[4].Read_histerese() == HIGH){
+		num = sensores[3].Read_CalibradoPonderado() + sensores[4].Read_CalibradoPonderado();
+		den = sensores[3].Read_Calibrado() + sensores[4].Read_Calibrado();
 		return num / den;
 	}
 
@@ -143,20 +143,4 @@ bool Sensor_linha::CheckCalibration(){
 		if(sensores[i].GetMax() == 0) return false;
 	}
 	return true;
-}
-
-bool Sensor_linha::CheckBuraco(){
-  int talvez_buraco = false;
-  for(int i = 0; i <= 4; i++){
-     if(sensores[i].Read_histerese() == HIGH){
-      if(talvez_buraco == true){
-        return true;
-      }else if(sensores[i+1].Read_histerese() == LOW and i < tam_sensores){
-        talvez_buraco = true;
-      }
-    }
-  }
-
-  return false;
-
 }

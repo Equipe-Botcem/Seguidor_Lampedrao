@@ -21,7 +21,7 @@ void loop(){
 	
 	//seguidor.teste();
 
-	if(!seguidor.isStart())	seguidor.Behavior();
+	seguidor.Behavior();
 	seguidor.CheckLed();
 
 	if(seguidor.isStart()){
