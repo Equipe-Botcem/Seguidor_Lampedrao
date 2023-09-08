@@ -45,7 +45,7 @@ float Sensor_linha::getAngleRaw(){
 
 	int variacao = read - last_read;
 
-	if(abs(variacao) > 10){
+	if(abs(variacao) > 6){
 		read = last_read;
 	}else{
 		last_read = read;
