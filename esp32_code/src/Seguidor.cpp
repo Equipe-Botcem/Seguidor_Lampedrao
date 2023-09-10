@@ -263,7 +263,7 @@ void Seguidor::Run()
 }
 
 void Seguidor::Stop(){
-	SerialBT.print("Seguidor parando...");
+	SerialBT.println("Seguidor parando...");
 	driver.Break();
 	start = false;
 }
