@@ -74,7 +74,7 @@ private:
 	int Vbc = 60;
 	int Vbr = 100;
 	int k = 1;
-	int out = 5;
+	int out = 2;
 	float erro = 0;
 	float trans = 0;
 	int rot = 0;
