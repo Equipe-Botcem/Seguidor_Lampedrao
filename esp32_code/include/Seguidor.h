@@ -6,6 +6,18 @@
 #include "BluetoothSerial.h"
 #include "Controlador.h"
 #include "Sensor_linha.h"
+#include "IRSensor.h"
+
+// #define  irPin 12
+
+/**
+ * .enableIRIn()RECEIVER
+ * 
+ * 
+ * 
+ * 
+*/
+
 
 
 class Seguidor{
@@ -59,7 +71,7 @@ public:
 private:
 
 	enum Comando {SET = 0, STOP, RUN, CALIBRACAO};
-
+	IRSensor ir_sensor;
 //-----------Condicões iniciais-----------//
 	bool end = false;
 	bool start = false;
@@ -73,7 +85,7 @@ private:
 	//-----------Variáveis-----------//
 	int Vbc = 60;
 	int Vbr = 100;
-	int k = 1;
+	int k = 40/100;
 	int out = 2;
 	float erro = 0;
 	float trans = 0;
@@ -106,12 +118,14 @@ private:
 
 	// Motor 1
 	unsigned char pins_motor_drive_dir[4] = {5,22,4,19};
-	unsigned char led_esq_pin = 12;
+	unsigned char led_esq_pin = 255; // 12 sera pino do sensor ir
 
 	// Sensores 
 	unsigned char pins_sensor_linha[8] = {39, 35, 36, 14, 25, 26, 27, 32};
 	unsigned char pin_sensor_esq = 13;
 	unsigned char pin_sensor_dir = 33;
+	// IR
+	
 
 	// Outros
 	unsigned char bateria = 34;

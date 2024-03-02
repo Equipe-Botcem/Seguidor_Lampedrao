@@ -18,7 +18,7 @@ public:
     float getAngle();
     void calibation_manual();
     bool CheckCalibration();
-
+    
 	void testeLeitura(ReadType tipo);
 	
 private:

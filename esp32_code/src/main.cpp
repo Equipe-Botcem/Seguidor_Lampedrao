@@ -13,6 +13,7 @@ void setup()
 {
 	Serial.begin(115200);
 	seguidor.Init();
+	// seguidor.TesteSensoresLat();
 	seguidor.initBluetooth();
 }
 
@@ -22,8 +23,15 @@ void loop(){
 	//seguidor.teste();
 
 	seguidor.Behavior();
-	seguidor.CheckLed();
 
+	// seguidor.Run();
+	// seguidor.calibration();
+	// seguidor.Stop();
+
+
+
+	seguidor.CheckLed();
+ 
 	if(seguidor.isStart()){
 		seguidor.controle();
 

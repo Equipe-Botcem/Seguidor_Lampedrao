@@ -1,7 +1,6 @@
 #include "Seguidor.h"
 #include "Arduino.h"
 
-
 //----------------------- Construtores -----------------------//
 
 Seguidor::Seguidor()
@@ -9,6 +8,7 @@ Seguidor::Seguidor()
 }
 
 //----------------------- Configs e inits -----------------------//
+
 
 void Seguidor::Config_led_esq(unsigned char pin)
 {
@@ -21,6 +21,7 @@ void Seguidor::Config_led_dir(unsigned char pin)
 	pinMode(pin, OUTPUT);
 	digitalWrite(pin, LOW);
 }
+
 
 void Seguidor::Config_motors(unsigned char *pins_dir, unsigned char *pins_esq)
 {
@@ -66,16 +67,16 @@ void Seguidor::Init()
 	sensor_linha.Init();
 	sensor_esq.Init();
 	sensor_dir.Init();
-
-	controlador.setControlador(1, 0, 0.1);
+	controlador.setControlador(180/100, 4000/100, 0);
 	controlador.resetConditions();
-
+	ir_sensor.setup();
 	driver.Enable_motors_drives();
+	
 }
 
 void Seguidor::set_handler()
 {
-	String VBc_str = "", VBr_str = "", KI_str = "", KP_str = "", KD_str = "", K_str = "", Nf_str = "", lixo_str = "";
+	String VBc_str = "90", VBr_str = "90", KI_str = "0", KP_str = "", KD_str = "", K_str = "", Nf_str = "", lixo_str = "";
 	Serial.println(command);
 	int pos_inicial = 4;
   int pos = command.indexOf(',', 2);
@@ -128,42 +129,45 @@ void Seguidor::set_handler()
 	// Configura os parâmetros do controlador  
 	Nf = Nf_str.toInt();
 	Vbr = VBr_str.toInt();
-  driver.setVB(Vbr);
+    driver.setVB(Vbr);
 	Vbc = VBc_str.toInt();
 	k = K_str.toInt()/100;
-	controlador.setKp(KP_str.toDouble() / 100);
-	controlador.setKd(KD_str.toDouble() / 100);
-	controlador.setKi(KI_str.toDouble() / 100000);
+	// controlador.setKp(KP_str.toDouble() / 100);
+	// controlador.setKd(KD_str.toDouble() / 100);
+	// controlador.setKi(KI_str.toDouble() / 100000);
 
-
+	controlador.setKp(180 / 100);
+	controlador.setKd(4000 / 100);
+	controlador.setKi(0 / 100000);
+	
 	// Bluetooth check
 
-	SerialBT.print("KP:");
-	SerialBT.print(KP_str.toDouble() / 100);
-	SerialBT.print(" ");
+// // 	SerialBT.print("KP:");
+// // 	SerialBT.print(KP_str.toDouble() / 100);
+// // 	SerialBT.print(" ");
 
-	SerialBT.print("KI:");
-	SerialBT.print(KI_str.toDouble() / 100000, 3);
-	SerialBT.print(" ");
+// // 	SerialBT.print("KI:");
+// // 	SerialBT.print(KI_str.toDouble() / 100000, 3);
+// // 	SerialBT.print(" ");
 
-	SerialBT.print("KD:");
-	SerialBT.print(KD_str.toDouble() / 100);
-	SerialBT.print(" ");
+// // 	SerialBT.print("KD:");
+// // 	SerialBT.print(KD_str.toDouble() / 100);
+// // 	SerialBT.print(" ");
 
-  SerialBT.print("K:");
+//   SerialBT.print("K:");
 	SerialBT.print(K_str.toDouble()/100);
-	SerialBT.print(" ");
+// // 	SerialBT.print(" ");
 
-	SerialBT.print("VBr:");
-	SerialBT.print(Vbr);
-	SerialBT.print(" ");
+// // 	SerialBT.print("VBr:");
+// // 	SerialBT.print(Vbr);
+// // 	SerialBT.print(" ");
 
-  SerialBT.print("VBc:");
-	SerialBT.print(Vbc);
-	SerialBT.print(" ");
+//   SerialBT.print("VBc:");
+// 	SerialBT.print(Vbc);
+// 	SerialBT.print(" ");
 
-	SerialBT.print("Nf:");
-	SerialBT.print(Nf);
+// 	SerialBT.print("Nf:");
+// 	SerialBT.print(Nf);
 
 }
 
@@ -246,6 +250,9 @@ void Seguidor::mapeamento(){
 
 void Seguidor::Run()
 {
+	SerialBT.println("Seguidor rodando...");
+	
+	// TesteSensoresLat();
 	start = true;
 	end = false;
 	startTime = millis();
@@ -263,35 +270,39 @@ void Seguidor::Run()
 }
 
 void Seguidor::Stop(){
-	SerialBT.println("Seguidor parando...");
+	SerialBT.println("Seguidor parado...");
 	driver.Break();
 	start = false;
 }
 
 void Seguidor::Behavior()
 {
-	comunica_serial();
 
-	switch (command[0])
+	int command;
+	command = ir_sensor.readIRSignal();
+	// ir_sensor.printIRSignal();
+
+
+	switch (command)
 	{
-	case 'S':
+	case 4:
 		set_handler();
-		command = "";
+		// command = "";
 		break;
-	case 'P':
+	case 3191979776:
 		Stop();
-		command = "";
+		// command = "";
 		break;
-	case 'R':
+	case 4228103936:
 		Run();
-		command = "";
+		// command = "";
 		break;
-	case 'C':
+	case 3125133056:
 		calibration();
-		command = "";
+		// command = "";
 		break;
 	default:
-		command = "";
+		// command = "";
 		break;
 	}
 }
@@ -420,12 +431,16 @@ void Seguidor::TesteSensoresLat() {
   // Calibração dos sensores laterais 
 	sensor_esq.Cmax = 1440;
 	sensor_dir.Cmax = 815;
+	SerialBT.println("Sensor Dir: ");
+	SerialBT.println(sensor_dir.Read_histerese());
+	SerialBT.println("Sensor Esq: ");
+	SerialBT.println(sensor_esq.Read_histerese());
 
-  Serial.print("Sensor Dir: ");
-	Serial.print(sensor_dir.Read_histerese());
-	Serial.print("   ");
-	Serial.print("Sensor Esq: ");
-	Serial.println(sensor_esq.Read_histerese());
+//   Serial.print("Sensor Dir: ");
+	// Serial.print(sensor_dir.Read_histerese());
+	// Serial.print("   ");
+	// Serial.print("Sensor Esq: ");
+	// Serial.println(sensor_esq.Read_histerese());
 }
 
 
