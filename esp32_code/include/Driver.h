@@ -17,7 +17,7 @@ public:
 
 	void Enable_motors_drives();
 	void Disable_motors_drives();
-	
+	void Set_highspeedRot(int rot, int VB);
 	void setMotors(int speed_esq, int speed_dir);
 	void setVB(int vb);
 	void Set_speedRot(int rot);

@@ -46,6 +46,11 @@ void Driver::Set_speedRot(int rot)
     motor_esq.Set_speed(VB - rot);
 }
 
+void Driver::Set_highspeedRot(int rot, int VBase)
+{
+	motor_dir.Set_speed(VBase + rot);
+    motor_esq.Set_speed(VBase - rot);
+}
 void Driver::teste(){
     // Move o motor para frente
     setMotors(100, 100);

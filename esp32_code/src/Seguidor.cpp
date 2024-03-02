@@ -219,12 +219,56 @@ void Seguidor::controle(){
     //} else{
       //trans = 0;
     //}
-
 		rot = controlador.calcPID(erro);
 		driver.Set_speedRot(rot - trans);
+
 	}
 	
 }
+
+
+
+/*
+void Seguidor::controle()
+{
+	int n_amostras = 15, count_amostras = 0;
+	float media_erro = 0;	
+	// Taxa de amostragem 
+	if(millis() - execTime >= samplingTime)
+	{
+		execTime = millis();
+		if( count_amostras < n_amostras)
+		{
+			count_amostras++;
+			media_erro += abs(erro/n_amostras);
+		}				
+		if (count_amostras == n_amostras)
+		{
+			erro = sensor_linha.getAngle();
+			Serial.print("Erro: ");
+			if ((erro) > 20) // testar depois com rot aqui nesse if
+			{
+				count_amostras = 0;
+			}
+			rot = controlador.calcPID(erro/2);
+			Serial.println(sensor_linha.getAngle());
+			driver.Set_highspeedRot(78, (rot - (trans/2)));
+		}
+		else
+		{
+			erro = sensor_linha.getAngle();
+			Serial.print("Erro2: ");
+			rot = controlador.calcPID(erro);
+			Serial.println(sensor_linha.getAngle());
+			driver.Set_speedRot(rot - trans);
+		}
+	}
+	
+}
+*/
+
+
+
 
 bool Seguidor::IsOut(){
   if(abs(erro) > out) return true;
@@ -263,7 +307,7 @@ void Seguidor::Run()
 }
 
 void Seguidor::Stop(){
-	SerialBT.println("Seguidor parando...");
+	SerialBT.println("Seguidor parado...");
 	driver.Break();
 	start = false;
 }
