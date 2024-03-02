@@ -225,6 +225,8 @@ void Seguidor::controle(){
       //trans = 0;
     //}
 		rot = controlador.calcPID(erro);
+		SerialBT.print("Erro: ");
+		SerialBT.println(rot);
 		driver.Set_speedRot(rot - trans);
 
 	}
@@ -320,8 +322,8 @@ void Seguidor::Stop(){
 void Seguidor::Behavior()
 {
 	SerialBT.println("get rotina encoder");
-	SerialBT.println(encoder_esq.Get_contador());
-	SerialBT.println(encoder_dir.Get_contador());
+	// SerialBT.println(encoder_esq.Get_contador());
+	// SerialBT.println(encoder_dir.Get_contador());
 	comunica_serial();
 
 	switch (command[0])

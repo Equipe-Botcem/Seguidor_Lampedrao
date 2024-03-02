@@ -105,12 +105,14 @@ private:
 
 	//-----------Pinos-----------//
 	// Motor 2
-	unsigned char pins_motor_drive_esq[4] = {15,2,18,21};
+	unsigned char pins_motor_drive_esq[4] = {2,15,18,21};
+	// unsigned char pins_motor_drive_esq[4] = {15,2,18,21};
 	unsigned char pin_encoder_esq = 16;
 	unsigned char led_dir_pin = 23;
 
 	// Motor 1
-	unsigned char pins_motor_drive_dir[4] = {5,22,4,19};
+	unsigned char pins_motor_drive_dir[4] = {22,5,4,19};
+	// unsigned char pins_motor_drive_dir[4] = {5,22,4,19};
 	unsigned char pin_encoder_dir = 17;
 	unsigned char led_esq_pin = 12;
 

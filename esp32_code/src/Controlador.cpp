@@ -31,7 +31,6 @@ float Controlador::calcPID(float erro){
 
     erro_k2 = erro_k1;
     erro_k1 = erro;
-
     return temp;
 }
 
