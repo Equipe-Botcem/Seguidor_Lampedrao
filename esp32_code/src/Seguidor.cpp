@@ -51,6 +51,8 @@ void Seguidor::Config_pins()
 	Config_sensor_linha(pins_sensor_linha);
 	Config_sensor_esq(pin_sensor_esq);
 	Config_sensor_dir(pin_sensor_dir);
+	Config_encoder_esq(pin_encoder_esq);
+	Config_encoder_dir(pin_encoder_dir);
 }
 
 void Seguidor::initBluetooth(){
@@ -66,6 +68,9 @@ void Seguidor::Init()
 	sensor_linha.Init();
 	sensor_esq.Init();
 	sensor_dir.Init();
+	encoder_esq.Init();
+	encoder_dir.Init();
+
 
 	controlador.setControlador(1, 0, 0.1);
 	controlador.resetConditions();
@@ -314,6 +319,9 @@ void Seguidor::Stop(){
 
 void Seguidor::Behavior()
 {
+	SerialBT.println("get rotina encoder");
+	SerialBT.println(encoder_esq.Get_contador());
+	SerialBT.println(encoder_dir.Get_contador());
 	comunica_serial();
 
 	switch (command[0])
@@ -472,5 +480,13 @@ void Seguidor::TesteSensoresLat() {
 	Serial.println(sensor_esq.Read_histerese());
 }
 
+void Seguidor::Config_encoder_esq(unsigned char pin_interrupt)
+{
+	encoder_esq = Encoder(pin_interrupt);
+}
 
+void Seguidor::Config_encoder_dir(unsigned char pin_interrupt)
+{
+	encoder_dir = Encoder(pin_interrupt);
+}
 
