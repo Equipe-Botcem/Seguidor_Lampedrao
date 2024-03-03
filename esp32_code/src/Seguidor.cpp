@@ -68,8 +68,8 @@ void Seguidor::Init()
 	sensor_linha.Init();
 	sensor_esq.Init();
 	sensor_dir.Init();
-	encoder_esq.Init();
-	encoder_dir.Init();
+	encoder_esq.Init_esq();
+	encoder_dir.Init_dir();
 
 
 	controlador.setControlador(1, 0, 0.1);
@@ -81,7 +81,7 @@ void Seguidor::Init()
 void Seguidor::set_handler()
 {
 	String VBc_str = "", VBr_str = "", KI_str = "", KP_str = "", KD_str = "", K_str = "", Nf_str = "", lixo_str = "";
-	Serial.println(command);
+	// Serial.println(command);
 	int pos_inicial = 4;
   int pos = command.indexOf(',', 2);
 	for (int i = pos_inicial; i < pos; i++){
@@ -210,7 +210,7 @@ void Seguidor::calibration()
     }
   }
 }
-
+/*
 void Seguidor::controle(){	
 	// Taxa de amostragem 
 	if(millis() - execTime >= samplingTime){
@@ -218,27 +218,20 @@ void Seguidor::controle(){
 
 		erro = sensor_linha.getAngle();
 
-		// Cálculo do redutor de velocidade translacional
-    //if(abs(erro) > out){
-      //trans = abs(erro)*k;
-    //} else{
-      //trans = 0;
-    //}
+
 		rot = controlador.calcPID(erro);
-		SerialBT.print("Erro: ");
-		SerialBT.println(rot);
 		driver.Set_speedRot(rot - trans);
 
 	}
 	
 }
+*/
 
 
 
-/*
 void Seguidor::controle()
 {
-	int n_amostras = 15, count_amostras = 0;
+	int n_amostras = 150, count_amostras = 0;
 	float media_erro = 0;	
 	// Taxa de amostragem 
 	if(millis() - execTime >= samplingTime)
@@ -257,9 +250,9 @@ void Seguidor::controle()
 			{
 				count_amostras = 0;
 			}
-			rot = controlador.calcPID(erro/2);
+			rot = controlador.calcPID(erro);
 			Serial.println(sensor_linha.getAngle());
-			driver.Set_highspeedRot(78, (rot - (trans/2)));
+			// driver.Set_highspeedRot(78, (rot - (trans/2)));
 		}
 		else
 		{
@@ -267,12 +260,12 @@ void Seguidor::controle()
 			Serial.print("Erro2: ");
 			rot = controlador.calcPID(erro);
 			Serial.println(sensor_linha.getAngle());
-			driver.Set_speedRot(rot - trans);
+			// driver.Set_speedRot(rot - trans);
 		}
 	}
 	
 }
-*/
+
 
 
 
@@ -320,10 +313,13 @@ void Seguidor::Stop(){
 }
 
 void Seguidor::Behavior()
-{
-	SerialBT.println("get rotina encoder");
-	// SerialBT.println(encoder_esq.Get_contador());
-	// SerialBT.println(encoder_dir.Get_contador());
+{	
+	SerialBT.print("get rotina encoder:    ");
+	SerialBT.print(encoder_esq.Get_contador_esq());
+	
+	SerialBT.print("	|||	    ");
+	SerialBT.println(encoder_dir.Get_contador_dir());
+	// SerialBT.println(sensor_linha.getAngle());
 	comunica_serial();
 
 	switch (command[0])
@@ -456,12 +452,14 @@ void Seguidor::PiscaLed(int num_piscadas){
 }
 
 void Seguidor::teste(){
+	sensor_linha.testeLeitura(sensor_linha.RAW);
 
-	sensor_linha.calibation_manual();
+	
+	// sensor_linha.calibation_manual();
 	// if(sensor_linha.CheckBuraco()) LigaLed();
 	//sensor_linha.calibation_manual();
 	//LigaLed();
-	Serial.println(sensor_linha.getAngle());
+	// Serial.println(sensor_linha.getAngle());
 	//sensor_linha.testeLeitura(sensor_linha.CALIB);
  // TesteSensoresLat();
 	// controlador.teste(sensor_linha.getAngle());
@@ -475,7 +473,7 @@ void Seguidor::TesteSensoresLat() {
 	sensor_esq.Cmax = 1440;
 	sensor_dir.Cmax = 815;
 
-  Serial.print("Sensor Dir: ");
+  	Serial.print("Sensor Dir: ");
 	Serial.print(sensor_dir.Read_histerese());
 	Serial.print("   ");
 	Serial.print("Sensor Esq: ");

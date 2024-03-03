@@ -15,7 +15,6 @@ public:
 
 	// Constrtutores
 	Seguidor();
-
 	// Configs e inits
 	void Config_led_esq(unsigned char pin);
 	void Config_led_dir(unsigned char pin);
@@ -105,16 +104,17 @@ private:
 
 	//-----------Pinos-----------//
 	// Motor 2
-	unsigned char pins_motor_drive_esq[4] = {2,15,18,21};
-	// unsigned char pins_motor_drive_esq[4] = {15,2,18,21};
-	unsigned char pin_encoder_esq = 16;
+	unsigned char pins_motor_drive_esq[4] = {15,2,18,21};
+	unsigned char pin_encoder_esq = 3;
 	unsigned char led_dir_pin = 23;
 
 	// Motor 1
-	unsigned char pins_motor_drive_dir[4] = {22,5,4,19};
-	// unsigned char pins_motor_drive_dir[4] = {5,22,4,19};
+	unsigned char pins_motor_drive_dir[4] = {5,22,4,19};
 	unsigned char pin_encoder_dir = 17;
 	unsigned char led_esq_pin = 12;
+
+	//     15,2,16,3,18, //motor direito
+    //     5,22,17,1,4 //motor esquerdo
 
 	// Sensores 
 	unsigned char pins_sensor_linha[8] = {39, 35, 36, 14, 25, 26, 27, 32};

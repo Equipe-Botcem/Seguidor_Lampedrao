@@ -129,10 +129,10 @@ void Sensor_linha::testeLeitura(ReadType tipo){
 
 		case KALMAN:
 			calibation_manual();
-			Serial.print("Angle:");
-			Serial.println(getAngleRaw());
-			Serial.print(",");
-			Serial.print("Kalman_filter:");
+			Serial.print("Angle: ");
+			Serial.print(getAngleRaw());
+			Serial.print("  ,  ");
+			Serial.print("Kalman_filter: ");
 			Serial.println(getAngle());
 		break;
 	}
