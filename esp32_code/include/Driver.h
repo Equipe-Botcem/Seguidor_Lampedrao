@@ -22,6 +22,8 @@ public:
 	void setVB(int vb);
 	void Set_speedRot(int rot);
 	void teste();
+	void Set_motor_esq(int speed);
+	void Set_motor_dir(int speed);
 
 private:
 

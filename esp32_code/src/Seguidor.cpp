@@ -242,25 +242,25 @@ void Seguidor::controle()
 			count_amostras++;
 			media_erro += abs(erro/n_amostras);
 		}				
-		if (count_amostras == n_amostras)
+		if (count_amostras == n_amostras and media_erro < 10)
 		{
 			erro = sensor_linha.getAngle();
-			Serial.print("Erro: ");
+			// Serial.print("Erro: ");
 			if ((erro) > 20) // testar depois com rot aqui nesse if
 			{
 				count_amostras = 0;
 			}
 			rot = controlador.calcPID(erro);
-			Serial.println(sensor_linha.getAngle());
-			// driver.Set_highspeedRot(78, (rot - (trans/2)));
+			// Serial.println(sensor_linha.getAngle());
+			driver.Set_highspeedRot(78, (rot - (trans/2)));
 		}
 		else
 		{
 			erro = sensor_linha.getAngle();
-			Serial.print("Erro2: ");
+			// Serial.print("Erro2: ");
 			rot = controlador.calcPID(erro);
 			Serial.println(sensor_linha.getAngle());
-			// driver.Set_speedRot(rot - trans);
+			driver.Set_speedRot(rot - trans);
 		}
 	}
 	
@@ -314,11 +314,11 @@ void Seguidor::Stop(){
 
 void Seguidor::Behavior()
 {	
-	SerialBT.print("get rotina encoder:    ");
-	SerialBT.print(encoder_esq.Get_contador_esq());
+	// SerialBT.print("get rotina encoder:    ");
+	// SerialBT.print(encoder_esq.Get_contador_esq());
 	
-	SerialBT.print("	|||	    ");
-	SerialBT.println(encoder_dir.Get_contador_dir());
+	// SerialBT.print("	|||	    ");
+	// SerialBT.println(encoder_dir.Get_contador_dir());
 	// SerialBT.println(sensor_linha.getAngle());
 	comunica_serial();
 
@@ -490,3 +490,40 @@ void Seguidor::Config_encoder_dir(unsigned char pin_interrupt)
 	encoder_dir = Encoder(pin_interrupt);
 }
 
+float Seguidor::get_vel_atual_esq()
+{
+	float ds = encoder_esq.Get_contador_esq();
+	encoder_esq.Reset_esq();
+	return ds/Ts;
+}
+
+float Seguidor::get_vel_atual_dir()
+{
+	float ds = encoder_dir.Get_contador_dir();
+	encoder_dir.Reset_dir();
+	return ds/Ts;
+}
+
+void Seguidor::set_vel_esq(float _kp, float _ki, float _kd, int setpoint)
+{
+	encoder_esq.Reset_esq();
+	if (millis() - execTimeesq > 1000)
+	{
+		execTimeesq = millis();
+		float erro = setpoint - get_vel_atual_esq();
+		float control = controlador.PID(_kp, _ki, _kd, erro);
+		driver.Set_motor_esq(int(control));
+	}
+}
+
+void Seguidor::set_vel_dir(float _kp, float _ki, float _kd, int setpoint)
+{
+	encoder_dir.Reset_dir();
+	if (millis() - execTimedir > 1000)
+	{
+		execTimedir = millis();
+		float erro = setpoint - get_vel_atual_dir();
+		float control = controlador.PID(_kp, _ki, _kd, erro);
+		driver.Set_motor_dir(int(control));
+	}
+}

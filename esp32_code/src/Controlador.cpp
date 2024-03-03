@@ -34,6 +34,18 @@ float Controlador::calcPID(float erro){
     return temp;
 }
 
+float Controlador::PID(float _kp, float _ki, float _kd, float erro)
+{
+    float temp = _atuation_k1 + (_kp + _ki + _kd)*erro + (_ki - _kp - 2*_kd)*_erro_k1 + _kd*_erro_k2;
+
+    _atuation_k1 = temp;
+
+    _erro_k2 = _erro_k1;
+    _erro_k1 = erro;
+    return temp;
+}
+
+ 
 float Controlador::getAmostragem(){
     return tempo_amostragem;
 }

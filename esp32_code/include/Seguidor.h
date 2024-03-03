@@ -49,10 +49,15 @@ public:
 
 	void Config_encoder_esq(unsigned char pin_interrupt);
 	void Config_encoder_dir(unsigned char pin_interrupt);
+	void set_vel_esq(float _kp, float _ki, float _kd, int setpoint);
+	void set_vel_dir(float _kp, float _ki, float _kd, int setpoint);
+
+	float get_vel_atual_esq();
+	float get_vel_atual_dir();
 	// Funções de teste
 	void teste();
 	void TesteSensoresLat();
-
+	
 
 	String command = "";
 	BluetoothSerial SerialBT;
@@ -85,6 +90,10 @@ private:
 	int Nf = 200;
 	//-----------Timers-----------//
 	unsigned long samplingTime = 1;
+	unsigned long Ts = 0.1;
+	unsigned long execTimeesq = 0;
+	unsigned long execTimedir = 0;
+
 	unsigned long startTime = 0;
 	unsigned long stopTime = 0;
 	unsigned long execTime = 0;
@@ -98,6 +107,7 @@ private:
 	Sensor sensor_esq;
 	Sensor sensor_dir;
 	Controlador controlador;
+	
 	Encoder encoder_esq;
 	Encoder encoder_dir;
 	

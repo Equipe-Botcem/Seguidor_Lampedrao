@@ -46,6 +46,16 @@ void Driver::Set_speedRot(int rot)
     motor_esq.Set_speed(VB - rot);
 }
 
+
+void Driver::Set_motor_esq(int speed)
+{
+    motor_esq.Set_speed(speed);
+}
+void Driver::Set_motor_dir(int speed)
+{
+    motor_dir.Set_speed(speed);
+}
+
 void Driver::Set_highspeedRot(int rot, int VBase)
 {
 	motor_dir.Set_speed(VBase + rot);

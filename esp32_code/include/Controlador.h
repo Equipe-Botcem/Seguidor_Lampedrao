@@ -14,6 +14,7 @@ public:
     void setKd(float kd);
     void setKi(float ki);
     float calcPID(float erro);
+    float PID(float _kp, float _ki, float _kd, float erro);
     float getAmostragem();
     void resetConditions();
     void teste(float erro);
@@ -25,6 +26,10 @@ private:
     float atuation_k1;
     float erro_k1, erro_k2;
     float Kp, Kd, Ki;
+
+    float Ts = 0.1;
+    float _atuation_k1;
+    float _erro_k1, _erro_k2;
 
 
 };
